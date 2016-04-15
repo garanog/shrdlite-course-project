@@ -21,6 +21,7 @@
 \usepackage{url}
 \usepackage{latexsym}
 \usepackage{hyperref}
+\usepackage{todonotes}
 
 %\setlength\titlebox{5cm}
 
@@ -29,6 +30,7 @@
 % smaller than 5cm (the original size); we will check this
 % in the camera-ready version and ask you to change it back.
 
+\newcommand{\TODO}[1]{\todo[inline]{{\footnotesize #1}}}
 
 \title{Title}
 
@@ -50,6 +52,8 @@
 \begin{abstract}
 Abstract
 \end{abstract}
+
+\TODO{add todos and comments wherever you like, like this!}
 
 \section{Introduction}
 \subsection{Positive things about AVs}
