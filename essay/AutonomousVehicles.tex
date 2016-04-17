@@ -22,6 +22,7 @@
 \usepackage{latexsym}
 \usepackage{hyperref}
 \usepackage{todonotes}
+\usepackage{textcomp}
 
 %\setlength\titlebox{5cm}
 
@@ -98,14 +99,12 @@ For a more functional perspective, the sensors can be organized into categories 
 		\end{itemize}
 	\item \textbf{See where you are going}:
 		\begin{itemize}
-			\item \textbf{Cameras}
-			\item \textbf{LIDAR}
-			\item \textbf{RADAR}
+			\item \textbf{LIDAR}: The device emits laser pulses, and measures the time the beam takes to reflect back to the sensor (Time-of-flight), then it calculates the distance using that measurement. By using a rotating, scanning mirror assembly on top of the AV, it provides 3D 360{\textdegree} view suitable for ``big picture'' imaging. It is not very effective for close-in control.
+			\item \textbf{Cameras}: They are typically used to enhance the resolution of the 3D information obtained by the LIDAR, as well as detecting street signs and road markings. Its effectivness is affected by reduced visibility conditions such as dusk, bad weather and dirt on the lens.
+			\item \textbf{RADAR}: Similar to LIDAR but instead of laser it uses a normal radio wave beam (usually 77GHz) to measure distance. It is used for close-in control instead of LIDAR: Parking, lane-changing and bumper-to-bumper traffic.
 		\end{itemize}
 	\item \textbf{Get where you are going}:
-		\begin{itemize}
-			\item \textbf{Battery level sensors}
-		\end{itemize}
+		Other sensors are needed for the correct operation of the AV, which deal with the internal state of the vehicle, such as: Battery \& fuel level sensors, engine temperature, oil pressure, etc.
 \end{itemize}
 
 \subsection{Software}
@@ -257,7 +256,7 @@ Patrick Beeson
 \newblock {\em Autonomous Vehicles - Lesson 2: Location Sensing}.
 \newblock University of Texas.
 \newblock
-\href{https://www.cs.utexas.edu/~pstone/Courses/393Rfall09/resources/sensing.pdf}{https://www.cs.utexas.edu/{\textasciitilde}pstone/Courses/393Rfall09/resources/sensing.pdf}
+\href{https://www.cs.utexas.edu/~pstone/Courses/393Rfall09/resources/sensing.pdf}{https://www.cs.utexas.edu/{\texttildelow}pstone/Courses/393Rfall09/resources/sensing.pdf}
 
 \bibitem[\protect\citename{A. Davies} 2015]{Davies:15}
 Alex Davies
