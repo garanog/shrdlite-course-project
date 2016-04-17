@@ -83,8 +83,29 @@ Autonomous cars on the roads ~2010\\
 \subsection{Sensors}
 In order for the autonomous vehicles to navigate the real world, its software needs to obtain data about itself and its surroundings. For that purpose, AVs have several types of sensors incorporated to its body. The software processes the data provided by those sensors to create a virtual representation of the real world which can then use to calculate which actions to take to reach its destination. There are two main types of sensors: Exterioceptive and proprioceptive. The former deals with information from the AV's environment, while the later deals with information internal to the system. Some examples of the data that can be obtained within each class are:
 \begin{itemize}
-	\item Extereoceptive: Distances to objects, object types, objects's speed and heading.
+	\item Extereoceptive: Distances to objects, object types, objects' speed and heading.
 	\item Proprioceptive: Motor speed, wheel load, heading, position, battery status.
+\end{itemize}
+For a more functional perspective, the sensors can be organized into categories defined by its use cases for AVs:
+\begin{itemize}
+	\item \textbf{Know where you are going}:
+		\begin{itemize}
+			\item \textbf{GPS}: It allows the AV to determine its position in absolute terms. In optimal conditions it has good accuracy and precision. It cannot be constantly relied upon due to intermittent coverage caused by tunnels, canyons, buildings, radio interference, etc.
+			\item \textbf{IMU}: A type of dead-reckoning system using a 3-axis accelerometer and a 3-axis gyroscope. It provides data on linear and rotational motion, which is then used to calculate the motion and relative position of the vehicle regardless of any sort of signal obstruction. It has good accuracy for short periods but has cumulative error so over time it gets very inaccurate.
+			\item \textbf{Compass}: It can be used to determine the AV's heading. It has good accuracy which doesn't change over time but it is subject to interference by magnetic objects and electrical sources. It also can be slow to settle except for the most expensive types.
+			\item \textbf{Ground speed RADAR}: Measures real ground speed using the Doppler effect. It can be used for dead-reckoning.
+			\item \textbf{Wheel odometry}: Used for dead reckoning. Uses optical encoders to measure the speed of the wheels and the direction of the steering wheel from which the relative position of the AV can be calculated.
+		\end{itemize}
+	\item \textbf{See where you are going}:
+		\begin{itemize}
+			\item \textbf{Cameras}
+			\item \textbf{LIDAR}
+			\item \textbf{RADAR}
+		\end{itemize}
+	\item \textbf{Get where you are going}:
+		\begin{itemize}
+			\item \textbf{Battery level sensors}
+		\end{itemize}
 \end{itemize}
 
 \subsection{Software}
