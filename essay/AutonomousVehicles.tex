@@ -107,16 +107,6 @@ For a more functional perspective, the sensors can be organized into categories 
 \end{itemize}
 
 \subsection{Software}
-Cars create very specific maps
-    maps take into account everything around them
-    cars send back data they collect to update location map information
-Cars figure out where they are by finding where they fit on the map, much like if you had a section of a map you could fit it in the context of the entire map
-software maps all things around the car
-looks at cyclysts, pedestrians, other cars, solid objects
-Also trafic cones, people in vests, etc. 
-Anticipates what each thing is going to do and when. 
-Readjusts bases on what actually happens 
-If it is not sure of something it slows to a stop
 \par
 In order to use the sensors to actually drive humans need to program how to interpret all the data the sensors collect. The main concerns of the car is driving, and avoiding all other objects. 
 The cars use the sensors to figure out where they are. Google has created very specific maps for the cars to use to find there location. These maps include everything about an area including curb height, intersection width, and lane layout. 
@@ -132,12 +122,19 @@ After the cars figure out exactly where they are they need to then worry about c
 Within those catigories there is more specific catigorizations. For example the cars differinatiate between, trucks or
 road worker in orange vests. They also look out for common things in the road like traffic cones. Once they recognize
 that there is something it is usually hard to figure out exactly what it is. The computers use machine learning to
-differentiate between every possibility. As you can see in the image below the car maps 
+differentiate between every possibility. Once the car guesses what type of object it is it starts to make assumptions
+about what the object will do next. If a car is driving straight it assumes the car will continue to drive straight. If
+a car is in the turning lane it will probably turn. The cars are programmed to anticipate the next move while also
+keeping in mind that might not happen. If the car sees something in the road that is cannot recognize it stops. 
+\par
+Because these cars are programmed to there choices are very automatic. It is reativily easy to predict how they will act
+exactly how people have programed them. While they are far from perfect Google has gone very far to make them ateast as
+reliable as human drivers. Google has an entire team dedicated to testing. 
 \begin{figure}[!ht]
   \centering
       \reflectbox{%
                 \includegraphics[width=0.7\textwidth]{drivingcar}}
-                  \caption{The small box to the left is a picture from the front window of the car. The rest of the
+                  \caption{The small box to the right is a picture from the front window of the car. The rest of the
                       image is how the car interperets images from the sensors. The purple boxes are other motered
                           veichals. The blue box on the crosswalk is a person. The green track is where the car has to
                           go. The long green and red cylinders and the projected motion of cars that would end up in the
