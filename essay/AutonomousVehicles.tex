@@ -34,18 +34,7 @@
 
 \newcommand{\TODO}[1]{\todo[inline]{{\footnotesize #1}}}
 
-\title{Title}
-
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\}
+\title{An Overview over \\ Autonomous Vehicles}
 
 \date{}
 
@@ -59,9 +48,9 @@ Abstract
 
 \section{Introduction}
 \subsection{Positive things about AVs}
-Soon traversing the streets of Gothenburg the future of autonomous vehicles is coming closer to being a part of today's reality. The dream of self driving cars holds many promises, with one of it's bigger points being safety.
+Soon traversing the streets of Gothenburg the future of \textit{Autonomous Vehicles} (AV) is coming closer to being a part of today's reality. The dream of self driving cars holds many promises, with one of it's bigger points being safety.
 
-In 2011 more than 2.2 million injuries were caused by automobile crashes in the United States alone \cite[p. 14]{Anderson2014rand}, while more than 39 percent of all fatalities involved alcohol \cite[p. 16]{Anderson2014rand}. With a far greater field of vision, reaction time and control of safety-critical functions, the hopes is that autonomous vehicles could drastically reduce these statistics.
+In 2011 more than 2.2 million injuries were caused by automobile crashes in the United States alone \cite[p. 14]{Anderson2014rand}, while more than 39 percent of all fatalities involved alcohol \cite[p. 16]{Anderson2014rand}. With a far greater field of vision, reaction time and control of safety-critical functions, the hopes is that AV could drastically reduce these statistics.
 
 It's possible that the group most influenced by the self driving cars are the people who are not capable of driving themselves. For these groups the self driving cars could increase convenience, reliability and personal independence \cite[p. 17]{Anderson2014rand}.
 
@@ -72,11 +61,11 @@ Throughout history man has tried to create a self driving car using very differe
 
 In the following decades many companies tried to add various sensors in the roads. They were able sense the presence of any vehicle and would send information to that vehicles autopilot \cite{Courier1960Driverless}.
 
-A big step towards technology of today was the DARPA Grand Challenge, launched by the Defence Advance Research Projects Agency (DARPA) in 2003. The challenge was to develop an autonomous vehicle that could pass a 142-mile course of unrehearsed off-road terrain. The first race held in 2004 was completed without finishing vehicles, and in race 2005 the robot Stanley would become the first vehicle to finish the race.
+A big step towards technology of today was the DARPA Grand Challenge, launched by the Defence Advance Research Projects Agency (DARPA) in 2003. The challenge was to develop an AV that could pass a 142-mile course of unrehearsed off-road terrain. The first race held in 2004 was completed without finishing vehicles, and in race 2005 the robot Stanley would become the first vehicle to finish the race.
 
-With development led by Stanford University and Volkswagen Stanley was designed for a static environment and would be unable to travel on populated roads. Despite that was the technology of Stanley in many ways similar to the technology of the autonomous vehicles of today \cite{Thrun2006stanley}.
+With development led by Stanford University and Volkswagen Stanley was designed for a static environment and would be unable to travel on populated roads. Despite that was the technology of Stanley in many ways similar to the technology of the AVs of today \cite{Thrun2006stanley}.
 
-The majority of car companies are today researching autonomous vehicles and early 2014 Induct started selling Navia, the first commercial self driving car \cite{Maisto2014Navia}.
+The majority of car companies are today researching AVs and early 2014 Induct started selling Navia, the first commercial self driving car \cite{Maisto2014Navia}.
 
 
 \section{How AVs work}
@@ -107,26 +96,27 @@ For a more functional perspective, the sensors can be organized into categories 
 \end{itemize}
 
 \subsection{Software}
-\par
-In order to use the sensors to actually drive humans need to program how to interpret all the data the sensors collect. The main concerns of the car is driving, and avoiding all other objects. 
-The cars use the sensors to figure out where they are. Google has created very specific maps for the cars to use to find there location. These maps include everything about an area including curb height, intersection width, and lane layout. 
+\TODO{``figure out'' might be too colloquial?}
+\TODO{it's not clear that we're talking about Google cars only. Where to mention that?}
+In order to use the sensors to actually drive humans need to program how to interpret all the data the sensors collect. The main concerns of AV are driving, and avoiding all other objects. The cars use the sensors to figure out where they are. Google has created very specific maps for the cars to use to find there location. These maps include everything about an area including curb height, intersection width, and lane layout. 
 The cars figure out where they are by matching the images from the sensors to
 a specific place on the map. They use where the car was a few seconds prior to help them make location matches in real
-time. The reason they use this complicated mapping system instead of a more common GPS system is because GPS is not
-accurate enough. Moreover GPS systems can lose connection because of tall buildings and is not accurate enough to
-consistently figure out what side of the road a car is on. However the preinstalled maps also have issues. For one the
+time. The preinstalled maps are not a perfect solution. For example the
 cars are not able to drive in snow because the snow changes the landscape and therefore the physical markers google
 usually uses to place a car. While the cars rely on the maps immensely it knows that roads do change. They are
-constantly sending data back to google about changes in roads because of erosion or construction. \par
-After the cars figure out exactly where they are they need to then worry about cars, pedestrians, workers, and cyclists.
+constantly sending data back to google about changes in roads because of erosion or construction. 
+
+
+After the cars figure out exactly where they are they need to then worry about cars, pedestrians, and cyclists.
 Within those categories there is more specific categorizations. For example the cars differinatiate between, trucks or
 road worker in orange vests. They also look out for common things in the road like traffic cones. Once they recognize
-that there is something it is usually hard to figure out exactly what it is. The computers use machine learning to
+that there is something the computers use machine learning techniques to
 differentiate between every possibility. Once the car guesses what type of object it is it starts to make assumptions
 about what the object will do next. If a car is driving straight it assumes the car will continue to drive straight. If
 a car is in the turning lane it will probably turn. The cars are programmed to anticipate the next move while also
 keeping in mind that might not happen. If the car sees something in the road that is cannot recognize it stops. 
-\par
+
+
 Because these cars are programmed to there choices are very automatic. It is relativity easy to predict how they will act
 exactly how people have programmed them. While they are far from perfect Google has gone very far to make them at least as
 reliable as human drivers. Google has an entire team dedicated to testing. 
@@ -141,17 +131,18 @@ reliable as human drivers. Google has an entire team dedicated to testing.
                   path of the car.}
 \end{figure}
 
-\par
-
 
 \section{Social and Ethical Implications of AVs}
 \subsection{Impact on society in general}
-The introduction of autonomous vehicles could drastically decrease the individual cost of transportation, especially because the passenger can use the transportation time for work or other activities. According to Anderson et al. this will most likely lead to ``low-density patterns of land-use surrounding metropolitan regions''. \cite{Anderson2014rand}, because longer distances to the workplace will be acceptable.
+The introduction of autonomous vehicles could drastically decrease the individual cost of transportation, especially because the passenger can use the transportation time for work or other activities. According to Anderson et al. this will most likely lead to ``low-density patterns of land-use surrounding metropolitan regions'' \cite{Anderson2014rand}, because longer distances to the workplace will be acceptable.
+
 The overall effect on energy consumption and emissions is unclear: on the one hand, the total vehicle miles traveled might increase due to reduced opportunity cost for time spent in the car. On the other hand, the technology also offers various possibilities to decrease emissions, like light-weight vehicles and platooning.
+
 AVs could bring independence and mitigated social isolation for those unwilling or unable to drive. Note however that for this to actually make a difference society has to ensure that all members of society can actually profit from the new technology.
 
 \subsection{Economics}
 Many jobs and a variety of professions will likely be affected by the introduction of AVs. In 2015, roughly 1.18 million bus and truck drivers have been employed in the US according to the Bureau of Labor Statistics \cite{USLabourBureau}, and those are only two examples of professions which would be affected in a very direct way. Decreasing crash risks could impair the business of many insurance companies, and since AVs could facilitate the introduction of alternative fuels, jobs related to combustion engines might become obsolete. According to \cite[p. 40ff]{Anderson2014rand}, ``... lost jobs might be replaced by others, perhaps related to the AV industry, but there may be considerable economic disruption''. Not only technical solutions necessary here, but also appropriate policy reactions and extensive discussion and changes in society. The introduction of an unconditional basic income is a possible reaction to increasing automation that is currently being discussed controversially. \todo{add literature reference here, e.g. ``rise of the machines'' paper?}
+
 AVs will, just like most state-of-the-art technology, likely be very expensive in the first years. Thus, this presumably safe, fast, reliable and convenient mean of transportation might be only available to the richer parts of the population. Driving conventional cars could become a necessity for the poor, further increasing the social gap between rich and poor. Compare \cite[p. 39]{Anderson2014rand}.
 
 \subsection{Liability}
@@ -163,7 +154,7 @@ In a study on ethical decision making during AV crashes, Goodall came to the con
 
 In the former, an AV must either adhere to a predefined set of rules or try to minimize some clearly defined function, which usually represents the total damage to humans, environment and property. These approaches are easy to implement and tailor-made for execution by computers, but the incompleteness of any set of rules and the difficulty involved in the articulation of complex human ethics as a set of rules are problematic. No matter how many rules are fed into such a system, there will always be situations in which the resulting behaviour does not match the expectations of human ethics.
 
-The basic idea of \textit{AI} approaches to AV ethics is to train a neural network (\textit{NN}) on a combination of simulations and recordings of real crashes, with human feedback on the ethical response. This solves the problem of having to encode the complex human ethics into a mathematical set of rules. However, the inconsistency between how humans actually behave and what they believe, and lacking traceability (why did the NN decide the way it did in an accident?) involve a risk of missing transparency and manipulation. NNs capable of providing natural-language feedback of how they came to certain decisions are a active field of resear+ch \cite[p. 63]{Goodall2014ethical}. 
+The basic idea of \textit{Artificial Intelligence} (AI) approaches to AV ethics is to train a \textit{neural network} (NN) on a combination of simulations and recordings of real crashes, with human feedback on the ethical response. This solves the problem of having to encode the complex human ethics into a mathematical set of rules. However, the inconsistency between how humans actually behave and what they believe, and lacking traceability (why did the NN decide the way it did in an accident?) involve a risk of missing transparency and manipulation. NNs capable of providing natural-language feedback of how they came to certain decisions are a active field of resear+ch \cite[p. 63]{Goodall2014ethical}. 
 
 Goodall proposes a three-phase ethical vehicle deployment strategy \cite[p.63]{Goodall2014ethical} which can be compared to the moral education of a child. In the first phase, rational ethics are used, i.e. the AV must follow some clearly defined rules. In the second phase, a hybrid rational and AI approach is used: The strict rules from phase one remain active as a boundary, but additionally the complex specifics of human ethics are learned using AI technology. In the third phase, once the technical obstacles have been overcome, natural language feedback should be added to the AI technology of phase two. Current state-of-the-art AVs are in the first of these three phases. \TODO{add citation, and I assume that there's at least active research happening right now for the other two proposed phases?!}
 
