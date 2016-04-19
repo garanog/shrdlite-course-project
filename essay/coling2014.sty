@@ -280,12 +280,12 @@
 % \sfcode`\.=1000\relax}
 %\let\endthesourcebibliography=\endlist
 %
-%\def\@lbibitem[#1]#2{\item[]\if@filesw 
-%      { \def\protect##1{\string ##1\space}\immediate
-%        \write\@auxout{\string\bibcite{#2}{#1}}\fi\ignorespaces}}
-%
-%\def\@bibitem#1{\item\if@filesw \immediate\write\@auxout
-%       {\string\bibcite{#1}{\the\c@enumi}}\fi\ignorespaces}
+\def\@lbibitem[#1]#2{\item[]\if@filesw 
+      { \def\protect##1{\string ##1\space}\immediate
+        \write\@auxout{\string\bibcite{#2}{#1}}\fi\ignorespaces}}
+
+\def\@bibitem#1{\item\if@filesw \immediate\write\@auxout
+       {\string\bibcite{#1}{\the\c@enumi}}\fi\ignorespaces}
 
 % sections with less space
 \def\section{\@startsection {section}{1}{\z@}{-2.0ex plus
