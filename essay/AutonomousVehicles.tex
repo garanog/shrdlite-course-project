@@ -90,11 +90,11 @@ For a more functional perspective, the sensors can be organized into categories 
 \begin{itemize}
 	\item \textbf{Know where you are going}:
 		\begin{itemize}
-			\item \textbf{GPS}: It allows the AV to determine its position in absolute terms. In optimal conditions it has good accuracy and precision. It cannot be constantly relied upon due to intermittent coverage caused by tunnels, canyons, buildings, radio interference, etc.
-			\item \textbf{IMU}: A type of dead-reckoning system using a 3-axis accelerometer and a 3-axis gyroscope. It provides data on linear and rotational motion, which is then used to calculate the motion and relative position of the vehicle regardless of any sort of signal obstruction. It has good accuracy for short periods but has cumulative error so over time it gets very inaccurate.
+			\item \textbf{GPS}: It allows the AV to determine its position in absolute terms. In optimal conditions it has good accuracy and precision. It cannot be constantly relied upon due to intermittent coverage caused by tunnels, canyons, buildings, radio interference, etc. \cite{SchweberMouser}
+			\item \textbf{IMU} (Inertial Measurement Unit): A type of dead-reckoning system using a 3-axis accelerometer providing data on linear motion, and a 3-axis gyroscope providing data on rotational motion. This data is then used to calculate the motion and relative position of the vehicle regardless of any sort of signal obstruction. It has good accuracy for short periods but has cumulative error so over time it gets very inaccurate.
 			\item \textbf{Compass}: It can be used to determine the AV's heading. It has good accuracy which doesn't change over time but it is subject to interference by magnetic objects and electrical sources. It also can be slow to settle except for the most expensive types.
 			\item \textbf{Ground speed RADAR}: Measures real ground speed using the Doppler effect. It can be used for dead-reckoning.
-			\item \textbf{Wheel odometry}: Used for dead reckoning. Uses optical encoders to measure the speed of the wheels and the direction of the steering wheel from which the relative position of the AV can be calculated.
+			\item \textbf{Wheel odometry}: Used for dead-reckoning. Uses optical encoders to measure the speed of the wheels and the direction of the steering wheel from which the relative position of the AV can be calculated.
 		\end{itemize}
 	\item \textbf{See where you are going}:
 		\begin{itemize}
