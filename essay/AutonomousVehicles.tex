@@ -99,7 +99,7 @@ For a more functional perspective, the sensors can be organized into categories 
 	\item \textbf{See where you are going}:
 		\begin{itemize}
 			\item \textbf{LIDAR}: The device emits laser pulses, and measures the time the beam takes to reflect back to the sensor (Time-of-flight), then it calculates the distance using that measurement. By using a rotating, scanning mirror assembly on top of the AV, it provides 3D 360{\textdegree} view suitable for ``big picture'' imaging. It is not very effective for close-in control.
-			\item \textbf{Cameras}: They are typically used to enhance the resolution of the 3D information obtained by the LIDAR, as well as detecting street signs and road markings. Its effectivness is affected by reduced visibility conditions such as dusk, bad weather and dirt on the lens.
+			\item \textbf{Cameras}: They are typically used to enhance the resolution of the 3D information obtained by the LIDAR, as well as detecting street signs and road markings. Its effectiveness is affected by reduced visibility conditions such as dusk, bad weather and dirt on the lens.
 			\item \textbf{RADAR}: Similar to LIDAR but instead of laser it uses a normal radio wave beam (usually 77GHz) to measure distance. It is used for close-in control instead of LIDAR: Parking, lane-changing and bumper-to-bumper traffic.
 		\end{itemize}
 	\item \textbf{Get where you are going}:
@@ -113,13 +113,13 @@ The cars use the sensors to figure out where they are. Google has created very s
 The cars figure out where they are by matching the images from the sensors to
 a specific place on the map. They use where the car was a few seconds prior to help them make location matches in real
 time. The reason they use this complicated mapping system instead of a more common GPS system is because GPS is not
-acurate enough. Moreover GPS systems can lose conection because of tall buildings and is not acurate enough to
-consistantly figure out what side of the road a car is on. However the preinstalled maps also have issues. For one the
+accurate enough. Moreover GPS systems can lose connection because of tall buildings and is not accurate enough to
+consistently figure out what side of the road a car is on. However the preinstalled maps also have issues. For one the
 cars are not able to drive in snow because the snow changes the landscape and therefore the physical markers google
-usually uses to place a car. While the cars rely on the maps immensily it knows that roads do change. They are
-constantly sendind data back to google about changes in roads because of errosion or construction. \par
+usually uses to place a car. While the cars rely on the maps immensely it knows that roads do change. They are
+constantly sending data back to google about changes in roads because of erosion or construction. \par
 After the cars figure out exactly where they are they need to then worry about cars, pedestrians, workers, and cyclists.
-Within those catigories there is more specific catigorizations. For example the cars differinatiate between, trucks or
+Within those categories there is more specific categorizations. For example the cars differinatiate between, trucks or
 road worker in orange vests. They also look out for common things in the road like traffic cones. Once they recognize
 that there is something it is usually hard to figure out exactly what it is. The computers use machine learning to
 differentiate between every possibility. Once the car guesses what type of object it is it starts to make assumptions
@@ -127,16 +127,16 @@ about what the object will do next. If a car is driving straight it assumes the 
 a car is in the turning lane it will probably turn. The cars are programmed to anticipate the next move while also
 keeping in mind that might not happen. If the car sees something in the road that is cannot recognize it stops. 
 \par
-Because these cars are programmed to there choices are very automatic. It is reativily easy to predict how they will act
-exactly how people have programed them. While they are far from perfect Google has gone very far to make them ateast as
+Because these cars are programmed to there choices are very automatic. It is relativity easy to predict how they will act
+exactly how people have programmed them. While they are far from perfect Google has gone very far to make them at least as
 reliable as human drivers. Google has an entire team dedicated to testing. 
 \begin{figure}[!ht]
   \centering
       \reflectbox{%
                 \includegraphics[width=0.7\textwidth]{drivingcar}}
                   \caption{The small box to the right is a picture from the front window of the car. The rest of the
-                      image is how the car interperets images from the sensors. The purple boxes are other motered
-                          veichals. The blue box on the crosswalk is a person. The green track is where the car has to
+                      image is how the car interprets images from the sensors. The purple boxes are other motored
+                          vehicles. The blue box on the crosswalk is a person. The green track is where the car has to
                           go. The long green and red cylinders and the projected motion of cars that would end up in the
                   path of the car.}
 \end{figure}
@@ -151,7 +151,7 @@ The overall effect on energy consumption and emissions is unclear: on the one ha
 AVs could bring independence and mitigated social isolation for those unwilling or unable to drive. Note however that for this to actually make a difference society has to ensure that all members of society can actually profit from the new technology.
 
 \subsection{Economics}
-Many jobs and a variety of professions will likely be affected by the introduction of AVs. In 2015, rougly 1.18 million bus and truck drivers have been employed in the US according to the Bureau of Labor Statistics \cite{USLabourBureau}, and those are only two examples of professions which would be affected in a very direct way. Decreasing crash risks could impair the business of many insurance companies, and since AVs could facilitate the introduction of alternative fuels, jobs related to combustion enginges might become obsolete. According to \cite[p. 40ff]{Anderson2014rand}, ``... lost jobs might be replaced by others, perhaps related to the AV industry, but there may be considerable economic disruption''. Not only technical solutions necessary here, but also appropriate policy reactions and extensive discussion and changes in society. The introduction of an unconditional basic income is a possible reaction to increasing automatoin that is currently being discussed controversialy. \todo{add literature reference here, e.g. ``rise of the machines'' paper?}
+Many jobs and a variety of professions will likely be affected by the introduction of AVs. In 2015, roughly 1.18 million bus and truck drivers have been employed in the US according to the Bureau of Labor Statistics \cite{USLabourBureau}, and those are only two examples of professions which would be affected in a very direct way. Decreasing crash risks could impair the business of many insurance companies, and since AVs could facilitate the introduction of alternative fuels, jobs related to combustion engines might become obsolete. According to \cite[p. 40ff]{Anderson2014rand}, ``... lost jobs might be replaced by others, perhaps related to the AV industry, but there may be considerable economic disruption''. Not only technical solutions necessary here, but also appropriate policy reactions and extensive discussion and changes in society. The introduction of an unconditional basic income is a possible reaction to increasing automation that is currently being discussed controversially. \todo{add literature reference here, e.g. ``rise of the machines'' paper?}
 AVs will, just like most state-of-the-art technology, likely be very expensive in the first years. Thus, this presumably safe, fast, reliable and convenient mean of transportation might be only available to the richer parts of the population. Driving conventional cars could become a necessity for the poor, further increasing the social gap between rich and poor. Compare \cite[p. 39]{Anderson2014rand}.
 
 \subsection{Liability}
@@ -163,7 +163,7 @@ In a study on ethical decision making during AV crashes, Goodall came to the con
 
 In the former, an AV must either adhere to a predefined set of rules or try to minimize some clearly defined function, which usually represents the total damage to humans, environment and property. These approaches are easy to implement and tailor-made for execution by computers, but the incompleteness of any set of rules and the difficulty involved in the articulation of complex human ethics as a set of rules are problematic. No matter how many rules are fed into such a system, there will always be situations in which the resulting behaviour does not match the expectations of human ethics.
 
-The basic idea of \textit{AI} approaches to AV ethics is to train a neural network (\textit{NN}) on a combination of simulations and recordings of real crashes, with human feedback on the ethical response. This solves the problem of having to encode the complex human ethics into a mathematical set of rules. However, the inconsistency between how humans actually behave and what they believe, and lacking traceability (why did the NN decide the way it did in an accident?) involve a risk of missing transparency and manipulation. NNs capable of providing natural-language feedback of how they came to certain decisions are a active field of reseach \cite[p. 63]{Goodall2014ethical}. 
+The basic idea of \textit{AI} approaches to AV ethics is to train a neural network (\textit{NN}) on a combination of simulations and recordings of real crashes, with human feedback on the ethical response. This solves the problem of having to encode the complex human ethics into a mathematical set of rules. However, the inconsistency between how humans actually behave and what they believe, and lacking traceability (why did the NN decide the way it did in an accident?) involve a risk of missing transparency and manipulation. NNs capable of providing natural-language feedback of how they came to certain decisions are a active field of resear+ch \cite[p. 63]{Goodall2014ethical}. 
 
 Goodall proposes a three-phase ethical vehicle deployment strategy \cite[p.63]{Goodall2014ethical} which can be compared to the moral education of a child. In the first phase, rational ethics are used, i.e. the AV must follow some clearly defined rules. In the second phase, a hybrid rational and AI approach is used: The strict rules from phase one remain active as a boundary, but additionally the complex specifics of human ethics are learned using AI technology. In the third phase, once the technical obstacles have been overcome, natural language feedback should be added to the AI technology of phase two. Current state-of-the-art AVs are in the first of these three phases. \TODO{add citation, and I assume that there's at least active research happening right now for the other two proposed phases?!}
 
