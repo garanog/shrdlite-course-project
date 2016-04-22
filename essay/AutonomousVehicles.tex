@@ -40,7 +40,13 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-\TODO{Abstract}
+The introduction of Autonomous Vehicles promises a variety of profound advantages over conventional cars. Those advantages include increased safety, decreased individual transportation cost, mobility for everyone and possibly decreased energy consumption and emissions. 
+
+
+The release of fully autonomous vehicles has been announced for the near future by a majority of car manufacturers. We give an overview over how current state of the art AVs, which are not yet commercially available, use sensors and machine learning learning approaches for autonomous driving.
+
+
+We highlight open questions and active fields of research, important aspects of which is are autonomous ethical decision making, liability issues and possible disruption of parts of the current job market.
 \end{abstract}
 
 \section{Introduction}
@@ -89,27 +95,27 @@ For a more functional perspective, the sensors can be organized into categories 
 \end{itemize}
 
 \subsection{Software}
-In order to use the sensors to drive, humans need to program how to interpret all the data the sensors collect. The main concerns of AV are driving, and avoiding all other objects. The cars use the information from the sensors to determined where they are. Google has created very specific maps that the cars use to find their location. These maps include everything about an area including curb height, intersection width, and lane layout. \cite{chrisurmson2016}
+In order to use the sensors to drive, humans need to program how to interpret all the data the sensors collect. The main concerns of AV are driving, and avoiding all other objects. The cars use the information from the sensors to determined where they are. Google has created very specific maps that the cars use to find their location. These maps include everything about an area including curb height, intersection width, and lane layout \cite{chrisurmson2016}.
 The cars determine where they are by matching the images from the sensors to
 a specific place on the map. They use where the car was a few seconds prior to help them make location matches in real
 time. The preinstalled maps are not a perfect solution. For example the
 cars are not able to drive in snow because the snow changes the landscape and therefore the physical markers Google
-uses to place a car.\cite{chrisurmson2016} While the cars rely on the maps immensely they are programed to expect change. When the car notices something about their surrounding is
+uses to place a car\cite{chrisurmson2016}. While the cars rely on the maps immensely they are programed to expect change. When the car notices something about their surrounding is
 different than the preprogrammed map they send the differences back to Google. Every detail from current construction sites to changes in the road due to erosion
-is saved. \cite{chrisurmson2016}
+is saved \cite{chrisurmson2016}.
 
 
 After the cars locate exactly where they are they need to then worry about following road rules. Many driving rules are trivial and just need to be programed
 into the car. With the help of the very detailed maps that show things like stoplights, stop signs, and speed limits, the cars can deduce the correct and
 law abiding action. However to drive safely the cars also need to be aware of everything else on the road. The cars attempt to specify all other nonnative
 objects. Once they recognize that there is something in the surrounding area the computers use machine learning techniques to
-differentiate between every possibility. \cite{zhu2012object} The three main categories it tries to classify objects as are cars, pedestrians, or cyclists.
+differentiate between every possibility \cite{zhu2012object}. The three main categories it tries to classify objects as are cars, pedestrians, or cyclists.
 Within those categories there are more specific categorizations. For example the cars differentiate between, trucks or
-road worker in orange vests. \cite{zhu2012object} They also look out for common things in the road like traffic cones. As shown in the picture below the car recognizes many other cars. All the purple boxes are other cars. The light
+road worker in orange vests \cite{zhu2012object}. They also look out for common things in the road like traffic cones. As shown in the picture below the car recognizes many other cars. All the purple boxes are other cars. The light
 blue box in the bottom right of the intersection is thought to be a human. Once the car guesses what type of object something is it starts to make assumptions
 about what the object will do next. If a car is driving straight it assumes the car will continue to drive straight. If
 a car is in the turning lane it will probably turn. The cars are programmed to anticipate the next move while also
-keeping in mind that might not happen. \cite{crisurmson2016} As shown in the picture the long green and red cuboids are the projections of other vehicle that might interfere with
+keeping in mind that might not happen \cite{chrisurmson2016}. As shown in the picture the long green and red cuboids are the projections of other vehicle that might interfere with
 the autonomous vehicles current path. If the car sees something in the road that is cannot recognize it stops. Unlike a human the car has no problem focusing on and predicting directions of many different cars at one.  
 \begin{figure}[!ht]
   \centering
@@ -119,7 +125,7 @@ the autonomous vehicles current path. If the car sees something in the road that
                       image is how the car interprets images from the sensors. The purple boxes are other motored
                           vehicles. The blue box on the crosswalk is a person. The green track is where the car is planning on driving.
                            The long green and red cuboids are the projected motion of cars that would end up in the
-                  path of the car. \cite{chrisurmson2016}}
+                  path of the car \cite{chrisurmson2016}}.
 \end{figure}
 
 
@@ -154,9 +160,12 @@ Goodall proposes a three-phase ethical vehicle deployment strategy \cite[p.63]{G
 
 \section{Conclusion}
 In conclusion AVs need the operational, ethical, and legal structure to become commonplace on roads. The technology for AVs has gotten incredibly far in the past decade. As of 2016 cars can drive successfully and safely using exteroceptive and proprioceptive sensors in combination with programmed driving rules and machine learning techniques. Even though corporations like Volvo have acknowledged their liability will increase as a direct result of producing AVs, they are still enthusiastically embracing this technology.  Once the technology has reached the third phase described by Goodall, AVs should be able to make their own ethical decisions. Overall most of these condition are close to being met. 
-When these conditions are met AVs will be not only a technological milestone but also a social and cultural breakthrough. It could cause a demographic distribution change as well as an increase in time available for commuters to work or otherwise. Moreover it will cause an overhaul of the transportation sector. Lastly it will change the lives of people incapable of driving. AVs could impact lives immensely. 
-Given time we believe that AVs will face all their problems and prove themselves. Although there are still a few issues the implications of AVs could have an incredibly positive impact on society. 
 
+
+When these conditions are met AVs will be not only a technological milestone but also a social and cultural breakthrough. It could cause a demographic distribution change as well as an increase in time available for commuters to work or otherwise. Moreover it will cause an overhaul of the transportation sector. Lastly it will change the lives of people incapable of driving. AVs could impact lives immensely. 
+
+
+Given time we believe that AVs will face all their problems and prove themselves. Although there are still a few issues the implications of AVs could have an incredibly positive impact on society. 
 
 
 % BibTeX 
