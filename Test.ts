@@ -186,7 +186,6 @@ function test(c: TestCase) : boolean {
 	    return false;
 	}
     } catch (e) {
-    console.log(e);
 	console.log("Test failed! No path found");
 	
 	console.log("Start: " + start.toString());
