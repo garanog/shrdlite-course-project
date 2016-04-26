@@ -60,7 +60,7 @@ function aStarSearch<Node> (
 ) : SearchResult<Node> {
   var frontier : collections.PriorityQueue<SearchResult<Node>> = 
       new collections.PriorityQueue<SearchResult<Node>>(function compareResult(a : SearchResult<Node>, 
-          b : SearchResult<Node>){return a.cost - b.cost});
+          b : SearchResult<Node>){return b.cost - a.cost});
   var visited : collections.Set<Node> = new collections.Set<Node>();
   //TODO: priority queue ordering...
   frontier.enqueue(new SearchResult([start], heuristics(start)));
