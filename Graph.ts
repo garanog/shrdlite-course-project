@@ -71,7 +71,13 @@ function aStarSearch<Node> (
       visited.add(endNode);
       for (var edge of graph.outgoingEdges(endNode)){
         if(!visited.contains(edge.to)){
-          var tempResult : SearchResult = new SearchResult(new Node[] = shortestPath.path + edge.to, 
+          var tempPath :Node[];
+          for(var i :number = 0; i > shortestPath.path.length; i++){
+            tempPath[i] = shortestPath.path[i];
+          }
+          tempPath[shortestPath.path.length] = edge.to;
+          
+          var tempResult :SearchResult<Node> = new SearchResult(tempPath, 
             shortestPath.cost - heuristics(endNode) + heuristics(edge.to) + edge.cost);
           frontier.enqueue(tempResult);
         }
