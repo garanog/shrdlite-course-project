@@ -35,6 +35,7 @@ class SearchResult<Node> {
     ) {}
 }
 
+
 /**
 * A\* search implementation, parameterised by a `Node` type. The code
 * here is just a template; you should rewrite this function
@@ -57,12 +58,12 @@ function aStarSearch<Node> (
     heuristics : (n:Node) => number,
     timeout : number
 ) : SearchResult<Node> {
-  var frontier : collections.PriorityQueue<SearchResult<Node>>;
-  var visited : collections.Set<Node>;
-
+  var frontier : collections.PriorityQueue<SearchResult<Node>> = 
+      new collections.PriorityQueue<SearchResult<Node>>(function compareResult(a : SearchResult<Node>, 
+          b : SearchResult<Node>){return a.cost - b.cost});
+  var visited : collections.Set<Node> = new collections.Set<Node>();
   //TODO: priority queue ordering...
   frontier.enqueue(new SearchResult([start], heuristics(start)));
-
   while (!frontier.isEmpty()) {
     var shortestPath = frontier.dequeue();
     var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
