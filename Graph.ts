@@ -27,10 +27,12 @@ interface Graph<Node> {
 
 /** Type that reports the result of a search. */
 class SearchResult<Node> {
-    /** The path (sequence of Nodes) found by the search algorithm. */
-    path : Node[];
-    /** The total cost of the path. */
-    cost : number;
+    constructor(
+        /** The path (sequence of Nodes) found by the search algorithm. */
+        public path : Node[],
+        /** The total cost of the path. */
+        public cost : number
+    ) {}
 }
 
 /**
@@ -55,6 +57,29 @@ function aStarSearch<Node> (
     heuristics : (n:Node) => number,
     timeout : number
 ) : SearchResult<Node> {
+  var frontier : collections.PriorityQueue<SearchResult<Node>>;
+  var visited : collections.Set<Node>;
+
+  //TODO: priority queue ordering...
+  frontier.enqueue(new SearchResult([start], heuristics(start)));
+
+  while (!frontier.isEmpty()) {
+    var shortestPath = frontier.dequeue();
+    var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
+    if(visited.contains(endNode)) {
+      if(goal(endNode)) return shortestPath;
+      visited.add(endNode);
+      for (var edge of graph.outgoingEdges(endNode)){
+        if(!visited.contains(edge.to)){
+          var tempResult : SearchResult = new SearchResult(new Node[] = shortestPath.path + edge.to, 
+            shortestPath.cost - heuristics(endNode) + heuristics(edge.to) + edge.cost);
+          frontier.enqueue(tempResult);
+        }
+      }
+    }
+
+  }
+
     // A dummy search result: it just picks the first possible neighbour
     var result : SearchResult<Node> = {
         path: [start],

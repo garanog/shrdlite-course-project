@@ -1,4 +1,6 @@
 shrdlite-*.js
+# Javascript
+*.js
 
 # Generated pdfs #
 essay/AutonomousVehicles.pdf
