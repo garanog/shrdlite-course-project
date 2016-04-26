@@ -61,12 +61,23 @@ function aStarSearch<Node> (
   var visited : collections.Set<Node>;
 
   //TODO: priority queue ordering...
-  frontier.enqueue(new SearchResult([start], 0));
+  frontier.enqueue(new SearchResult([start], heuristics(start)));
 
   while (!frontier.isEmpty()) {
     var shortestPath = frontier.dequeue();
-    if(visited.contains(shortestPath.path[shotestPath.path.length-1]))
-    
+    var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
+    if(visited.contains(endNode)) {
+      if(goal(endNode)) return shortestPath;
+      visited.add(endNode);
+      for (var edge of graph.outgoingEdges(endNode)){
+        if(!visited.contains(edge.to)){
+          var tempResult : SearchResult = new SearchResult(new Node[] = shortestPath.path + edge.to, 
+            shortestPath.cost - heuristics(endNode) + heuristics(edge.to) + edge.cost);
+          frontier.enqueue(tempResult);
+        }
+      }
+    }
+
   }
 
     // A dummy search result: it just picks the first possible neighbour
