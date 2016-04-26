@@ -186,6 +186,7 @@ function test(c: TestCase) : boolean {
 	    return false;
 	}
     } catch (e) {
+    console.log(e);
 	console.log("Test failed! No path found");
 	
 	console.log("Start: " + start.toString());
@@ -194,6 +195,7 @@ function test(c: TestCase) : boolean {
 	
 	console.log("Expected path: " + c.path);
 	console.log("Expected cost: " + c.cost);
+    //throw e;
     }
     return false;
 }

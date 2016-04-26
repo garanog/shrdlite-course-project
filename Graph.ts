@@ -67,39 +67,26 @@ function aStarSearch<Node> (
   while (!frontier.isEmpty()) {
     var shortestPath = frontier.dequeue();
     var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
-    if(visited.contains(endNode)) {
-      if(goal(endNode)) return shortestPath;
+
+    if(!visited.contains(endNode)) {
+      if(goal(endNode)) { return shortestPath;}
+
       visited.add(endNode);
       for (var edge of graph.outgoingEdges(endNode)){
         if(!visited.contains(edge.to)){
-          var tempPath :Node[];
-          for(var i :number = 0; i > shortestPath.path.length; i++){
+          var tempPath : Array<Node> =  new Array<Node>(shortestPath.path.length);
+          for(var i : number = 0; i < shortestPath.path.length; i++){
             tempPath[i] = shortestPath.path[i];
           }
           tempPath[shortestPath.path.length] = edge.to;
-          
-          var tempResult :SearchResult<Node> = new SearchResult(tempPath, 
+          var tempResult : SearchResult<Node> = new SearchResult(tempPath, 
             shortestPath.cost - heuristics(endNode) + heuristics(edge.to) + edge.cost);
           frontier.enqueue(tempResult);
         }
       }
     }
-
   }
-
-    // A dummy search result: it just picks the first possible neighbour
-    var result : SearchResult<Node> = {
-        path: [start],
-        cost: 0
-    };
-    while (result.path.length < 3) {
-        var edge : Edge<Node> = graph.outgoingEdges(start) [0];
-        if (! edge) break;
-        start = edge.to;
-        result.path.push(start);
-        result.cost += edge.cost;
-    }
-    return result;
+  return null;
 }
 
 
