@@ -58,14 +58,14 @@ function aStarSearch<Node> (
     timeout : number
 ) : SearchResult<Node> {
   var frontier : collections.PriorityQueue<SearchResult<Node>>;
-  var visited : Array<Node>;
+  var visited : collections.Set<Node>;
 
   //TODO: priority queue ordering...
   frontier.enqueue(new SearchResult([start], 0));
 
   while (!frontier.isEmpty()) {
     var shortestPath = frontier.dequeue();
-
+    if(visited.contains(shortestPath.path[shotestPath.path.length-1]))
     
   }
 
