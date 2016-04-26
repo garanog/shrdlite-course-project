@@ -27,10 +27,12 @@ interface Graph<Node> {
 
 /** Type that reports the result of a search. */
 class SearchResult<Node> {
-    /** The path (sequence of Nodes) found by the search algorithm. */
-    path : Node[];
-    /** The total cost of the path. */
-    cost : number;
+    constructor(
+        /** The path (sequence of Nodes) found by the search algorithm. */
+        public path : Node[],
+        /** The total cost of the path. */
+        public cost : number
+    ) {}
 }
 
 /**
@@ -55,6 +57,18 @@ function aStarSearch<Node> (
     heuristics : (n:Node) => number,
     timeout : number
 ) : SearchResult<Node> {
+  var frontier : collections.PriorityQueue<SearchResult<Node>>;
+  var visited : Array<Node>;
+
+  //TODO: priority queue ordering...
+  frontier.enqueue(new SearchResult([start], 0));
+
+  while (!frontier.isEmpty()) {
+    var shortestPath = frontier.dequeue();
+
+    
+  }
+
     // A dummy search result: it just picks the first possible neighbour
     var result : SearchResult<Node> = {
         path: [start],
