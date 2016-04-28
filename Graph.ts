@@ -58,28 +58,28 @@ function aStarSearch<Node> (
     heuristics : (n:Node) => number,
     timeout : number
 ) : SearchResult<Node> {
-  var frontier : collections.PriorityQueue<SearchResult<Node>> = 
-      new collections.PriorityQueue<SearchResult<Node>>(function compareResult(a : SearchResult<Node>, 
+  var frontier : collections.PriorityQueue<SearchResult<Node>> =
+      new collections.PriorityQueue<SearchResult<Node>>(function compareResult(a : SearchResult<Node>,
           b : SearchResult<Node>){return b.cost - a.cost});
+
   var visited : collections.Set<Node> = new collections.Set<Node>();
-  //TODO: priority queue ordering...
   frontier.enqueue(new SearchResult([start], heuristics(start)));
+
   while (!frontier.isEmpty()) {
     var shortestPath = frontier.dequeue();
     var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
 
-    if(!visited.contains(endNode)) {
-      if(goal(endNode)) { return shortestPath;}
+    if (!visited.contains(endNode)) {
+      if (goal(endNode))
+        return shortestPath;
 
       visited.add(endNode);
-      for (var edge of graph.outgoingEdges(endNode)){
-        if(!visited.contains(edge.to)){
-          var tempPath : Array<Node> =  new Array<Node>(shortestPath.path.length);
-          for(var i : number = 0; i < shortestPath.path.length; i++){
-            tempPath[i] = shortestPath.path[i];
-          }
-          tempPath[shortestPath.path.length] = edge.to;
-          var tempResult : SearchResult<Node> = new SearchResult(tempPath, 
+      for (var edge of graph.outgoingEdges(endNode)) {
+        if (!visited.contains(edge.to)){
+          var pathCopy : Array<Node> = copyPath(shortestPath);
+
+          pathCopy[shortestPath.path.length] = edge.to;
+          var tempResult : SearchResult<Node> = new SearchResult(pathCopy,
             shortestPath.cost - heuristics(endNode) + heuristics(edge.to) + edge.cost);
           frontier.enqueue(tempResult);
         }
@@ -89,4 +89,11 @@ function aStarSearch<Node> (
   return null;
 }
 
+function copyPath<Node>(searchResult : SearchResult<Node>) {
+  var copy : Array<Node> = new Array<Node>(searchResult.path.length);
 
+  for (var i : number = 0; i < searchResult.path.length; i++)
+    copy[i] = searchResult.path[i];
+
+  return copy;
+}
