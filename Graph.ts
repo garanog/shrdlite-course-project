@@ -58,9 +58,8 @@ function aStarSearch<Node> (
     heuristics : (n:Node) => number,
     timeout : number
 ) : SearchResult<Node> {
-  var frontier : collections.PriorityQueue<SearchResult<Node>> =
-      new collections.PriorityQueue<SearchResult<Node>>(function compareResult(a : SearchResult<Node>,
-          b : SearchResult<Node>){return b.cost - a.cost});
+  var frontier = new collections.PriorityQueue<SearchResult<Node>>
+    (compareSearchResults);
 
   var visited : collections.Set<Node> = new collections.Set<Node>();
   frontier.enqueue(new SearchResult([start], heuristics(start)));
@@ -76,12 +75,14 @@ function aStarSearch<Node> (
       visited.add(endNode);
       for (var edge of graph.outgoingEdges(endNode)) {
         if (!visited.contains(edge.to)){
-          var pathCopy : Array<Node> = copyPath(shortestPath);
+          var extendedPath : Array<Node> = extendPath(shortestPath, edge);
+          var extendedCost = shortestPath.cost - heuristics(endNode)
+            + heuristics(edge.to) + edge.cost;
 
-          pathCopy[shortestPath.path.length] = edge.to;
-          var tempResult : SearchResult<Node> = new SearchResult(pathCopy,
-            shortestPath.cost - heuristics(endNode) + heuristics(edge.to) + edge.cost);
-          frontier.enqueue(tempResult);
+          var extendedSearchResult : SearchResult<Node> = new SearchResult(
+            extendedPath, extendedCost);
+
+          frontier.enqueue(extendedSearchResult);
         }
       }
     }
@@ -89,11 +90,18 @@ function aStarSearch<Node> (
   return null;
 }
 
-function copyPath<Node>(searchResult : SearchResult<Node>) {
-  var copy : Array<Node> = new Array<Node>(searchResult.path.length);
+function extendPath<Node>(path : SearchResult<Node>, edge: Edge<Node>) {
+  var resultPath : Array<Node> = new Array<Node>(path.path.length);
 
-  for (var i : number = 0; i < searchResult.path.length; i++)
-    copy[i] = searchResult.path[i];
+  for (var i : number = 0; i < path.path.length; i++)
+    resultPath[i] = path.path[i];
 
-  return copy;
+  resultPath[path.path.length] = edge.to;
+
+  return resultPath;
+}
+
+function compareSearchResults<Node>(a : SearchResult<Node>,
+                                    b : SearchResult<Node>) {
+    return b.cost - a.cost
 }
