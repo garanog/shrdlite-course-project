@@ -58,6 +58,9 @@ function aStarSearch<Node> (
     heuristics : (n:Node) => number,
     timeout : number
 ) : SearchResult<Node> {
+
+    var  initTime = new Date().getTime();
+
   var frontier = new collections.PriorityQueue<SearchResult<Node>>
     (compareSearchResults);
 
@@ -65,6 +68,11 @@ function aStarSearch<Node> (
   frontier.enqueue(new SearchResult([start], heuristics(start)));
 
   while (!frontier.isEmpty()) {
+  
+    var end = new Date().getTime();
+    if (end - initTime > timeout * 1000) {
+        throw new Error("Timeout");
+    }
     var shortestPath = frontier.dequeue();
     var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
 
