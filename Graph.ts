@@ -12,26 +12,26 @@
 
 /** An edge in a graph. */
 class Edge<Node> {
-    from : Node;
-    to   : Node;
-    cost : number;
+    from: Node;
+    to: Node;
+    cost: number;
 }
 
 /** A directed graph. */
 interface Graph<Node> {
     /** Computes the edges that leave from a node. */
-    outgoingEdges(node : Node) : Edge<Node>[];
+    outgoingEdges(node: Node): Edge<Node>[];
     /** A function that compares nodes. */
-    compareNodes : collections.ICompareFunction<Node>;
+    compareNodes: collections.ICompareFunction<Node>;
 }
 
 /** Type that reports the result of a search. */
 class SearchResult<Node> {
     constructor(
         /** The path (sequence of Nodes) found by the search algorithm. */
-        public path : Node[],
+        public path: Node[],
         /** The total cost of the path. */
-        public cost : number
+        public cost: number
     ) {}
 }
 
@@ -48,40 +48,40 @@ class SearchResult<Node> {
 * @returns A search result, which contains the path from `start` to a node satisfying `goal` and the cost of this path.
 */
 function aStarSearch<Node> (
-    graph : Graph<Node>,
-    start : Node,
-    goal : (n:Node) => boolean,
-    heuristics : (n:Node) => number,
-    timeout : number
-) : SearchResult<Node> {
+    graph: Graph<Node>,
+    start: Node,
+    goal: (n: Node) => boolean,
+    heuristics: (n: Node) => number,
+    timeout: number
+): SearchResult<Node> {
 
   // The time the search started, used to check for timeouts.
-  var initTime = new Date().getTime();
+  let initTime = new Date().getTime();
 
   // PriorityQueue contaning all seen paths.
   // The paths are orded by their costs, which is an combination of the cost off all it's edges
   // and the heuristic value of the path from it's endnode
-  var frontier = new collections.PriorityQueue<SearchResult<Node>>
+  let frontier = new collections.PriorityQueue<SearchResult<Node>>
     (compareSearchResults);
 
   // Set of all visited nodes, to be able to make sure we don't test the same paths multiple times
   // and don't get stuck in loops.
-  var visited : collections.Set<Node> = new collections.Set<Node>();
+  let visited: collections.Set<Node> = new collections.Set<Node>();
   frontier.enqueue(new SearchResult([start], heuristics(start)));
 
   // Check for each path in the frontier. If the frontier becomes empty, it means there are no more 
   // reachable nodes and if we have not yet found the goal node there is no solution.
   while (!frontier.isEmpty()) {
-  
+
     // Check if we have exeeded allowed time, or if a timeout must happen.
-    var end = new Date().getTime();
+    let end = new Date().getTime();
     if (end - initTime > timeout * 1000) {
         throw new Error("Timeout");
     }
 
     // Pick the current path with lowest cost and heuristic cost, and it's endnode.
-    var shortestPath = frontier.dequeue();
-    var endNode : Node = shortestPath.path[shortestPath.path.length - 1];
+    let shortestPath = frontier.dequeue();
+    let endNode: Node = shortestPath.path[shortestPath.path.length - 1];
 
     // Make sure we have not already visited that node.
     if (!visited.contains(endNode)) {
@@ -95,17 +95,17 @@ function aStarSearch<Node> (
 
       // And add all paths that start with the current path and then braches from the endnode to a unvisited
       // node to the frontier.
-      for (var edge of graph.outgoingEdges(endNode)) {
-        if (!visited.contains(edge.to)){
+      for (let edge of graph.outgoingEdges(endNode)) {
+        if (!visited.contains(edge.to)) {
 
           // Create a new searchResult (the representation of a path) by making a deep copy of the current 
           // path and the new edge, and calculate a new cost. When calculating the new cost, make sure to
           // update the heuristic from the previous endnode ot that of the new endnode.
-          var extendedPath : Array<Node> = extendPath(shortestPath, edge);
-          var extendedCost = shortestPath.cost - heuristics(endNode)
+          let extendedPath: Array<Node> = extendPath(shortestPath, edge);
+          let extendedCost = shortestPath.cost - heuristics(endNode)
             + heuristics(edge.to) + edge.cost;
 
-          var extendedSearchResult : SearchResult<Node> = new SearchResult(
+          let extendedSearchResult: SearchResult<Node> = new SearchResult(
             extendedPath, extendedCost);
 
           frontier.enqueue(extendedSearchResult);
@@ -123,10 +123,10 @@ function aStarSearch<Node> (
 * @param edge Edge to add to that path.
 * @returns The combined path from the path and the edge.
 */
-function extendPath<Node>(path : SearchResult<Node>, edge: Edge<Node>) {
-  var resultPath : Array<Node> = new Array<Node>(path.path.length);
+function extendPath<Node>(path: SearchResult<Node>, edge: Edge<Node>) {
+  let resultPath: Array<Node> = new Array<Node>(path.path.length);
 
-  for (var i : number = 0; i < path.path.length; i++)
+  for (let i: number = 0; i < path.path.length; i++)
     resultPath[i] = path.path[i];
 
   resultPath[path.path.length] = edge.to;
@@ -141,7 +141,7 @@ function extendPath<Node>(path : SearchResult<Node>, edge: Edge<Node>) {
 * @returns Value less then 0 if a is greater then b, a value grater then 0 if b is greater then a
 * and 0 if they're equal.
 */
-function compareSearchResults<Node>(a : SearchResult<Node>,
-                                    b : SearchResult<Node>) {
-    return b.cost - a.cost
+function compareSearchResults<Node>(a: SearchResult<Node>,
+                                    b: SearchResult<Node>) {
+    return b.cost - a.cost;
 }

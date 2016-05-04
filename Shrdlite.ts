@@ -5,12 +5,12 @@
 
 module Shrdlite {
 
-    export function interactive(world : World) : void {
-        function endlessLoop(utterance : string = "") : void {
-            var inputPrompt = "What can I do for you today? ";
-            var nextInput = () => world.readUserInput(inputPrompt, endlessLoop);
+    export function interactive(world: World): void {
+        function endlessLoop(utterance: string = ""): void {
+            let inputPrompt = "What can I do for you today? ";
+            let nextInput = () => world.readUserInput(inputPrompt, endlessLoop);
             if (utterance.trim()) {
-                var plan : string[] = splitStringIntoPlan(utterance);
+                let plan: string[] = splitStringIntoPlan(utterance);
                 if (!plan) {
                     plan = parseUtteranceIntoPlan(world, utterance);
                 }
@@ -49,11 +49,11 @@ module Shrdlite {
      * @param utterance The string that represents the command.
      * @returns A plan in the form of a stack of strings, where each element is either a robot action, like "p" (for pick up) or "r" (for going right), or a system utterance in English that describes what the robot is doing.
      */
-    export function parseUtteranceIntoPlan(world : World, utterance : string) : string[] {
+    export function parseUtteranceIntoPlan(world: World, utterance: string): string[] {
         // Parsing
         world.printDebugInfo('Parsing utterance: "' + utterance + '"');
         try {
-            var parses : Parser.ParseResult[] = Parser.parse(utterance);
+            let parses: Parser.ParseResult[] = Parser.parse(utterance);
             world.printDebugInfo("Found " + parses.length + " parses");
             parses.forEach((result, n) => {
                 world.printDebugInfo("  (" + n + ") " + Parser.stringify(result));
@@ -66,7 +66,7 @@ module Shrdlite {
 
         // Interpretation
         try {
-            var interpretations : Interpreter.InterpretationResult[] = Interpreter.interpret(parses, world.currentState);
+            let interpretations: Interpreter.InterpretationResult[] = Interpreter.interpret(parses, world.currentState);
             world.printDebugInfo("Found " + interpretations.length + " interpretations");
             interpretations.forEach((result, n) => {
                 world.printDebugInfo("  (" + n + ") " + Interpreter.stringify(result));
@@ -86,7 +86,7 @@ module Shrdlite {
 
         // Planning
         try {
-            var plans : Planner.PlannerResult[] = Planner.plan(interpretations, world.currentState);
+            let plans: Planner.PlannerResult[] = Planner.plan(interpretations, world.currentState);
             world.printDebugInfo("Found " + plans.length + " plans");
             plans.forEach((result, n) => {
                 world.printDebugInfo("  (" + n + ") " + Planner.stringify(result));
@@ -106,7 +106,7 @@ module Shrdlite {
             return;
         }
 
-        var finalPlan : string[] = plans[0].plan;
+        let finalPlan: string[] = plans[0].plan;
         world.printDebugInfo("Final plan: " + finalPlan.join(", "));
         return finalPlan;
     }
@@ -115,11 +115,11 @@ module Shrdlite {
     /** This is a convenience function that recognizes strings
      * of the form "p r r d l p r d"
      */
-    export function splitStringIntoPlan(planstring : string) : string[] {
-        var plan : string[] = planstring.trim().split(/\s+/);
-        var actions : {[act:string] : string}
+    export function splitStringIntoPlan(planstring: string): string[] {
+        let plan: string[] = planstring.trim().split(/\s+/);
+        let actions: {[act:string]: string}
             = {p:"Picking", d:"Dropping", l:"Going left", r:"Going right"};
-        for (var i = plan.length-1; i >= 0; i--) {
+        for (let i = plan.length-1; i >= 0; i--) {
             if (!actions[plan[i]]) {
                 return;
             }

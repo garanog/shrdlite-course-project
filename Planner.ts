@@ -22,12 +22,12 @@ module Planner {
      * @param currentState The current state of the world.
      * @returns Augments Interpreter.InterpretationResult with a plan represented by a list of strings.
      */
-    export function plan(interpretations : Interpreter.InterpretationResult[], currentState : WorldState) : PlannerResult[] {
-        var errors : Error[] = [];
-        var plans : PlannerResult[] = [];
+    export function plan(interpretations: Interpreter.InterpretationResult[], currentState: WorldState): PlannerResult[] {
+        let errors: Error[] = [];
+        let plans: PlannerResult[] = [];
         interpretations.forEach((interpretation) => {
             try {
-                var result : PlannerResult = <PlannerResult>interpretation;
+                let result: PlannerResult = <PlannerResult>interpretation;
                 result.plan = planInterpretation(result.interpretation, currentState);
                 if (result.plan.length == 0) {
                     result.plan.push("That is already true!");
@@ -46,10 +46,10 @@ module Planner {
     }
 
     export interface PlannerResult extends Interpreter.InterpretationResult {
-        plan : string[];
+        plan: string[];
     }
 
-    export function stringify(result : PlannerResult) : string {
+    export function stringify(result: PlannerResult): string {
         return result.plan.join(", ");
     }
 
@@ -74,41 +74,41 @@ module Planner {
      * "d". The code shows how to build a plan. Each step of the plan can
      * be added using the `push` method.
      */
-    function planInterpretation(interpretation : Interpreter.DNFFormula, state : WorldState) : string[] {
+    function planInterpretation(interpretation: Interpreter.DNFFormula, state: WorldState): string[] {
         // This function returns a dummy plan involving a random stack
         do {
-            var pickstack = Math.floor(Math.random() * state.stacks.length);
+            let pickstack = Math.floor(Math.random() * state.stacks.length);
         } while (state.stacks[pickstack].length == 0);
-        var plan : string[] = [];
+        let plan: string[] = [];
 
         // First move the arm to the leftmost nonempty stack
         if (pickstack < state.arm) {
             plan.push("Moving left");
-            for (var i = state.arm; i > pickstack; i--) {
+            for (let i = state.arm; i > pickstack; i--) {
                 plan.push("l");
             }
         } else if (pickstack > state.arm) {
             plan.push("Moving right");
-            for (var i = state.arm; i < pickstack; i++) {
+            for (let i = state.arm; i < pickstack; i++) {
                 plan.push("r");
             }
         }
 
         // Then pick up the object
-        var obj = state.stacks[pickstack][state.stacks[pickstack].length-1];
+        let obj = state.stacks[pickstack][state.stacks[pickstack].length-1];
         plan.push("Picking up the " + state.objects[obj].form,
                   "p");
 
         if (pickstack < state.stacks.length-1) {
             // Then move to the rightmost stack
             plan.push("Moving as far right as possible");
-            for (var i = pickstack; i < state.stacks.length-1; i++) {
+            for (let i = pickstack; i < state.stacks.length-1; i++) {
                 plan.push("r");
             }
 
             // Then move back
             plan.push("Moving back");
-            for (var i = state.stacks.length-1; i > pickstack; i--) {
+            for (let i = state.stacks.length-1; i > pickstack; i--) {
                 plan.push("l");
             }
         }

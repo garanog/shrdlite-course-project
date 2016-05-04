@@ -34,16 +34,16 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 * @param parses List of parses produced by the Parser.
 * @param currentState The current state of the world.
 * @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
-*/    
-    export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
-        var errors : Error[] = [];
-        var interpretations : InterpretationResult[] = [];
+*/
+    export function interpret(parses: Parser.ParseResult[], currentState: WorldState): InterpretationResult[] {
+        let errors: Error[] = [];
+        let interpretations: InterpretationResult[] = [];
         parses.forEach((parseresult) => {
             try {
-                var result : InterpretationResult = <InterpretationResult>parseresult;
+                let result: InterpretationResult = <InterpretationResult>parseresult;
                 result.interpretation = interpretCommand(result.parse, currentState);
                 interpretations.push(result);
-            } catch(err) {
+            } catch (err) {
                 errors.push(err);
             }
         });
@@ -56,7 +56,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     }
 
     export interface InterpretationResult extends Parser.ParseResult {
-        interpretation : DNFFormula;
+        interpretation: DNFFormula;
     }
 
     export type DNFFormula = Conjunction[];
@@ -73,22 +73,22 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 	 * literal {polarity: false, relation: "ontop", args:
 	 * ["a","b"]}.
 	 */
-        polarity : boolean;
+        polarity: boolean;
 	/** The name of the relation in question. */
-        relation : string;
+        relation: string;
 	/** The arguments to the relation. Usually these will be either objects 
      * or special strings such as "floor" or "floor-N" (where N is a column) */
-        args : string[];
+        args: string[];
     }
 
-    export function stringify(result : InterpretationResult) : string {
+    export function stringify(result: InterpretationResult): string {
         return result.interpretation.map((literals) => {
             return literals.map((lit) => stringifyLiteral(lit)).join(" & ");
             // return literals.map(stringifyLiteral).join(" & ");
         }).join(" | ");
     }
 
-    export function stringifyLiteral(lit : Literal) : string {
+    export function stringifyLiteral(lit: Literal): string {
         return (lit.polarity ? "" : "-") + lit.relation + "(" + lit.args.join(",") + ")";
     }
 
@@ -105,12 +105,12 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      * @param state The current state of the world. Useful to look up objects in the world.
      * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
      */
-    function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
+    function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
-        var objects : string[] = Array.prototype.concat.apply([], state.stacks);
-        var a : string = objects[Math.floor(Math.random() * objects.length)];
-        var b : string = objects[Math.floor(Math.random() * objects.length)];
-        var interpretation : DNFFormula = [[
+        let objects: string[] = Array.prototype.concat.apply([], state.stacks);
+        let a: string = objects[Math.floor(Math.random() * objects.length)];
+        let b: string = objects[Math.floor(Math.random() * objects.length)];
+        let interpretation: DNFFormula = [[
             {polarity: true, relation: "ontop", args: [a, "floor"]},
             {polarity: true, relation: "holding", args: [b]}
         ]];
