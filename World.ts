@@ -30,6 +30,16 @@ interface WorldState {
     objects: { [s:string]: ObjectDefinition; };
     /** List of predefined example sentences/utterances that the user can choose from in the UI. */
     examples: string[];
+
+    // TODO: implementation
+    onTopOf(x, y) : boolean;
+    inside(x, y) : boolean; // do we need both onTopOf and inside?
+    above(x, y) : boolean;
+    under(x, y) : boolean;
+    beside(x, y) : boolean;
+    leftOf(x, y) : boolean;
+    rightOf(x, y) : boolean;
+
 }
 
 type Stack = string[];
