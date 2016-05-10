@@ -145,4 +145,13 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function getCombinations(setOfObjects, relation) :: DNFFormula  {
       // return all possible combinations of the objects and the relation
     }
+
+    // TODO: implementation
+    function onTopOf(state, x, y) : boolean;
+    function inside(state, x, y) : boolean; // do we need both onTopOf and inside?
+    function above(state, x, y) : boolean;
+    function under(state, x, y) : boolean;
+    function beside(state, x, y) : boolean;
+    function leftOf(state, x, y) : boolean;
+    function rightOf(state, x, y) : boolean;
 }
