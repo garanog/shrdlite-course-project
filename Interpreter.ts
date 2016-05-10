@@ -3,12 +3,12 @@
 
 /**
 * Interpreter module
-* 
+*
 * The goal of the Interpreter module is to interpret a sentence
 * written by the user in the context of the current world state. In
 * particular, it must figure out which objects in the world,
 * i.e. which elements in the `objects` field of WorldState, correspond
-* to the ones referred to in the sentence. 
+* to the ones referred to in the sentence.
 *
 * Moreover, it has to derive what the intended goal state is and
 * return it as a logical formula described in terms of literals, where
@@ -76,7 +76,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         polarity: boolean;
 	/** The name of the relation in question. */
         relation: string;
-	/** The arguments to the relation. Usually these will be either objects 
+	/** The arguments to the relation. Usually these will be either objects
      * or special strings such as "floor" or "floor-N" (where N is a column) */
         args: string[];
     }
@@ -106,7 +106,19 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
      */
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
-        // This returns a dummy interpretation involving two random objects in the world
+        switch(cmd.command) {
+          case "move": // put, drop as well
+            setOfObjects = interpretEntity(cmd.entity, state);
+            relation = cmd.location.relation;
+            setOfLocationObjects = interpretEntity(cmd.location.entity, state);
+            return getCombinations(setOfObjects, relation, setOfLocationObjects);
+          case "take":
+            setOfObjects = interpretEntity(cmd.entity, state);
+            relation = "holding";
+            return getCombinations(setOfObjects, relation);
+        }
+
+        // This returns a dummy interpretation involving lving two random objects in the world
         let objects: string[] = Array.prototype.concat.apply([], state.stacks);
         let a: string = objects[Math.floor(Math.random() * objects.length)];
         let b: string = objects[Math.floor(Math.random() * objects.length)];
@@ -117,5 +129,15 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         return interpretation;
     }
 
-}
+    function interpretEntity() {
+      // must handle "it" as well
+    }
 
+    function getCombinations(setOfObjects, relation, setOfLocationObjects) :: DNFFormula  {
+      // return all possible combinations of the objects and the locations
+    }
+
+    function getCombinations(setOfObjects, relation) :: DNFFormula  {
+      // return all possible combinations of the objects and the relation
+    }
+}
