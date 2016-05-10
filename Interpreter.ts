@@ -116,6 +116,11 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             setOfObjects = interpretEntity(cmd.entity, state);
             relation = "holding";
             return getCombinations(setOfObjects, relation);
+          case "put":
+            setOfObjects = state.holding //set containing only this
+            relation = cmd.location.relation;
+            setOfLocationObjects = interpretEntity(cmd.location.entity, state);
+            return getCombinations(setOfObjects, relation, setOfLocationObjects);
         }
 
         // This returns a dummy interpretation involving lving two random objects in the world
