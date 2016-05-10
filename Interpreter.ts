@@ -134,7 +134,36 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         return interpretation;
     }
 
-    function interpretEntity() {
+    function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
+      objectMap = state.objects;
+      stacks = state.stacks;
+      matchingSet = [];
+
+      desiredSize  = entity.object.size;
+      desiredColor = entity.object.color;
+      desiredForm  = entity.object.form;
+
+      relatedSet = null;
+      relation = null;
+      if entity.object.location != null
+        relatedSet = interpretEntity(entity.object.location.entity);
+        relation = interpretEntity(entity.object.location.relation)
+
+      for each stack {
+        for each object objectToCpmpare {
+          if (objectToCompare.size  == null || objectToCompare.size == desiredSize && ...){
+            if correctly relating or no relations {
+               matchingSet.add();
+            }
+          }
+        }
+      }
+
+      if no location {
+        return setToReturn;
+      }
+
+
       // must handle "it" as well
     }
 
