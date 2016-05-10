@@ -147,7 +147,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       relation = null;
       if entity.object.location != null
         relatedSet = interpretEntity(entity.object.location.entity);
-        relation = interpretEntity(entity.object.location.relation)
+        relation = entity.object.location.relation;
 
       for each stack {
         for each object objectToCpmpare {
