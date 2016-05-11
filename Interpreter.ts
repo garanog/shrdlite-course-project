@@ -1,5 +1,6 @@
 ///<reference path="World.ts"/>
 ///<reference path="Parser.ts"/>
+///<reference path="lib/collections.ts"/>
 
 /**
 * Interpreter module
@@ -135,34 +136,66 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     }
 
     function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
-      objectMap = state.objects;
-      stacks = state.stacks;
-      matchingSet = [];
+      let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
+      let stacks : Stack[]= state.stacks;
+      let matchingSet : collections.LinkedList<string> = 
+          new collections.LinkedList<string>;
 
-      desiredSize  = entity.object.size;
-      desiredColor = entity.object.color;
-      desiredForm  = entity.object.form;
+      let desiredSize  : string = entity.object.size;
+      let desiredColor : string = entity.object.color;
+      let desiredForm  : string = entity.object.form;
 
-      relatedSet = null;
-      relation = null;
-      if entity.object.location != null
-        relatedSet = interpretEntity(entity.object.location.entity);
+      let relatedSet = null;
+      let relation : string = null;
+      if (entity.object.location != null){
+        relatedSet = interpretEntity(entity.object.location.entity, state);
         relation = entity.object.location.relation;
+      }
 
-      for each stack {
-        for each object objectToCpmpare {
-          if (objectToCompare.size  == null || objectToCompare.size == desiredSize && ...){
-            if correctly relating or no relations {
-               matchingSet.add();
+      for (let x : number = 0; x > stacks.length; x ++ ) {
+        for (let y : number = 0; y > stacks[x].length; y++ ) {
+          let objectToCompare : ObjectDefinition = objectMap[stacks[x][y]];
+          if ((objectToCompare.size  == null || objectToCompare.size  == desiredSize) &&
+              (objectToCompare.color == null || objectToCompare.color == desiredColor) &&
+              (objectToCompare.form  == null || objectToCompare.form  == desiredForm)){
+            let correctlyPlaced : boolean = false;
+            if (relation == null) {
+                matchingSet.add(stacks[x][y]);
+            } else {
+              switch (relation) {
+                case "ontop":
+                  correctlyPlaced = onTopOf(state,x,y);
+                  break;
+                case "inside":
+                  correctlyPlaced = inside(state,x,y);
+                  break;
+                case "above":
+                  correctlyPlaced = above(state,x,y);
+                  break;
+                case "under":
+                  correctlyPlaced = under(state,x,y);
+                  break;
+                case "beside":
+                  correctlyPlaced = beside(state,x,y);
+                  break;
+                case "leftof":
+                  correctlyPlaced = leftOf(state,x,y);
+                  break;
+                case "rightof":
+                  correctlyPlaced = rightOf(state,x,y);
+                  break;
+                default:
+                  // code...
+                  break;
+              }
+              if (correctlyPlaced) {
+                matchingSet.add(stacks[x][y]);
+              }
             }
           }
         }
       }
-
-      if no location {
-        return setToReturn;
-      }
-
+      return matchingSet;
 
       // must handle "it" as well
     }
