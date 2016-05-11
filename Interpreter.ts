@@ -214,7 +214,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     reimplement them maybe using maps.
     TODO: the following functions should likely be moved somewhere else.
     */
-    function onTopOf(state, x, y) : boolean {
+    export function onTopOf(state, x, y) : boolean {
       var xPos = getYPosition(x);
       var yPos = getYPosition(y);
       return xPos != -1 && yPos != -1 && xPos == yPos + 1;
