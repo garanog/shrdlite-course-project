@@ -6,12 +6,12 @@
 interface RelationTestCase {
     descr : string;
     expected : boolean;
-    fun : (World) => boolean;
+    fun : (state : WorldState) => boolean;
 }
 var relationTestCases = [
   {descr: "m on top of k",
    expected: true,
-   fun: (world) => Interpreter.onTopOf(world, "m", "k")}];
+   fun: (state) => Interpreter.onTopOf(state, "m", "k")}];
 
 /*
 function testRelations() : boolean {

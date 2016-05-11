@@ -107,7 +107,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
      */
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
-        switch(cmd.command) {
+        /*switch(cmd.command) {
           case "move": // put, drop as well
             setOfObjects = interpretEntity(cmd.entity, state);
             relation = cmd.location.relation;
@@ -132,10 +132,11 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             {polarity: true, relation: "ontop", args: [a, "floor"]},
             {polarity: true, relation: "holding", args: [b]}
         ]];
-        return interpretation;
+        return interpretation;*/
+        return null;
     }
 
-    function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
+    /*function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
@@ -198,58 +199,61 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       return matchingSet;
 
       // must handle "it" as well
+      return null;
     }
 
-    function getCombinations(setOfObjects, relation, setOfLocationObjects) :: DNFFormula  {
+    function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
       // return all possible combinations of the objects and the locations
+      return null;
     }
 
-    function getCombinations(setOfObjects, relation) :: DNFFormula  {
+    function getCombinations(setOfObjects, relation) : DNFFormula {
       // return all possible combinations of the objects and the relation
+      return null;
     }
-
+*/
     /**
     --------------------------------------------------------------------
     TODO: in case these naiive implementations are not efficient enough,
     reimplement them maybe using maps.
     TODO: the following functions should likely be moved somewhere else.
     */
-    export function onTopOf(state, x, y) : boolean {
-      var xPos = getYPosition(x);
-      var yPos = getYPosition(y);
+    export function onTopOf(state : WorldState, x : string, y : string) : boolean {
+      var xPos = getYPosition(state, x);
+      var yPos = getYPosition(state, y);
       return xPos != -1 && yPos != -1 && xPos == yPos + 1;
     }
 
-    function inside(state, x, y) : boolean {
+    function inside(state : WorldState, x : string, y : string) : boolean {
       // TODO: do we need both onTopOf and inside?
       return onTopOf(state, x, y);
     }
 
-    function above(state, x, y) : boolean {
-      var xPos = getYPosition(x);
-      var yPos = getYPosition(y);
+    function above(state : WorldState, x : string, y : string) : boolean {
+      var xPos = getYPosition(state, x);
+      var yPos = getYPosition(state, y);
       return xPos != -1 && yPos != -1 && xPos > yPos;
     }
 
-    function under(state, x, y) : boolean {
+    function under(state : WorldState, x : string, y : string) : boolean {
         return above(state, y, x);
     }
 
-    function beside(state, x, y) : boolean {
-      var xCol = getColumn(x);
-      var yCol = getColumn(y);
+    function beside(state : WorldState, x : string, y : string) : boolean {
+      var xCol = getColumn(state, x);
+      var yCol = getColumn(state, y);
       return xCol != -1 && yCol != -1 && Math.abs(xCol - yCol) == 1;
     }
 
-    function leftOf(state, x, y) : boolean {
-      var xCol = getColumn(x);
-      var yCol = getColumn(y);
+    function leftOf(state : WorldState, x : string, y : string) : boolean {
+      var xCol = getColumn(state, x);
+      var yCol = getColumn(state, y);
       return xCol != -1 && yCol != -1 && xCol < yCol;
     }
 
-    function rightOf(state, x, y) : boolean {
-      var xCol = getColumn(x);
-      var yCol = getColumn(y);
+    function rightOf(state : WorldState, x : string, y : string) : boolean {
+      var xCol = getColumn(state, x);
+      var yCol = getColumn(state, y);
       return xCol != -1 && yCol != -1 && xCol > yCol;
     }
 
@@ -257,7 +261,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     @ returns The zero-based column the the object is in, or -1 if it's not
     part of the world.
     */
-    function getColumn(state, x) : boolean {
+    function getColumn(state : WorldState, x : string) : number {
       if (state.objects[x] != null) {
         for (let s : number = 0; s < state.stacks.length; s++ ) {
             if (state.stacks[s].indexOf(x) > -1)
@@ -271,10 +275,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     @ returns The zero-based position (counted from the floor) in the stack
       the given object is located in, or -1 if it's not part of the world.
     */
-    function getYPosition(state, y) : boolean {
+    function getYPosition(state : WorldState, y : string) : number {
       var stack = getColumn(state, y);
       if (stack != -1)
-        return state.stacks[s].indexOf(y);
+        return state.stacks[stack].indexOf(y);
       else
         return -1;
     }
