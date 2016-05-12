@@ -107,18 +107,21 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
      */
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
+        let setOfObjects: collections.LinkedList<string> ;
+        let relation: string;
+        let setOfLocationObjects: collections.LinkedList<string> ; 
         switch(cmd.command) {
-          case "move": // put, drop as well
-            setOfObjects = interpretEntity(cmd.entity, state);
-            relation = cmd.location.relation;
+        case "move": // put, drop as well
+           setOfObjects= interpretEntity(cmd.entity, state);
+            relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
             return getCombinations(setOfObjects, relation, setOfLocationObjects);
-          case "take":
-            setOfObjects = interpretEntity(cmd.entity, state);
-            relation = "holding";
+        case "take":
+            setOfObjects= interpretEntity(cmd.entity, state);
+            relation  = "holding";
             return getCombinations(setOfObjects, relation);
-          case "put":
-            setOfObjects = state.holding //set containing only this
+        case "put":
+            setOfObjects.add(state.holding) ; //set containing only this
             relation = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
             return getCombinations(setOfObjects, relation, setOfLocationObjects);
@@ -139,7 +142,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> = 
-          new collections.LinkedList<string>;
+          new collections.LinkedList<string>();
 
       let desiredSize  : string = entity.object.size;
       let desiredColor : string = entity.object.color;
@@ -201,12 +204,12 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     }
 
     function getCombinations(setOfObjects, relation, setOfLocationObjects) :: DNFFormula  {
-      // return all possible combinations of the objects and the locations
-    }
+       return all possible combinations of the objects and the locations
+      }
 
     function getCombinations(setOfObjects, relation) :: DNFFormula  {
-      // return all possible combinations of the objects and the relation
-    }
+       return all possible combinations of the objects and the relation
+      }
 
     // TODO: implementation
     function onTopOf(state, x, y) : boolean;
