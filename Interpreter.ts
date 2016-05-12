@@ -107,7 +107,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
      */
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
-        /*switch(cmd.command) {
+        switch(cmd.command) {
           case "move": // put, drop as well
             setOfObjects = interpretEntity(cmd.entity, state);
             relation = cmd.location.relation;
@@ -132,11 +132,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             {polarity: true, relation: "ontop", args: [a, "floor"]},
             {polarity: true, relation: "holding", args: [b]}
         ]];
-        return interpretation;*/
-        return null;
+        return interpretation;
     }
 
-    /*function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
+    function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
@@ -204,14 +203,12 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
     function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
       // return all possible combinations of the objects and the locations
-      return null;
     }
 
     function getCombinations(setOfObjects, relation) : DNFFormula {
       // return all possible combinations of the objects and the relation
-      return null;
     }
-*/
+
     /**
     --------------------------------------------------------------------
     TODO: in case these naiive implementations are not efficient enough,
