@@ -13,7 +13,7 @@ class SVGWorld implements World {
         this.canvasWidth = this.containers.world.width() - 2 * this.wallSeparation;
         this.canvasHeight = this.containers.world.height() - this.floorThickness;
 
-        let dropdown: JQuery = this.containers.inputexamples;
+        var dropdown : JQuery = this.containers.inputexamples;
         dropdown.empty();
         dropdown.append($('<option value="">').text("(Select an example utterance)"));
         $.each(this.currentState.examples, function(i, value) {
@@ -21,7 +21,7 @@ class SVGWorld implements World {
         });
 
         dropdown.change(() => {
-            let userinput = dropdown.val().trim();
+            var userinput = dropdown.val().trim();
             if (userinput) {
                 this.containers.userinput.val(userinput).focus();
             }
@@ -44,7 +44,7 @@ class SVGWorld implements World {
 
     // There is no way of setting male/female voice,
     // so this is one way of having different voices for user/system:
-    public voices: {[participant:string]: {[attr:string]: any}} = {
+    public voices : {[participant:string] : {[attr:string] : any}} = {
         system: {lang: "en-GB", rate: 1.1}, // British English, slightly faster
         user: {lang: "en-US"},  // American English
     };
@@ -61,17 +61,17 @@ class SVGWorld implements World {
     //////////////////////////////////////////////////////////////////////
     // Public methods
 
-    public readUserInput(prompt: string, callback: (input:string) => void) {
+    public readUserInput(prompt : string, callback : (input:string) => void) {
         this.printSystemOutput(prompt);
         this.enableInput();
         this.inputCallback = callback;
     }
 
-    public printSystemOutput(output: string, participant="system", utterance?: string) {
+    public printSystemOutput(output : string, participant="system", utterance? : string) {
         if (utterance == undefined) {
             utterance = output;
         }
-        let dialogue = this.containers.dialogue;
+        var dialogue = this.containers.dialogue;
         if (dialogue.children().length > this.dialogueHistory) {
             dialogue.children().first().remove();
         }
@@ -83,8 +83,8 @@ class SVGWorld implements World {
         if (this.useSpeech && utterance && /^\w/.test(utterance)) {
             try {
                 // W3C Speech API (works in Chrome and Safari)
-                let speech: {[attr:string]: any} = new SpeechSynthesisUtterance(utterance);
-                for (let attr in this.voices[participant]) {
+                var speech : {[attr:string] : any} = new SpeechSynthesisUtterance(utterance);
+                for (var attr in this.voices[participant]) {
                     speech[attr] = this.voices[participant][attr];
                 }
                 console.log("SPEAKING: " + utterance);
@@ -94,11 +94,11 @@ class SVGWorld implements World {
         }
     }
 
-    public printDebugInfo(info: string): void {
+    public printDebugInfo(info : string) : void {
         console.log(info);
     }
 
-    public printError(error: string, message?: string): void {
+    public printError(error : string, message? : string) : void {
         console.error(error, message);
         if (message) {
             error += ": " + message;
@@ -106,13 +106,13 @@ class SVGWorld implements World {
         this.printSystemOutput(error, "error");
     }
 
-    public printWorld(callback?: () => void): void {
+    public printWorld(callback? : () => void) : void {
         this.containers.world.empty();
         this.printSystemOutput("Please wait while I populate the world.")
 
-        let viewBox: number[] = [0, 0, this.canvasWidth + 2 * this.wallSeparation, 
+        var viewBox : number[] = [0, 0, this.canvasWidth + 2 * this.wallSeparation, 
                                   this.canvasHeight + this.floorThickness];
-        let svg = $(this.SVG('svg')).attr({
+        var svg = $(this.SVG('svg')).attr({
             viewBox: viewBox.join(' '), 
             width: viewBox[2], 
             height: viewBox[3],
@@ -138,10 +138,10 @@ class SVGWorld implements World {
             'stroke-width': this.armSize * this.stackWidth(),
         }).appendTo(svg);
 
-        let timeout = 0;
-        for (let stacknr=0; stacknr < this.currentState.stacks.length; stacknr++) {
-            for (let objectnr=0; objectnr < this.currentState.stacks[stacknr].length; objectnr++) {
-                let objectid = this.currentState.stacks[stacknr][objectnr];
+        var timeout = 0;
+        for (var stacknr=0; stacknr < this.currentState.stacks.length; stacknr++) {
+            for (var objectnr=0; objectnr < this.currentState.stacks[stacknr].length; objectnr++) {
+                var objectid = this.currentState.stacks[stacknr][objectnr];
                 this.makeObject(svg, objectid, stacknr, timeout);
                 timeout += this.animationPause;
             }
@@ -151,17 +151,17 @@ class SVGWorld implements World {
         }
     }
 
-    public performPlan(plan: string[], callback?: () => void): void {
+    public performPlan(plan : string[], callback? : () => void) : void {
         if (this.isSpeaking()) {
             setTimeout(() => this.performPlan(plan, callback), this.animationPause * 1000);
             return;
         }
-        let planctr = 0;
-        let performNextAction = () => {
+        var planctr = 0;
+        var performNextAction = () => {
             planctr++;
             if (plan && plan.length) {
-                let item = plan.shift().trim();
-                let action = this.getAction(item);
+                var item = plan.shift().trim();
+                var action = this.getAction(item);
                 if (action) {
                     try {
                         action.call(this, performNextAction);
@@ -190,16 +190,16 @@ class SVGWorld implements World {
     }
 
     //////////////////////////////////////////////////////////////////////
-    // Private letiables & constants
+    // Private variables & constants
 
-    private canvasWidth: number;
-    private canvasHeight: number;
+    private canvasWidth : number;
+    private canvasHeight : number;
     private svgNS = 'http://www.w3.org/2000/svg';
 
     //////////////////////////////////////////////////////////////////////
     // Object types
 
-    private objectData: {[form:string] :
+    private objectData : {[form:string] :
                           {[size:string] :
                            {width:number, height:number, thickness?:number}}}
         = {brick: {small: {width:0.30, height:0.30},
@@ -216,20 +216,20 @@ class SVGWorld implements World {
                    large: {width:1.00, height:0.40, thickness: 0.10}},
           };
 
-    private stackWidth(): number {
+    private stackWidth() : number {
         return this.canvasWidth / this.currentState.stacks.length;
     }
 
-    private boxSpacing(): number {
+    private boxSpacing() : number {
         return Math.min(5, this.stackWidth() / 20);
     }
 
-    private SVG(tag: string): Element {
+    private SVG(tag : string) : Element {
         return document.createElementNS(this.svgNS, tag);
     }
 
-    private animateMotion(object: JQuery, path: (string|number)[], timeout: number, duration: number) {
-        let animation: Element = this.SVG('animateMotion');
+    private animateMotion(object : JQuery, path : (string|number)[], timeout : number, duration : number) {
+        var animation : Element = this.SVG('animateMotion');
         $(animation).attr({
             begin: 'indefinite',
             fill: 'freeze',
@@ -243,27 +243,27 @@ class SVGWorld implements World {
     //////////////////////////////////////////////////////////////////////
     // The basic actions: left, right, pick, drop
 
-    private getAction(act: string): (callback:()=>void) => void {
-        let actions: {[act:string]: (callback:()=>void) => void}
+    private getAction(act : string) : (callback:()=>void) => void {
+        var actions : {[act:string] : (callback:()=>void) => void}
             = {p:this.pick, d:this.drop, l:this.left, r:this.right};
         return actions[act.toLowerCase()];
     }
 
-    private left(callback: () => void): void {
+    private left(callback : () => void) : void {
         if (this.currentState.arm <= 0) {
             throw "Already at left edge!";
         }
         this.horizontalMove(this.currentState.arm - 1, callback);
     }
 
-    private right(callback: () => void): void {
+    private right(callback : () => void) : void {
         if (this.currentState.arm >= this.currentState.stacks.length - 1) {
             throw "Already at right edge!";
         }
         this.horizontalMove(this.currentState.arm + 1, callback);
     }
 
-    private drop(callback: () => void): void {
+    private drop(callback: () => void) : void {
         if (!this.currentState.holding) {
             throw "Not holding anything!";
         }
@@ -272,7 +272,7 @@ class SVGWorld implements World {
         this.currentState.holding = null;
     }
 
-    private pick(callback: () => void): void {
+    private pick(callback: () => void) : void {
         if (this.currentState.holding) {
             throw "Already holding something!";
         }
@@ -283,44 +283,44 @@ class SVGWorld implements World {
     //////////////////////////////////////////////////////////////////////
     // Moving around
 
-    private horizontalMove(newArm: number, callback?: () => void): void {
-        let xArm = this.currentState.arm * this.stackWidth() + this.wallSeparation;
-        let xNewArm = newArm * this.stackWidth() + this.wallSeparation;
-        let path1 = ["M", xArm, 0, "H", xNewArm];
-        let duration = Math.abs(xNewArm - xArm) / this.armSpeed;
-        let arm = $('#arm');
+    private horizontalMove(newArm : number, callback? : () => void) : void {
+        var xArm = this.currentState.arm * this.stackWidth() + this.wallSeparation;
+        var xNewArm = newArm * this.stackWidth() + this.wallSeparation;
+        var path1 = ["M", xArm, 0, "H", xNewArm];
+        var duration = Math.abs(xNewArm - xArm) / this.armSpeed;
+        var arm = $('#arm');
         this.animateMotion(arm, path1, 0, duration);
         if (this.currentState.holding) {
-            let objectHeight = this.getObjectDimensions(this.currentState.holding).heightadd;
-            let yArm = -(this.canvasHeight - this.armSize * this.stackWidth() - objectHeight);
-            let path2 = ["M", xArm, yArm, "H", xNewArm];
-            let object = $("#" + this.currentState.holding)
+            var objectHeight = this.getObjectDimensions(this.currentState.holding).heightadd;
+            var yArm = -(this.canvasHeight - this.armSize * this.stackWidth() - objectHeight);
+            var path2 = ["M", xArm, yArm, "H", xNewArm];
+            var object = $("#" + this.currentState.holding)
             this.animateMotion(object, path2, 0, duration);
         }
         this.currentState.arm = newArm;
         if (callback) setTimeout(callback, (duration + this.animationPause) * 1000);
     }
 
-    private verticalMove(action: string, callback?: () => void): void {
-        let altitude = this.getAltitude(this.currentState.arm);
-        let objectHeight = this.getObjectDimensions(this.currentState.holding).heightadd;
-        let yArm = this.canvasHeight - altitude - this.armSize * this.stackWidth() - objectHeight;
-        let yStack = -altitude;
-        let xArm = this.currentState.arm * this.stackWidth() + this.wallSeparation;
+    private verticalMove(action : string, callback? : () => void) : void {
+        var altitude = this.getAltitude(this.currentState.arm);
+        var objectHeight = this.getObjectDimensions(this.currentState.holding).heightadd;
+        var yArm = this.canvasHeight - altitude - this.armSize * this.stackWidth() - objectHeight;
+        var yStack = -altitude;
+        var xArm = this.currentState.arm * this.stackWidth() + this.wallSeparation;
 
-        let path1 = ["M", xArm, 0, "V", yArm];
-        let path2 = ["M", xArm, yArm, "V", 0];
-        let duration = (Math.abs(yArm)) / this.armSpeed;
-        let arm = $('#arm');
-        let object = $("#" + this.currentState.holding)
+        var path1 = ["M", xArm, 0, "V", yArm];
+        var path2 = ["M", xArm, yArm, "V", 0];
+        var duration = (Math.abs(yArm)) / this.armSpeed;
+        var arm = $('#arm');
+        var object = $("#" + this.currentState.holding)
 
         this.animateMotion(arm, path1, 0, duration);
         this.animateMotion(arm, path2, duration + this.animationPause, duration);
         if (action == 'pick') {
-            let path3 = ["M", xArm, yStack, "V", yStack-yArm];
+            var path3 = ["M", xArm, yStack, "V", yStack-yArm];
             this.animateMotion(object, path3, duration + this.animationPause, duration)
         } else {
-            let path3 = ["M", xArm, yStack-yArm, "V", yStack];
+            var path3 = ["M", xArm, yStack-yArm, "V", yStack];
             this.animateMotion(object, path3, 0, duration)
         }
         if (callback) setTimeout(callback, 2*(duration + this.animationPause) * 1000);
@@ -329,13 +329,13 @@ class SVGWorld implements World {
     //////////////////////////////////////////////////////////////////////
     // Methods for getting information about objects 
 
-    private getObjectDimensions(objectid: string) {
-        let attrs = this.currentState.objects[objectid];
-        let size = this.objectData[attrs.form][attrs.size];
-        let width = size.width * (this.stackWidth() - this.boxSpacing());
-        let height = size.height * (this.stackWidth() - this.boxSpacing());
-        let thickness = size.thickness * (this.stackWidth() - this.boxSpacing());
-        let heightadd = attrs.form == 'box' ? thickness: height;
+    private getObjectDimensions(objectid : string) {
+        var attrs = this.currentState.objects[objectid];
+        var size = this.objectData[attrs.form][attrs.size];
+        var width = size.width * (this.stackWidth() - this.boxSpacing());
+        var height = size.height * (this.stackWidth() - this.boxSpacing());
+        var thickness = size.thickness * (this.stackWidth() - this.boxSpacing());
+        var heightadd = attrs.form == 'box' ? thickness : height;
         return {
             width: width,
             height: height,
@@ -344,10 +344,10 @@ class SVGWorld implements World {
         };
     }
 
-    private getAltitude(stacknr: number, objectid?: string) {
-        let stack = this.currentState.stacks[stacknr];
-        let altitude = 0;
-        for (let i=0; i<stack.length; i++) {
+    private getAltitude(stacknr : number, objectid? : string) {
+        var stack = this.currentState.stacks[stacknr];
+        var altitude = 0;
+        for (var i=0; i<stack.length; i++) {
             if (objectid == stack[i])
                 break;
             altitude += this.getObjectDimensions(stack[i]).heightadd + this.boxSpacing();
@@ -358,23 +358,23 @@ class SVGWorld implements World {
     //////////////////////////////////////////////////////////////////////
     // Creating objects
 
-    private makeObject(svg: JQuery, objectid: string, stacknr: number, timeout: number) {
-        let attrs = this.currentState.objects[objectid];
-        let altitude = this.getAltitude(stacknr, objectid);
-        let dim = this.getObjectDimensions(objectid);
+    private makeObject(svg : JQuery, objectid : string, stacknr : number, timeout : number) {
+        var attrs = this.currentState.objects[objectid];
+        var altitude = this.getAltitude(stacknr, objectid);
+        var dim = this.getObjectDimensions(objectid);
 
-        let ybottom = this.canvasHeight - this.boxSpacing();
-        let ytop = ybottom - dim.height;
-        let ycenter = (ybottom + ytop) / 2;
-        let yradius = (ybottom - ytop) / 2;
-        let xleft = (this.stackWidth() - dim.width) / 2
-        let xright = xleft + dim.width;
-        let xcenter = (xright + xleft) / 2;
-        let xradius = (xright - xleft) / 2;
-        let xmidleft = (xcenter + xleft) / 2;
-        let xmidright = (xcenter + xright) / 2;
+        var ybottom = this.canvasHeight - this.boxSpacing();
+        var ytop = ybottom - dim.height;
+        var ycenter = (ybottom + ytop) / 2;
+        var yradius = (ybottom - ytop) / 2;
+        var xleft = (this.stackWidth() - dim.width) / 2
+        var xright = xleft + dim.width;
+        var xcenter = (xright + xleft) / 2;
+        var xradius = (xright - xleft) / 2;
+        var xmidleft = (xcenter + xleft) / 2;
+        var xmidright = (xcenter + xright) / 2;
 
-        let object: JQuery;
+        var object : JQuery;
         switch (attrs.form) {
         case 'brick':
         case 'plank':
@@ -394,13 +394,13 @@ class SVGWorld implements World {
             });
             break;
         case 'pyramid':
-            let points = [xleft, ybottom, xmidleft, ytop, xmidright, ytop, xright, ybottom];
+            var points = [xleft, ybottom, xmidleft, ytop, xmidright, ytop, xright, ybottom];
             object = $(this.SVG('polygon')).attr({
                 points: points.join(" ")
             });
             break;
         case 'box':
-            let points = [xleft, ytop, xleft, ybottom, xright, ybottom, xright, ytop, 
+            var points = [xleft, ytop, xleft, ybottom, xright, ybottom, xright, ytop, 
                           xright-dim.thickness, ytop, xright-dim.thickness, ybottom-dim.thickness,
                           xleft+dim.thickness, ybottom-dim.thickness, xleft+dim.thickness, ytop];
             object = $(this.SVG('polygon')).attr({
@@ -408,7 +408,7 @@ class SVGWorld implements World {
             });
             break;
         case 'table':
-            let points = [xleft, ytop, xright, ytop, xright, ytop+dim.thickness, 
+            var points = [xleft, ytop, xright, ytop, xright, ytop+dim.thickness, 
                           xmidright, ytop+dim.thickness, xmidright, ybottom, 
                           xmidright-dim.thickness, ybottom, xmidright-dim.thickness, ytop+dim.thickness,
                           xmidleft+dim.thickness, ytop+dim.thickness, xmidleft+dim.thickness, ybottom,
@@ -426,7 +426,7 @@ class SVGWorld implements World {
         });
         object.appendTo(svg);
 
-        let path = ["M", stacknr * this.stackWidth() + this.wallSeparation, 
+        var path = ["M", stacknr * this.stackWidth() + this.wallSeparation, 
                     -(this.canvasHeight + this.floorThickness)];
         this.animateMotion(object, path, 0, 0);
         path.push("V", -altitude);
@@ -450,9 +450,9 @@ class SVGWorld implements World {
         this.containers.userinput.prop('disabled', true); 
     }
 
-    private inputCallback: (input:string) => void;
+    private inputCallback : (input:string) => void;
     private handleUserInput() {
-        let userinput = this.containers.userinput.val().trim();
+        var userinput = this.containers.userinput.val().trim();
         this.disableInput();
         this.printSystemOutput(userinput, "user");
         this.inputCallback(userinput);
@@ -472,14 +472,14 @@ class SVGWorld implements World {
 // Support for SVG animations
 
 interface Element {
-    beginElementAt(timeout: number): void;
+    beginElementAt(timeout: number) : void;
 }
 
 // Support for HTML5 speech synthesis
 
 interface Window { 
-    speechSynthesis: {speaking: boolean;
-                      speak(sputt: SpeechSynthesisUtterance): void}; 
+    speechSynthesis: {speaking : boolean;
+                      speak(sputt: SpeechSynthesisUtterance) : void}; 
 }
 
 declare class SpeechSynthesisUtterance {
