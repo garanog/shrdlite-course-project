@@ -3,32 +3,6 @@
 ///<reference path="ExampleWorlds.ts"/>
 ///<reference path="InterpreterTestCases.ts"/>
 
-interface RelationTestCase {
-    descr : string;
-    expected : boolean;
-    fun : (state : WorldState) => boolean;
-}
-var relationTestCases = [
-  {descr: "m on top of k",
-   expected: true,
-   fun: (state) => Interpreter.onTopOf(state, "m", "k")}];
-
-/*
-function testRelations() : boolean {
-
-  testBoolean();
-  testBoolean("k not on top of m", false, Interpreter.onTopOf(world, "k", "m"));
-  testBoolean("l beside e", true, Interpreter.onTopOf(world, "l", "e"));
-  testBoolean("l not beside k", false, Interpreter.onTopOf(world, "l", "k"));
-}*/
-
-function testRelation(testcase : RelationTestCase) {
-  var relationTestWorld : World = new TextWorld(ExampleWorlds["small"]);
-
-  var pass = testcase.fun(relationTestWorld);
-  console.log((pass ? "OK " : "NOT OK ") + testcase.descr);
-  return pass;
-}
 
 function testInterpreter(testcase : TestCase) : boolean {
     var world : World = new TextWorld(ExampleWorlds[testcase.world]);
@@ -111,15 +85,6 @@ function runTests(argv : string[]) {
         if (!ok) failed++;
         console.log();
     }
-
-    // relation test cases
-    for (var i = 0; i < relationTestCases.length; i++) {
-      console.log("--------------------------------------------------------------------------------");
-      var ok = testRelation(relationTestCases[i]);
-      if (!ok) failed++;
-      console.log();
-    }
-
     console.log("--------------------------------------------------------------------------------");
     console.log("Summary statistics");
     console.log("Passed tests: " + (testcases.length - failed));
@@ -135,4 +100,4 @@ try {
     console.log("Please give at least one argument:");
     console.log("- either a number (1.." + allTestCases.length + ") for each test you want to run,");
     console.log("- or 'all' for running all tests.");
-}
+} 
