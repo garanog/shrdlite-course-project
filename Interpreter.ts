@@ -224,34 +224,34 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       return xPos != -1 && yPos != -1 && xPos == yPos + 1;
     }
 
-    function inside(state : WorldState, x : string, y : string) : boolean {
+    export function inside(state : WorldState, x : string, y : string) : boolean {
       // TODO: do we need both onTopOf and inside?
       return onTopOf(state, x, y);
     }
 
-    function above(state : WorldState, x : string, y : string) : boolean {
+    export function above(state : WorldState, x : string, y : string) : boolean {
       var xPos = getYPosition(state, x);
       var yPos = getYPosition(state, y);
       return xPos != -1 && yPos != -1 && xPos > yPos;
     }
 
-    function under(state : WorldState, x : string, y : string) : boolean {
+    export function under(state : WorldState, x : string, y : string) : boolean {
         return above(state, y, x);
     }
 
-    function beside(state : WorldState, x : string, y : string) : boolean {
+    export function beside(state : WorldState, x : string, y : string) : boolean {
       var xCol = getColumn(state, x);
       var yCol = getColumn(state, y);
       return xCol != -1 && yCol != -1 && Math.abs(xCol - yCol) == 1;
     }
 
-    function leftOf(state : WorldState, x : string, y : string) : boolean {
+    export function leftOf(state : WorldState, x : string, y : string) : boolean {
       var xCol = getColumn(state, x);
       var yCol = getColumn(state, y);
       return xCol != -1 && yCol != -1 && xCol < yCol;
     }
 
-    function rightOf(state : WorldState, x : string, y : string) : boolean {
+    export function rightOf(state : WorldState, x : string, y : string) : boolean {
       var xCol = getColumn(state, x);
       var yCol = getColumn(state, y);
       return xCol != -1 && yCol != -1 && xCol > yCol;
