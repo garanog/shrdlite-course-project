@@ -143,6 +143,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> = 
           new collections.LinkedList<string>();
+      let matchingSet : collections.LinkedList<string> =
+          new collections.LinkedList<string>;
 
       let desiredSize  : string = entity.object.size;
       let desiredColor : string = entity.object.color;
@@ -201,6 +203,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       return matchingSet;
 
       // must handle "it" as well
+      return null;
     }
 
     function getCombinations(setOfObjects, relation, setOfLocationObjects) :: DNFFormula  {
@@ -210,13 +213,82 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function getCombinations(setOfObjects, relation) :: DNFFormula  {
        return all possible combinations of the objects and the relation
       }
+    function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
+      // return all possible combinations of the objects and the locations
+    }
 
-    // TODO: implementation
-    function onTopOf(state, x, y) : boolean;
-    function inside(state, x, y) : boolean; // do we need both onTopOf and inside?
-    function above(state, x, y) : boolean;
-    function under(state, x, y) : boolean;
-    function beside(state, x, y) : boolean;
-    function leftOf(state, x, y) : boolean;
-    function rightOf(state, x, y) : boolean;
+    function getCombinations(setOfObjects, relation) : DNFFormula {
+      // return all possible combinations of the objects and the relation
+    }
+
+    /**
+    --------------------------------------------------------------------
+    TODO: in case these naiive implementations are not efficient enough,
+    reimplement them maybe using maps.
+    TODO: the following functions should likely be moved somewhere else.
+    */
+    export function onTopOf(state : WorldState, x : string, y : string) : boolean {
+      var xPos = getYPosition(state, x);
+      var yPos = getYPosition(state, y);
+      return xPos != -1 && yPos != -1 && xPos == yPos + 1;
+    }
+
+    export function inside(state : WorldState, x : string, y : string) : boolean {
+      // TODO: do we need both onTopOf and inside?
+      return onTopOf(state, x, y);
+    }
+
+    export function above(state : WorldState, x : string, y : string) : boolean {
+      var xPos = getYPosition(state, x);
+      var yPos = getYPosition(state, y);
+      return xPos != -1 && yPos != -1 && xPos > yPos;
+    }
+
+    export function under(state : WorldState, x : string, y : string) : boolean {
+        return above(state, y, x);
+    }
+
+    export function beside(state : WorldState, x : string, y : string) : boolean {
+      var xCol = getColumn(state, x);
+      var yCol = getColumn(state, y);
+      return xCol != -1 && yCol != -1 && Math.abs(xCol - yCol) == 1;
+    }
+
+    export function leftOf(state : WorldState, x : string, y : string) : boolean {
+      var xCol = getColumn(state, x);
+      var yCol = getColumn(state, y);
+      return xCol != -1 && yCol != -1 && xCol < yCol;
+    }
+
+    export function rightOf(state : WorldState, x : string, y : string) : boolean {
+      var xCol = getColumn(state, x);
+      var yCol = getColumn(state, y);
+      return xCol != -1 && yCol != -1 && xCol > yCol;
+    }
+
+    /**
+    @ returns The zero-based column the the object is in, or -1 if it's not
+    part of the world.
+    */
+    function getColumn(state : WorldState, x : string) : number {
+      if (state.objects[x] != null) {
+        for (let s : number = 0; s < state.stacks.length; s++ ) {
+            if (state.stacks[s].indexOf(x) > -1)
+              return s;
+        }
+      }
+      return -1;
+    }
+
+    /**
+    @ returns The zero-based position (counted from the floor) in the stack
+      the given object is located in, or -1 if it's not part of the world.
+    */
+    function getYPosition(state : WorldState, y : string) : number {
+      var stack = getColumn(state, y);
+      if (stack != -1)
+        return state.stacks[stack].indexOf(y);
+      else
+        return -1;
+    }
 }
