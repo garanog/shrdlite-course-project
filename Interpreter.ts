@@ -267,8 +267,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             if (state.stacks[s].indexOf(x) > -1)
               return s;
         }
-      } else
-        return -1;
+      }
+      return -1;
     }
 
     /**
