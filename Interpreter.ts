@@ -225,7 +225,6 @@ module Interpreter {
       }
       return result;
     }
-    }
 
     function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string) : DNFFormula {
       // return all possible combinations of the objects and the relation
