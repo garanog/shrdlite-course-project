@@ -225,56 +225,56 @@ module Interpreter {
     /**
     --------------------------------------------------------------------
     TODO: in case these naiive implementations are not efficient enough,
-    reimplement them maybe using maps.
+    reimplement them mabbe using maps.
     TODO: the following functions should likely be moved somewhere else.
     */
-    export function onTopOf(state : WorldState, x : string, y : string) : boolean {
-      var xPos = getYPosition(state, x);
-      var yPos = getYPosition(state, y);
-      return xPos != -1 && yPos != -1 && xPos == yPos + 1;
+    export function onTopOf(state : WorldState, a : string, b : string) : boolean {
+      var aPos = getYPosition(state, a);
+      var bPos = getYPosition(state, b);
+      return aPos != -1 && bPos != -1 && aPos == bPos + 1;
     }
 
-    export function inside(state : WorldState, x : string, y : string) : boolean {
+    export function inside(state : WorldState, a : string, b : string) : boolean {
       // TODO: do we need both onTopOf and inside?
-      return onTopOf(state, x, y);
+      return onTopOf(state, a, b);
     }
 
-    export function above(state : WorldState, x : string, y : string) : boolean {
-      var xPos = getYPosition(state, x);
-      var yPos = getYPosition(state, y);
-      return xPos != -1 && yPos != -1 && xPos > yPos;
+    export function above(state : WorldState, a : string, b : string) : boolean {
+      var aPos = getYPosition(state, a);
+      var bPos = getYPosition(state, b);
+      return aPos != -1 && bPos != -1 && aPos > bPos;
     }
 
-    export function under(state : WorldState, x : string, y : string) : boolean {
-        return above(state, y, x);
+    export function under(state : WorldState, a : string, b : string) : boolean {
+        return above(state, b, a);
     }
 
-    export function beside(state : WorldState, x : string, y : string) : boolean {
-      var xCol = getColumn(state, x);
-      var yCol = getColumn(state, y);
-      return xCol != -1 && yCol != -1 && Math.abs(xCol - yCol) == 1;
+    export function beside(state : WorldState, a : string, b : string) : boolean {
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+      return aCol != -1 && bCol != -1 && Math.abs(aCol - bCol) == 1;
     }
 
-    export function leftOf(state : WorldState, x : string, y : string) : boolean {
-      var xCol = getColumn(state, x);
-      var yCol = getColumn(state, y);
-      return xCol != -1 && yCol != -1 && xCol < yCol;
+    export function leftOf(state : WorldState, a : string, b : string) : boolean {
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+      return aCol != -1 && bCol != -1 && aCol < bCol;
     }
 
-    export function rightOf(state : WorldState, x : string, y : string) : boolean {
-      var xCol = getColumn(state, x);
-      var yCol = getColumn(state, y);
-      return xCol != -1 && yCol != -1 && xCol > yCol;
+    export function rightOf(state : WorldState, a : string, b : string) : boolean {
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+      return aCol != -1 && bCol != -1 && aCol > bCol;
     }
 
     /**
     @ returns The zero-based column the the object is in, or -1 if it's not
     part of the world.
     */
-    function getColumn(state : WorldState, x : string) : number {
-      if (state.objects[x] != null) {
+    function getColumn(state : WorldState, a : string) : number {
+      if (state.objects[a] != null) {
         for (let s : number = 0; s < state.stacks.length; s++ ) {
-            if (state.stacks[s].indexOf(x) > -1)
+            if (state.stacks[s].indexOf(a) > -1)
               return s;
         }
       }
@@ -285,10 +285,10 @@ module Interpreter {
     @ returns The zero-based position (counted from the floor) in the stack
       the given object is located in, or -1 if it's not part of the world.
     */
-    function getYPosition(state : WorldState, y : string) : number {
-      var stack = getColumn(state, y);
+    function getYPosition(state : WorldState, b : string) : number {
+      var stack = getColumn(state, b);
       if (stack != -1)
-        return state.stacks[stack].indexOf(y);
+        return state.stacks[stack].indexOf(b);
       else
         return -1;
     }
