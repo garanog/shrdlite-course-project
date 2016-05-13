@@ -205,8 +205,8 @@ module Interpreter {
     }
 
     function checkForCorrectPlace(fun : (state : WorldState, a : string, b : string) => boolean,
-        state: WorldState, obectName : string, relatedSet) : boolean {
-      for (let comparingObject of relatedSet) {
+        state: WorldState, obectName : string, relatedSet : collections.LinkedList<string>) : boolean {
+      for (let comparingObject of relatedSet.toArray()) {
         if (fun(state,obectName,comparingObject))
           return true;
       }
