@@ -30,15 +30,15 @@ module Interpreter {
     //////////////////////////////////////////////////////////////////////
     // exported functions, classes and interfaces/types
 
-/**
-Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of the command. No need to change this one.
-* @param parses List of parses produced by the Parser.
-* @param currentState The current state of the world.
-* @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
-*/
-    export function interpret(parses: Parser.ParseResult[], currentState: WorldState): InterpretationResult[] {
-        let errors: Error[] = [];
-        let interpretations: InterpretationResult[] = [];
+    /**
+    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of the command. No need to change this one.
+    * @param parses List of parses produced by the Parser.
+    * @param currentState The current state of the world.
+    * @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
+    */
+    export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
+        var errors : Error[] = [];
+        var interpretations : InterpretationResult[] = [];
         parses.forEach((parseresult) => {
             try {
                 let result: InterpretationResult = <InterpretationResult>parseresult;
@@ -68,18 +68,18 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     * hold among some objects.
     */
     export interface Literal {
-	/** Whether this literal asserts the relation should hold
-	 * (true polarity) or not (false polarity). For example, we
-	 * can specify that "a" should *not* be on top of "b" by the
-	 * literal {polarity: false, relation: "ontop", args:
-	 * ["a","b"]}.
-	 */
-        polarity: boolean;
-	/** The name of the relation in question. */
-        relation: string;
-	/** The arguments to the relation. Usually these will be either objects
-     * or special strings such as "floor" or "floor-N" (where N is a column) */
-        args: string[];
+        /** Whether this literal asserts the relation should hold
+         * (true polarity) or not (false polarity). For example, we
+         * can specify that "a" should *not* be on top of "b" by the
+         * literal {polarity: false, relation: "ontop", args:
+         * ["a","b"]}.
+         */
+        polarity : boolean;
+        /** The name of the relation in question. */
+        relation : string;
+        /** The arguments to the relation. Usually these will be either objects
+         * or special strings such as "floor" or "floor-N" (where N is a column) */
+        args : string[];
     }
 
     export function stringify(result: InterpretationResult): string {
@@ -109,7 +109,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
         let setOfObjects: collections.LinkedList<string> ;
         let relation: string;
-        let setOfLocationObjects: collections.LinkedList<string> ; 
+        let setOfLocationObjects: collections.LinkedList<string> ;
         switch(cmd.command) {
         case "move": // put, drop as well
            setOfObjects= interpretEntity(cmd.entity, state);
@@ -141,10 +141,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
-      let matchingSet : collections.LinkedList<string> = 
-          new collections.LinkedList<string>();
       let matchingSet : collections.LinkedList<string> =
-          new collections.LinkedList<string>;
+          new collections.LinkedList<string>();
 
       let desiredSize  : string = entity.object.size;
       let desiredColor : string = entity.object.color;
@@ -203,22 +201,16 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       return matchingSet;
 
       // must handle "it" as well
-      return null;
     }
 
-    function getCombinations(setOfObjects, relation, setOfLocationObjects) :: DNFFormula  {
-       return all possible combinations of the objects and the locations
-      }
-
-    function getCombinations(setOfObjects, relation) :: DNFFormula  {
-       return all possible combinations of the objects and the relation
-      }
     function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
       // return all possible combinations of the objects and the locations
+      return null;
     }
 
     function getCombinations(setOfObjects, relation) : DNFFormula {
       // return all possible combinations of the objects and the relation
+      return null;
     }
 
     /**
