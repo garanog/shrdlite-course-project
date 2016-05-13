@@ -139,20 +139,20 @@ module Interpreter {
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
-          
+
       while (entityObject.object != null) {
           entityObject = entityObject.object
       }
 
-      let desiredSize  : string = entity.object.size;
-      let desiredColor : string = entity.object.color;
-      let desiredForm  : string = entity.object.form;
+      let desiredSize  : string = entityObject.size;
+      let desiredColor : string = entityObject.color;
+      let desiredForm  : string = entityObject.form;
 
       let relatedSet : collections.LinkedList<string>;
       let relation : string = null;
-      if (entity.object.location != null){
-        relatedSet = interpretEntity(entity.object.location.entity, state);
-        relation = entity.object.location.relation;
+      if (entityObject.location != null){
+        relatedSet = interpretEntity(entityObject.location.entity, state);
+        relation = entityObject.location.relation;
       }
 
       for (let stack of stacks) { //x : number = 0; x > stacks.length; x ++ ) {
