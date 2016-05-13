@@ -6,10 +6,10 @@ interface TestCase {
 }
 
 var allTestCases : TestCase[] = [
-    /*{world: "small",
+    {world: "small",
      utterance: "take an object",
      interpretations: [["holding(e)", "holding(f)", "holding(g)", "holding(k)", "holding(l)", "holding(m)"]]
-   },
+    },
 
     {world: "small",
      utterance: "take a blue object",
@@ -24,13 +24,13 @@ var allTestCases : TestCase[] = [
     {world: "small",
      utterance: "put a ball in a box",
      interpretations: [["inside(e,k)", "inside(e,l)", "inside(f,k)", "inside(f,l)", "inside(f,m)"]]
-   },*/
+    },
 
     {world: "small",
      utterance: "put a ball on a table",
      interpretations: []
-    }
-/*
+    },
+
     {world: "small",
      utterance: "put a ball above a table",
      interpretations: [["above(e,g)", "above(f,g)"]]
@@ -69,7 +69,7 @@ var allTestCases : TestCase[] = [
     {world: "small",
      utterance: "put a black ball in a box on the floor",
      interpretations: [["inside(f,k)"], ["ontop(f,floor)"]]
-   }*/
+    }
 ];
 
 

@@ -93,6 +93,13 @@ module Interpreter {
         return (lit.polarity ? "" : "-") + lit.relation + "(" + lit.args.join(",") + ")";
     }
 
+    function stringifyDNF(formula: DNFFormula): string {
+      return formula.map((literals) => {
+          return literals.map((lit) => stringifyLiteral(lit)).join(" & ");
+          // return literals.map(stringifyLiteral).join(" & ");
+      }).join(" | ");
+    }
+
     //////////////////////////////////////////////////////////////////////
     // private functions
     /**
@@ -111,26 +118,33 @@ module Interpreter {
         let relation: string;
         let setOfLocationObjects: collections.LinkedList<string> ;
 
-        console.log(cmd);
+        // console.log(cmd);
 
         switch(cmd.command) {
         case "move": // put, drop as well
             setOfObjects= interpretEntity(cmd.entity, state);
             relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            console.log("objects: ", setOfObjects);
-            console.log("combined: ", combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects));
-            console.log("relation: ", relation);
-            console.log("locObjs: ", setOfLocationObjects);
+            // console.log("objects: ", setOfObjects);
+            // console.log("relation: ", relation);
+            // console.log("locObjs: ", setOfLocationObjects);
+            // console.log("combined: ", combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects));
             return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
         case "take":
             setOfObjects= interpretEntity(cmd.entity, state);
             relation  = "holding";
+            // console.log("objects: ", setOfObjects);
+            // console.log("relation: ", relation);
+            // console.log("combined: ", combineSetToDNF(setOfObjects, relation));
             return combineSetToDNF(setOfObjects, relation);
         case "put":
             setOfObjects.add(state.holding) ; //set containing only this
             relation = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
+            // console.log("objects: ", setOfObjects);
+            // console.log("relation: ", relation);
+            // console.log("locObjs: ", setOfLocationObjects);
+            // console.log("combined: ", combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects));
             return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
         }
         return null;
@@ -227,14 +241,17 @@ module Interpreter {
     function combineSetsToDNF(state:WorldState, setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
       // return all possible combinations of the objects and the locations
       let result : DNFFormula = [];
+      //let result : DNFFormula = [[{polarity:null, relation:null, args:null}]];
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
       for (let object of objectSet) {
         for (let location of locationSet) {
           if(checkPhysicalCorrectness(state, object, location, theRelation))
-            result.push([{polarity:true, relation:theRelation, args:[object,location]}]);
+            result.push([{polarity:true, relation:theRelation, args:[object.toString(),location.toString()]}]);
         }
       }
+      if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
+      console.log("DNFFormula ", stringifyDNF(result));
       return result;
     }
 
@@ -243,8 +260,10 @@ module Interpreter {
       let result : DNFFormula = [];
       let objectSet = setOfObjects.toArray();
       for (let object of objectSet) {
-        result.push([{polarity:true, relation:theRelation, args:[object]}]);
+        result.push([{polarity:true, relation:theRelation, args:[object.toString()]}]);
       }
+      if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
+      console.log("DNFFormula ", stringifyDNF(result));
       return result;
     }
 
@@ -252,17 +271,44 @@ module Interpreter {
       let objectA = state.objects[a];
       let objectB = b == "floor" ? {color:null, size:"large", form:"floor"} : state.objects[b]; //TODO: really large?
 
+      if(a == b) return false;                                                  // Objects cannot be related to themselves
+
       switch (relation) {
         case "ontop":
-          console.log("ontop check, ", objectA, objectB);
-          if (objectA.form == "ball")
+          //console.log("ontop check, ", objectA, objectB);
+          if (objectA.form == "ball")                                           // Balls must be in boxes or on the floor, otherwise they roll away.
             if (objectB.form != "box" && objectB.form != "floor")
               return false;
 
-          if (objectA.size == "large" && objectB.size == "small")
-            return false;
+          if (objectA.size == "large" && objectB.size == "small") return false; // Small objects cannot support large objects.
+          if (objectB.form == "ball") return false;                             // Balls cannot support anything.
+          if (objectB.form == "box") return false;                              // Objects are “inside” boxes, but “ontop” of other objects.
 
-          break;
+        break;
+
+        case "inside":
+          if (objectA.size == "large" && objectB.size == "small") return false; // Small objects cannot support large objects.
+          if (objectB.form != "box") return false;                              // Objects are “inside” boxes, but “ontop” of other objects.
+        break;
+
+        case "under":
+          if (objectA.size == "small" && objectB.size == "large") return false; // Small objects cannot support large objects.
+          if (objectA.form == "ball") return false;                             // Balls cannot support anything.
+        break;
+
+        case "beside":
+        break;
+
+        case "above":
+          // This one is not direct, but it is impossible anyway.
+          if (objectA.size == "large" && objectB.size == "small") return false; // Small objects cannot support large objects.
+        break;
+
+        case "rightof":
+        break;
+
+        case "leftof":
+        break;
       }
 
       return true;
