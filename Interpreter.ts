@@ -220,7 +220,7 @@ module Interpreter {
       let locationSet = setOfLocationObjects.toArray();
       for (let object of objectSet) {
         for (let location of locationSet) {
-          result.push([{polarity:true, relation:theRelation, args:object,location}]);
+          result.push([{polarity:true, relation:theRelation, args:[object,location]}]);
         }
       }
       return result;
