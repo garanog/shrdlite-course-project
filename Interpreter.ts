@@ -126,16 +126,7 @@ module Interpreter {
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
             return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
         }
-
-        // This returns a dummy interpretation involving lving two random objects in the world
-        let objects: string[] = Array.prototype.concat.apply([], state.stacks);
-        let a: string = objects[Math.floor(Math.random() * objects.length)];
-        let b: string = objects[Math.floor(Math.random() * objects.length)];
-        let interpretation: DNFFormula = [[
-            {polarity: true, relation: "ontop", args: [a, "floor"]},
-            {polarity: true, relation: "holding", args: [b]}
-        ]];
-        return interpretation;
+        return null;
     }
 
     function interpretEntity(entity: Parser.Entity, state: WorldState)
