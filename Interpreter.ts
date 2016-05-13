@@ -119,10 +119,10 @@ module Interpreter {
             relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
             console.log("objects: ", setOfObjects);
-            console.log("combined: ", combineSetsToDNF(setOfObjects, relation, setOfLocationObjects));
+            console.log("combined: ", combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects));
             console.log("relation: ", relation);
             console.log("locObjs: ", setOfLocationObjects);
-            return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
+            return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
         case "take":
             setOfObjects= interpretEntity(cmd.entity, state);
             relation  = "holding";
@@ -131,7 +131,7 @@ module Interpreter {
             setOfObjects.add(state.holding) ; //set containing only this
             relation = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
+            return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
         }
         return null;
     }
@@ -224,14 +224,15 @@ module Interpreter {
       return false;
     }
 
-    function combineSetsToDNF(setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
+    function combineSetsToDNF(state:WorldState, setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
       // return all possible combinations of the objects and the locations
       let result : DNFFormula = [];
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
       for (let object of objectSet) {
         for (let location of locationSet) {
-          result.push([{polarity:true, relation:theRelation, args:[object,location]}]);
+          if(checkPhysicalCorrectness(state, object, location, theRelation))
+            result.push([{polarity:true, relation:theRelation, args:[object,location]}]);
         }
       }
       return result;
@@ -245,6 +246,26 @@ module Interpreter {
         result.push([{polarity:true, relation:theRelation, args:[object]}]);
       }
       return result;
+    }
+
+    function checkPhysicalCorrectness(state : WorldState, a : string, b : string, relation : string) : boolean {
+      let objectA = state.objects[a];
+      let objectB = b == "floor" ? {color:null, size:"large", form:"floor"} : state.objects[b]; //TODO: really large?
+
+      switch (relation) {
+        case "ontop":
+          console.log("ontop check, ", objectA, objectB);
+          if (objectA.form == "ball")
+            if (objectB.form != "box" && objectB.form != "floor")
+              return false;
+
+          if (objectA.size == "large" && objectB.size == "small")
+            return false;
+
+          break;
+      }
+
+      return true;
     }
 
     /**
