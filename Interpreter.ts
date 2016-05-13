@@ -115,16 +115,16 @@ module Interpreter {
            setOfObjects= interpretEntity(cmd.entity, state);
             relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            return getCombinations(setOfObjects, relation, setOfLocationObjects);
+            return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
         case "take":
             setOfObjects= interpretEntity(cmd.entity, state);
             relation  = "holding";
-            return getCombinations(setOfObjects, relation);
+            return combineSetToDNF(setOfObjects, relation);
         case "put":
             setOfObjects.add(state.holding) ; //set containing only this
             relation = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            return getCombinations(setOfObjects, relation, setOfLocationObjects);
+            return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
         }
 
         // This returns a dummy interpretation involving lving two random objects in the world
@@ -213,24 +213,24 @@ module Interpreter {
       return false;
     }
 
-    function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
+    function combineSetsToDNF(setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
       // return all possible combinations of the objects and the locations
       let result : DNFFormula = [];
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
-      for (object of objectSet) {
-        for (location of locationSet) {
+      for (let object of objectSet) {
+        for (let location of locationSet) {
           result.push([{polarity:true, relation:theRelation, args:object,location}]);
         }
       }
       return result;
     }
 
-    function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string) : DNFFormula {
+    function combineSetToDNF(setOfObjects: collections.LinkedList<string>, theRelation: string) : DNFFormula {
       // return all possible combinations of the objects and the relation
       let result : DNFFormula = [];
       let objectSet = setOfObjects.toArray();
-      for (object of objectSet) {
+      for (let object of objectSet) {
         result.push([{polarity:true, relation:theRelation, args:[object]}]);
       }
       return result;
