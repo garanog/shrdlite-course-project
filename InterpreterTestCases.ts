@@ -9,7 +9,7 @@ var allTestCases : TestCase[] = [
     {world: "small",
      utterance: "take an object",
      interpretations: [["holding(e)", "holding(f)", "holding(g)", "holding(k)", "holding(l)", "holding(m)"]]
-    },
+   },
 
     {world: "small",
      utterance: "take a blue object",
@@ -69,7 +69,7 @@ var allTestCases : TestCase[] = [
     {world: "small",
      utterance: "put a black ball in a box on the floor",
      interpretations: [["inside(f,k)"], ["ontop(f,floor)"]]
-    }
+   }
 ];
 
 
@@ -108,4 +108,3 @@ var allTestCases : TestCase[] = [
 //                         "inside(e,k) & inside(f,m)", "inside(e,l) & inside(f,m)"]]
 //     }
 // );
-

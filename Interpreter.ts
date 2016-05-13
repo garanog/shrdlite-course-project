@@ -111,6 +111,8 @@ module Interpreter {
         let relation: string;
         let setOfLocationObjects: collections.LinkedList<string> ;
 
+        console.log(cmd);
+
         switch(cmd.command) {
         case "move": // put, drop as well
             setOfObjects= interpretEntity(cmd.entity, state);
@@ -162,7 +164,7 @@ module Interpreter {
 
               if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
                   (desiredColor == null || objectToCompare.color == desiredColor) &&
-                  (desiredForm  == null || objectToCompare.form  == desiredForm)) {
+                  (desiredForm  == null || desiredForm == "anyform" || objectToCompare.form  == desiredForm)) {
                     matchingSet.add(objectName);
               }
             }
