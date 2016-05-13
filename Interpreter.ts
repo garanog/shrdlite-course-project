@@ -155,44 +155,44 @@ module Interpreter {
         relation = entity.object.location.relation;
       }
 
-      for (let x : number = 0; x > stacks.length; x ++ ) {
-        for (let y : number = 0; y > stacks[x].length; y++ ) {
-          let objectToCompare : ObjectDefinition = objectMap[stacks[x][y]];
+      for (let stack of stacks) { //x : number = 0; x > stacks.length; x ++ ) {
+        for (let objectName of stack) { //y : number = 0; y > stacks[x].length; y++ ) {
+           let objectToCompare : ObjectDefinition = objectMap[objectName];
           if ((objectToCompare.size  == null || objectToCompare.size  == desiredSize) &&
               (objectToCompare.color == null || objectToCompare.color == desiredColor) &&
               (objectToCompare.form  == null || objectToCompare.form  == desiredForm)){
             let correctlyPlaced : boolean = false;
             if (relation == null) {
-                matchingSet.add(stacks[x][y]);
+                matchingSet.add(objectName);
             } else {
               switch (relation) {
                 case "ontop":
-                  correctlyPlaced = onTopOf(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(onTopOf,state,objectName,relatedSet);
                   break;
                 case "inside":
-                  correctlyPlaced = inside(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(inside,state,objectName,relatedSet);
                   break;
                 case "above":
-                  correctlyPlaced = above(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(above,state,objectName,relatedSet);
                   break;
                 case "under":
-                  correctlyPlaced = under(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(under,state,objectName,relatedSet);
                   break;
                 case "beside":
-                  correctlyPlaced = beside(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(beside,state,objectName,relatedSet);
                   break;
                 case "leftof":
-                  correctlyPlaced = leftOf(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(leftOf,state,objectName,relatedSet);
                   break;
                 case "rightof":
-                  correctlyPlaced = rightOf(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(rightOf,state,objectName,relatedSet);
                   break;
                 default:
                   // code...
                   break;
               }
               if (correctlyPlaced) {
-                matchingSet.add(stacks[x][y]);
+                matchingSet.add(objectName);
               }
             }
           }
@@ -201,6 +201,15 @@ module Interpreter {
       return matchingSet;
 
       // must handle "it" as well
+    }
+
+    function checkForCorrectPlace(fun : (state : WorldState, a : string, b : string) => boolean,
+        state: WorldState, obectName : string, relatedSet) : boolean {
+      for (let comparingObject of relatedSet) {
+        if (fun(state,obectName,comparingObject))
+          return true;
+      }
+      return false;
     }
 
     function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
