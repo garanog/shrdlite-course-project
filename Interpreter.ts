@@ -216,20 +216,25 @@ module Interpreter {
     function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
       // return all possible combinations of the objects and the locations
       let result : DNFFormula = [];
-      for (object in setOfObjects) {
-        for (location in setOfLocationObjects) {
-          result.push([{polarity:true, relation:theRelation, args:[setOfObjects[object],setOfLocationObjects[location]]}]);
+      let objectSet = setOfObjects.toArray();
+      let locationSet = setOfLocationObjects.toArray();
+      for (object of objectSet) {
+        for (location of locationSet) {
+          result.push([{polarity:true, relation:theRelation, args:object,location}]);
         }
       }
+      return result;
     }
     }
 
     function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string) : DNFFormula {
       // return all possible combinations of the objects and the relation
       let result : DNFFormula = [];
-      for (object in setOfObjects) {
-        result.push([{polarity:true, relation:theRelation, args:[setOfObjects[object]]}]);
+      let objectSet = setOfObjects.toArray();
+      for (object of objectSet) {
+        result.push([{polarity:true, relation:theRelation, args:[object]}]);
       }
+      return result;
     }
 
     /**
