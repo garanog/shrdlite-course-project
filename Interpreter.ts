@@ -110,12 +110,16 @@ module Interpreter {
         let setOfObjects: collections.LinkedList<string> ;
         let relation: string;
         let setOfLocationObjects: collections.LinkedList<string> ;
+
         switch(cmd.command) {
         case "move": // put, drop as well
             setOfObjects= interpretEntity(cmd.entity, state);
             relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            console.log("objects: ", setOfObjects);
+            /*console.log("objects: ", setOfObjects);
+            console.log("combined: ", combineSetsToDNF(setOfObjects, relation, setOfLocationObjects));
+            console.log("relation: ", relation);
+            console.log("locObjs: ", setOfLocationObjects);*/
             return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
         case "take":
             setOfObjects= interpretEntity(cmd.entity, state);
@@ -148,13 +152,19 @@ module Interpreter {
         let desiredColor : string = entityObject.color;
         let desiredForm  : string = entityObject.form;
 
-        for (let stack of stacks) {
-          for (let objectName of stack) {
-             let objectToCompare : ObjectDefinition = objectMap[objectName];
-            if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
-                (desiredColor == null || objectToCompare.color == desiredColor) &&
-                (desiredForm  == null || objectToCompare.form  == desiredForm)) {
-                  matchingSet.add(objectName);
+        console.log("df: ", desiredForm);
+        if (desiredForm == "floor")
+          matchingSet.add("floor");
+        else {
+          for (let stack of stacks) {
+            for (let objectName of stack) {
+               let objectToCompare : ObjectDefinition = objectMap[objectName];
+
+              if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
+                  (desiredColor == null || objectToCompare.color == desiredColor) &&
+                  (desiredForm  == null || objectToCompare.form  == desiredForm)) {
+                    matchingSet.add(objectName);
+              }
             }
           }
         }
