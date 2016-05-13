@@ -140,63 +140,66 @@ module Interpreter {
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
 
-      let desiredSize  : string = entityObject.size;
-      let desiredColor : string = entityObject.color;
-      let desiredForm  : string = entityObject.form;
+      if (entityObject.location == null) {
+        //simple object
 
-      let relatedSet : collections.LinkedList<string>;
-      let relation : string = null;
-      if (entityObject.location != null){
-        relatedSet = interpretEntity(entityObject.location.entity, state);
-        relation = entityObject.location.relation;
-      }
+        let desiredSize  : string = entityObject.size;
+        let desiredColor : string = entityObject.color;
+        let desiredForm  : string = entityObject.form;
 
-      for (let stack of stacks) { //x : number = 0; x > stacks.length; x ++ ) {
-        for (let objectName of stack) { //y : number = 0; y > stacks[x].length; y++ ) {
-           let objectToCompare : ObjectDefinition = objectMap[objectName];
-          if ((objectToCompare.size  == null || objectToCompare.size  == desiredSize) &&
-              (objectToCompare.color == null || objectToCompare.color == desiredColor) &&
-              (objectToCompare.form  == null || objectToCompare.form  == desiredForm)){
-            let correctlyPlaced : boolean = false;
-            if (relation == null) {
-                matchingSet.add(objectName);
-            } else {
-              switch (relation) {
-                case "ontop":
-                  correctlyPlaced = checkForCorrectPlace(onTopOf,state,objectName,relatedSet);
-                  break;
-                case "inside":
-                  correctlyPlaced = checkForCorrectPlace(inside,state,objectName,relatedSet);
-                  break;
-                case "above":
-                  correctlyPlaced = checkForCorrectPlace(above,state,objectName,relatedSet);
-                  break;
-                case "under":
-                  correctlyPlaced = checkForCorrectPlace(under,state,objectName,relatedSet);
-                  break;
-                case "beside":
-                  correctlyPlaced = checkForCorrectPlace(beside,state,objectName,relatedSet);
-                  break;
-                case "leftof":
-                  correctlyPlaced = checkForCorrectPlace(leftOf,state,objectName,relatedSet);
-                  break;
-                case "rightof":
-                  correctlyPlaced = checkForCorrectPlace(rightOf,state,objectName,relatedSet);
-                  break;
-                default:
-                  // code...
-                  break;
-              }
-              if (correctlyPlaced) {
-                matchingSet.add(objectName);
-              }
+        for (let stack of stacks) {
+          for (let objectName of stack) {
+             let objectToCompare : ObjectDefinition = objectMap[objectName];
+            if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
+                (desiredColor == null || objectToCompare.color == desiredColor) &&
+                (desiredForm  == null || objectToCompare.form  == desiredForm)) {
+                  matchingSet.add(objectName);
             }
           }
         }
-      }
-      return matchingSet;
+      } else {
+        //complex object
+        let originalObjects : collections.LinkedList<string> =
+          interpretObject(entityObject.object, state);
+        let relatedSet : collections.LinkedList<string> =
+          interpretEntity(entityObject.location.entity, state);
+        let relation : string = entityObject.location.relation;
 
-      // must handle "it" as well
+        for (let originalObject of originalObjects.toArray()) {
+          let correctlyPlaced : boolean = false;
+          switch (relation) {
+            case "ontop":
+              correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
+              break;
+            case "inside":
+              correctlyPlaced = checkForCorrectPlace(inside,state,originalObject,relatedSet);
+              break;
+            case "above":
+              correctlyPlaced = checkForCorrectPlace(above,state,originalObject,relatedSet);
+              break;
+            case "under":
+              correctlyPlaced = checkForCorrectPlace(under,state,originalObject,relatedSet);
+              break;
+            case "beside":
+              correctlyPlaced = checkForCorrectPlace(beside,state,originalObject,relatedSet);
+              break;
+            case "leftof":
+              correctlyPlaced = checkForCorrectPlace(leftOf,state,originalObject,relatedSet);
+              break;
+            case "rightof":
+              correctlyPlaced = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
+              break;
+            default:
+              // code...
+              break;
+          }
+
+          if (correctlyPlaced)
+            matchingSet.add(originalObject);
+        }
+      }
+
+      return matchingSet;
     }
 
     function checkForCorrectPlace(fun : (state : WorldState, a : string, b : string) => boolean,
