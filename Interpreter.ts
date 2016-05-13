@@ -138,7 +138,8 @@ module Interpreter {
         return interpretation;
     }
 
-    function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
+    function interpretEntity(entity: Parser.Entity, state: WorldState) 
+        : collections.LinkedList<string>{ 
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
@@ -148,7 +149,7 @@ module Interpreter {
       let desiredColor : string = entity.object.color;
       let desiredForm  : string = entity.object.form;
 
-      let relatedSet = null;
+      let relatedSet : collections.LinkedList<string>;
       let relation : string = null;
       if (entity.object.location != null){
         relatedSet = interpretEntity(entity.object.location.entity, state);
