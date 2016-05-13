@@ -138,8 +138,8 @@ module Interpreter {
         return interpretation;
     }
 
-    function interpretEntity(entity: Parser.Entity, state: WorldState) 
-        : collections.LinkedList<string>{ 
+    function interpretEntity(entity: Parser.Entity, state: WorldState)
+        : collections.LinkedList<string>{
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
@@ -213,14 +213,23 @@ module Interpreter {
       return false;
     }
 
-    function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
+    function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
       // return all possible combinations of the objects and the locations
-      return null;
+      let result : DNFFormula = [];
+      for (object in setOfObjects) {
+        for (location in setOfLocationObjects) {
+          result.push([{polarity:true, relation:theRelation, args:[setOfObjects[object],setOfLocationObjects[location]]}]);
+        }
+      }
+    }
     }
 
-    function getCombinations(setOfObjects, relation) : DNFFormula {
+    function getCombinations(setOfObjects: collections.LinkedList<string>, theRelation: string) : DNFFormula {
       // return all possible combinations of the objects and the relation
-      return null;
+      let result : DNFFormula = [];
+      for (object in setOfObjects) {
+        result.push([{polarity:true, relation:theRelation, args:[setOfObjects[object]]}]);
+      }
     }
 
     /**
