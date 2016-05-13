@@ -116,10 +116,10 @@ module Interpreter {
             setOfObjects= interpretEntity(cmd.entity, state);
             relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            /*console.log("objects: ", setOfObjects);
+            console.log("objects: ", setOfObjects);
             console.log("combined: ", combineSetsToDNF(setOfObjects, relation, setOfLocationObjects));
             console.log("relation: ", relation);
-            console.log("locObjs: ", setOfLocationObjects);*/
+            console.log("locObjs: ", setOfLocationObjects);
             return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
         case "take":
             setOfObjects= interpretEntity(cmd.entity, state);
@@ -254,7 +254,11 @@ module Interpreter {
     export function onTopOf(state : WorldState, a : string, b : string) : boolean {
       var aPos = getYPosition(state, a);
       var bPos = getYPosition(state, b);
-      return aPos != -1 && bPos != -1 && aPos == bPos + 1;
+
+      if (b == "floor")
+        return aPos == 0;
+      else
+        return aPos != -1 && bPos != -1 && aPos == bPos + 1;
     }
 
     export function inside(state : WorldState, a : string, b : string) : boolean {
@@ -265,7 +269,10 @@ module Interpreter {
     export function above(state : WorldState, a : string, b : string) : boolean {
       var aPos = getYPosition(state, a);
       var bPos = getYPosition(state, b);
-      return aPos != -1 && bPos != -1 && aPos > bPos;
+      if (b == "floor")
+        return aPos != -1;
+      else
+        return aPos != -1 && bPos != -1 && aPos > bPos;
     }
 
     export function under(state : WorldState, a : string, b : string) : boolean {
