@@ -140,10 +140,6 @@ module Interpreter {
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
 
-      while (entityObject.object != null) {
-          entityObject = entityObject.object
-      }
-
       let desiredSize  : string = entityObject.size;
       let desiredColor : string = entityObject.color;
       let desiredForm  : string = entityObject.form;
