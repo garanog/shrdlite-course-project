@@ -129,12 +129,20 @@ module Interpreter {
         return null;
     }
 
-    function interpretEntity(entity: Parser.Entity, state: WorldState)
+    function interpretEntity(entity: Parser.Entity, state : WorldState){
+        return interpretObject(entity.object, state);
+    }
+
+    function interpretObject(entityObject: Parser.Object, state: WorldState)
         : collections.LinkedList<string>{
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
+          
+      while (entityObject.object != null) {
+          entityObject = entityObject.object
+      }
 
       let desiredSize  : string = entity.object.size;
       let desiredColor : string = entity.object.color;
