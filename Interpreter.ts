@@ -112,9 +112,10 @@ module Interpreter {
         let setOfLocationObjects: collections.LinkedList<string> ;
         switch(cmd.command) {
         case "move": // put, drop as well
-           setOfObjects= interpretEntity(cmd.entity, state);
+            setOfObjects= interpretEntity(cmd.entity, state);
             relation  = cmd.location.relation;
             setOfLocationObjects = interpretEntity(cmd.location.entity, state);
+            console.log("objects: ", setOfObjects);
             return combineSetsToDNF(setOfObjects, relation, setOfLocationObjects);
         case "take":
             setOfObjects= interpretEntity(cmd.entity, state);
