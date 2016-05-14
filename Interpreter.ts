@@ -156,74 +156,84 @@ module Interpreter {
         : collections.LinkedList<string> {
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
-      let matchingSet : collections.LinkedList<string> =
-          new collections.LinkedList<string>();
 
       if (entityObject.location == null) {
-        //simple object
+        return interpretSimpleObject(entityObject, state);
+      } else {
+        return interpretComplexObject(entityObject, state);
+      }
+    }
 
-        let desiredSize  : string = entityObject.size;
-        let desiredColor : string = entityObject.color;
-        let desiredForm  : string = entityObject.form;
+    function interpretSimpleObject(entityObject : Parser.Object,
+                                    state : WorldState) {
+      let matchingSet : collections.LinkedList<string> =
+          new collections.LinkedList<string>();
+      let desiredSize  : string = entityObject.size;
+      let desiredColor : string = entityObject.color;
+      let desiredForm  : string = entityObject.form;
 
-        console.log("df: ", desiredForm);
-        if (desiredForm == "floor")
-          matchingSet.add("floor");
-        else {
-          for (let stack of stacks) {
-            for (let objectName of stack) {
-               let objectToCompare : ObjectDefinition = objectMap[objectName];
+      if (desiredForm == "floor")
+        matchingSet.add("floor");
+      else {
+        for (let stack of state.stacks) {
+          for (let objectName of stack) {
+             let objectToCompare : ObjectDefinition = state.objects[objectName];
 
-              if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
-                  (desiredColor == null || objectToCompare.color == desiredColor) &&
-                  (desiredForm  == null || desiredForm == "anyform" || objectToCompare.form  == desiredForm)) {
-                    matchingSet.add(objectName);
-              }
+            if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
+                (desiredColor == null || objectToCompare.color == desiredColor) &&
+                (desiredForm  == null || desiredForm == "anyform" || objectToCompare.form  == desiredForm)) {
+                  matchingSet.add(objectName);
             }
           }
         }
-      } else {
-        //complex object
-        let originalObjects : collections.LinkedList<string> =
-          interpretObject(entityObject.object, state);
-        let relatedSet : collections.LinkedList<string> =
-          interpretEntity(entityObject.location.entity, state);
-        let relation : string = entityObject.location.relation;
-
-        for (let originalObject of originalObjects.toArray()) {
-          let correctlyPlaced : boolean = false;
-          switch (relation) {
-            case "ontop":
-              correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
-              break;
-            case "inside":
-              correctlyPlaced = checkForCorrectPlace(inside,state,originalObject,relatedSet);
-              break;
-            case "above":
-              correctlyPlaced = checkForCorrectPlace(above,state,originalObject,relatedSet);
-              break;
-            case "under":
-              correctlyPlaced = checkForCorrectPlace(under,state,originalObject,relatedSet);
-              break;
-            case "beside":
-              correctlyPlaced = checkForCorrectPlace(beside,state,originalObject,relatedSet);
-              break;
-            case "leftof":
-              correctlyPlaced = checkForCorrectPlace(leftOf,state,originalObject,relatedSet);
-              break;
-            case "rightof":
-              correctlyPlaced = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
-              break;
-            default:
-              // code...
-              break;
-          }
-
-          if (correctlyPlaced)
-            matchingSet.add(originalObject);
-        }
       }
 
+      return matchingSet;
+    }
+
+    function interpretComplexObject(entityObject : Parser.Object,
+                                    state : WorldState) {
+      let matchingSet : collections.LinkedList<string> =
+          new collections.LinkedList<string>();
+
+      let originalObjects : collections.LinkedList<string> =
+        interpretObject(entityObject.object, state);
+      let relatedSet : collections.LinkedList<string> =
+        interpretEntity(entityObject.location.entity, state);
+      let relation : string = entityObject.location.relation;
+
+      for (let originalObject of originalObjects.toArray()) {
+        let correctlyPlaced : boolean = false;
+        switch (relation) {
+          case "ontop":
+            correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
+            break;
+          case "inside":
+            correctlyPlaced = checkForCorrectPlace(inside,state,originalObject,relatedSet);
+            break;
+          case "above":
+            correctlyPlaced = checkForCorrectPlace(above,state,originalObject,relatedSet);
+            break;
+          case "under":
+            correctlyPlaced = checkForCorrectPlace(under,state,originalObject,relatedSet);
+            break;
+          case "beside":
+            correctlyPlaced = checkForCorrectPlace(beside,state,originalObject,relatedSet);
+            break;
+          case "leftof":
+            correctlyPlaced = checkForCorrectPlace(leftOf,state,originalObject,relatedSet);
+            break;
+          case "rightof":
+            correctlyPlaced = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
+            break;
+          default:
+            // code...
+            break;
+        }
+
+        if (correctlyPlaced)
+          matchingSet.add(originalObject);
+      }
       return matchingSet;
     }
 
@@ -236,10 +246,15 @@ module Interpreter {
       return false;
     }
 
-    function combineSetsToDNF(state:WorldState, setOfObjects: collections.LinkedList<string>, theRelation: string, setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
-      // return all possible combinations of the objects and the locations
+    /**
+     * @returns All possible combinations of the objects and the locations
+     * that obey the physical laws.
+     */
+    function combineSetsToDNF(state:WorldState,
+                              setOfObjects: collections.LinkedList<string>,
+                              theRelation: string,
+                              setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
       let result : DNFFormula = [];
-      //let result : DNFFormula = [[{polarity:null, relation:null, args:null}]];
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
       for (let object of objectSet) {
@@ -253,8 +268,12 @@ module Interpreter {
       return result;
     }
 
-    function combineSetToDNF(setOfObjects: collections.LinkedList<string>, theRelation: string) : DNFFormula {
-      // return all possible combinations of the objects and the relation
+    /**
+     * @returns All possible combinations of the objects and the relation
+     * that obey the physical laws.
+     */
+    function combineSetToDNF(setOfObjects: collections.LinkedList<string>,
+                              theRelation: string) : DNFFormula {
       let result : DNFFormula = [];
       let objectSet = setOfObjects.toArray();
       for (let object of objectSet) {
@@ -265,11 +284,17 @@ module Interpreter {
       return result;
     }
 
+    /**
+     * @returns Whether the given relation obeys the physical laws, i.e. whether
+     * object a can be in relation to object b in the given world.
+     */
     function checkPhysicalCorrectness(state : WorldState, a : string, b : string, relation : string) : boolean {
       let objectA = state.objects[a];
-      let objectB = b == "floor" ? {color:null, size:"large", form:"floor"} : state.objects[b]; //TODO: really large?
 
-      if(a == b) return false;                                                  // Objects cannot be related to themselves
+      //TODO: is the floor really large?
+      let objectB = b == "floor" ? {color:null, size:"large", form:"floor"} : state.objects[b];
+
+      if (a == b) return false;                                                  // Objects cannot be related to themselves
 
       switch (relation) {
         case "ontop":
