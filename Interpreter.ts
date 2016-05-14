@@ -152,6 +152,10 @@ module Interpreter {
       return interpretObject(entity.object, state);
     }
 
+    /* 
+    * Interprets the information given from the entityObject, and returns a list
+    * of the keys to all objects from the world that matches that information.
+    */
     function interpretObject(entityObject: Parser.Object, state: WorldState)
         : collections.LinkedList<string> {
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
@@ -164,6 +168,12 @@ module Interpreter {
       }
     }
 
+    /* 
+    * Interprets information about a "simple" parser-obejct.
+    * A simple object contains information about the color, size and form of the
+    * objects searched for. All objects that match the description will be found 
+    * by searching through all obects in the given worldstate and compared.
+    */
     function interpretSimpleObject(entityObject : Parser.Object,
                                     state : WorldState) {
       let matchingSet : collections.LinkedList<string> =
@@ -191,6 +201,14 @@ module Interpreter {
       return matchingSet;
     }
 
+    /* 
+    * Interprets information about a "complex" parser-object.
+    * A complex object contains information about a kind of object that is related to
+    * another type of object, and will return a list of all obects that fits the
+    * description and is correctly related to a object of the second type. It will 
+    * recursively find lists of all objects matching the given information, and check
+    * which ones fulfills the relation.
+    */
     function interpretComplexObject(entityObject : Parser.Object,
                                     state : WorldState) {
       let matchingSet : collections.LinkedList<string> =
@@ -227,7 +245,6 @@ module Interpreter {
             correctlyPlaced = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
             break;
           default:
-            // code...
             break;
         }
 
@@ -237,6 +254,10 @@ module Interpreter {
       return matchingSet;
     }
 
+    /*
+    * Checks whether or not two objects fulfills a given relation is the given worldstate.
+    * The relation will be defined by a given function.
+    */
     function checkForCorrectPlace(fun : (state : WorldState, a : string, b : string) => boolean,
         state: WorldState, obectName : string, relatedSet : collections.LinkedList<string>) : boolean {
       for (let comparingObject of relatedSet.toArray()) {
