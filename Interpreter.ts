@@ -31,10 +31,12 @@ module Interpreter {
     // exported functions, classes and interfaces/types
 
     /**
-    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of the command. No need to change this one.
+    Top-level function for the Interpreter. It calls `interpretCommand` for each
+    * possible parse of the command. No need to change this one.
     * @param parses List of parses produced by the Parser.
     * @param currentState The current state of the world.
-    * @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
+    * @returns Augments ParseResult with a list of interpretations. Each
+    * interpretation is represented by a list of Literals.
     */
     export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
         var errors : Error[] = [];
@@ -103,59 +105,55 @@ module Interpreter {
     //////////////////////////////////////////////////////////////////////
     // private functions
     /**
-     * The core interpretation function. The code here is just a
-     * template; you should rewrite this function entirely. In this
-     * template, the code produces a dummy interpretation which is not
-     * connected to `cmd`, but your version of the function should
-     * analyse cmd in order to figure out what interpretation to
-     * return.
-     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command` (as it has been parsed by the parser).
+     * The core interpretation function. Interprets a command, as it has been
+     * parsed by the parser into a DNF formula representing the goal of the
+     * command.
+     * @param cmd The actual command. Note that it is *not* a string, but rather
+     * an object of type `Command` (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
-     * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
+     * @returns A list of list of Literal, representing a formula in disjunctive
+     * normal form (disjunction of conjunctions).
      */
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
-        let setOfObjects: collections.LinkedList<string> ;
-        let relation: string;
-        let setOfLocationObjects: collections.LinkedList<string> ;
-
-        // console.log(cmd);
-
         switch(cmd.command) {
         case "move": // put, drop as well
-            setOfObjects= interpretEntity(cmd.entity, state);
-            relation  = cmd.location.relation;
-            setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            // console.log("objects: ", setOfObjects);
-            // console.log("relation: ", relation);
-            // console.log("locObjs: ", setOfLocationObjects);
-            // console.log("combined: ", combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects));
-            return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
+          return interpretMoveCommand(cmd, state);
         case "take":
-            setOfObjects= interpretEntity(cmd.entity, state);
-            relation  = "holding";
-            // console.log("objects: ", setOfObjects);
-            // console.log("relation: ", relation);
-            // console.log("combined: ", combineSetToDNF(setOfObjects, relation));
-            return combineSetToDNF(setOfObjects, relation);
+          return interpretTakeCommand(cmd, state);
         case "put":
-            setOfObjects.add(state.holding) ; //set containing only this
-            relation = cmd.location.relation;
-            setOfLocationObjects = interpretEntity(cmd.location.entity, state);
-            // console.log("objects: ", setOfObjects);
-            // console.log("relation: ", relation);
-            // console.log("locObjs: ", setOfLocationObjects);
-            // console.log("combined: ", combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects));
-            return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
+          return interpretPutCommand(cmd, state);
         }
         return null;
     }
 
+    function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
+      let setOfObjects = interpretEntity(cmd.entity, state);
+      let relation = cmd.location.relation;
+      let setOfLocationObjects = interpretEntity(cmd.location.entity, state);
+      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
+    }
+
+    function interpretTakeCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
+      let setOfObjects = interpretEntity(cmd.entity, state);
+      let relation = "holding";
+      return combineSetToDNF(setOfObjects, relation);
+    }
+
+    function interpretPutCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
+      let setOfObjects: collections.LinkedList<string>;
+      setOfObjects.add(state.holding) ; //set containing only this
+      let relation = cmd.location.relation;
+      let setOfLocationObjects = interpretEntity(cmd.location.entity, state);
+      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
+    }
+
     function interpretEntity(entity: Parser.Entity, state : WorldState){
-        return interpretObject(entity.object, state);
+      //TODO: interpret quantifier
+      return interpretObject(entity.object, state);
     }
 
     function interpretObject(entityObject: Parser.Object, state: WorldState)
-        : collections.LinkedList<string>{
+        : collections.LinkedList<string> {
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
       let matchingSet : collections.LinkedList<string> =
