@@ -30,15 +30,15 @@ module Interpreter {
     //////////////////////////////////////////////////////////////////////
     // exported functions, classes and interfaces/types
 
-/**
-Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of the command. No need to change this one.
-* @param parses List of parses produced by the Parser.
-* @param currentState The current state of the world.
-* @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
-*/
-    export function interpret(parses: Parser.ParseResult[], currentState: WorldState): InterpretationResult[] {
-        let errors: Error[] = [];
-        let interpretations: InterpretationResult[] = [];
+    /**
+    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of the command. No need to change this one.
+    * @param parses List of parses produced by the Parser.
+    * @param currentState The current state of the world.
+    * @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
+    */
+    export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
+        var errors : Error[] = [];
+        var interpretations : InterpretationResult[] = [];
         parses.forEach((parseresult) => {
             try {
                 let result: InterpretationResult = <InterpretationResult>parseresult;
@@ -68,18 +68,18 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     * hold among some objects.
     */
     export interface Literal {
-	/** Whether this literal asserts the relation should hold
-	 * (true polarity) or not (false polarity). For example, we
-	 * can specify that "a" should *not* be on top of "b" by the
-	 * literal {polarity: false, relation: "ontop", args:
-	 * ["a","b"]}.
-	 */
-        polarity: boolean;
-	/** The name of the relation in question. */
-        relation: string;
-	/** The arguments to the relation. Usually these will be either objects
-     * or special strings such as "floor" or "floor-N" (where N is a column) */
-        args: string[];
+        /** Whether this literal asserts the relation should hold
+         * (true polarity) or not (false polarity). For example, we
+         * can specify that "a" should *not* be on top of "b" by the
+         * literal {polarity: false, relation: "ontop", args:
+         * ["a","b"]}.
+         */
+        polarity : boolean;
+        /** The name of the relation in question. */
+        relation : string;
+        /** The arguments to the relation. Usually these will be either objects
+         * or special strings such as "floor" or "floor-N" (where N is a column) */
+        args : string[];
     }
 
     export function stringify(result: InterpretationResult): string {
@@ -109,7 +109,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
         let setOfObjects: collections.LinkedList<string> ;
         let relation: string;
-        let setOfLocationObjects: collections.LinkedList<string> ; 
+        let setOfLocationObjects: collections.LinkedList<string> ;
         switch(cmd.command) {
         case "move": // put, drop as well
            setOfObjects= interpretEntity(cmd.entity, state);
@@ -138,63 +138,62 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         return interpretation;
     }
 
-    function interpretEntity(entity: Parser.Entity, state: WorldState) { //Needs a return type, such as the correct set
+    function interpretEntity(entity: Parser.Entity, state: WorldState) 
+        : collections.LinkedList<string>{ 
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
-      let matchingSet : collections.LinkedList<string> = 
-          new collections.LinkedList<string>();
       let matchingSet : collections.LinkedList<string> =
-          new collections.LinkedList<string>;
+          new collections.LinkedList<string>();
 
       let desiredSize  : string = entity.object.size;
       let desiredColor : string = entity.object.color;
       let desiredForm  : string = entity.object.form;
 
-      let relatedSet = null;
+      let relatedSet : collections.LinkedList<string>;
       let relation : string = null;
       if (entity.object.location != null){
         relatedSet = interpretEntity(entity.object.location.entity, state);
         relation = entity.object.location.relation;
       }
 
-      for (let x : number = 0; x > stacks.length; x ++ ) {
-        for (let y : number = 0; y > stacks[x].length; y++ ) {
-          let objectToCompare : ObjectDefinition = objectMap[stacks[x][y]];
+      for (let stack of stacks) { //x : number = 0; x > stacks.length; x ++ ) {
+        for (let objectName of stack) { //y : number = 0; y > stacks[x].length; y++ ) {
+           let objectToCompare : ObjectDefinition = objectMap[objectName];
           if ((objectToCompare.size  == null || objectToCompare.size  == desiredSize) &&
               (objectToCompare.color == null || objectToCompare.color == desiredColor) &&
               (objectToCompare.form  == null || objectToCompare.form  == desiredForm)){
             let correctlyPlaced : boolean = false;
             if (relation == null) {
-                matchingSet.add(stacks[x][y]);
+                matchingSet.add(objectName);
             } else {
               switch (relation) {
                 case "ontop":
-                  correctlyPlaced = onTopOf(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(onTopOf,state,objectName,relatedSet);
                   break;
                 case "inside":
-                  correctlyPlaced = inside(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(inside,state,objectName,relatedSet);
                   break;
                 case "above":
-                  correctlyPlaced = above(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(above,state,objectName,relatedSet);
                   break;
                 case "under":
-                  correctlyPlaced = under(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(under,state,objectName,relatedSet);
                   break;
                 case "beside":
-                  correctlyPlaced = beside(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(beside,state,objectName,relatedSet);
                   break;
                 case "leftof":
-                  correctlyPlaced = leftOf(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(leftOf,state,objectName,relatedSet);
                   break;
                 case "rightof":
-                  correctlyPlaced = rightOf(state,x,y);
+                  correctlyPlaced = checkForCorrectPlace(rightOf,state,objectName,relatedSet);
                   break;
                 default:
                   // code...
                   break;
               }
               if (correctlyPlaced) {
-                matchingSet.add(stacks[x][y]);
+                matchingSet.add(objectName);
               }
             }
           }
@@ -203,77 +202,80 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       return matchingSet;
 
       // must handle "it" as well
-      return null;
     }
 
-    function getCombinations(setOfObjects, relation, setOfLocationObjects) :: DNFFormula  {
-       return all possible combinations of the objects and the locations
+    function checkForCorrectPlace(fun : (state : WorldState, a : string, b : string) => boolean,
+        state: WorldState, obectName : string, relatedSet : collections.LinkedList<string>) : boolean {
+      for (let comparingObject of relatedSet.toArray()) {
+        if (fun(state,obectName,comparingObject))
+          return true;
       }
+      return false;
+    }
 
-    function getCombinations(setOfObjects, relation) :: DNFFormula  {
-       return all possible combinations of the objects and the relation
-      }
     function getCombinations(setOfObjects, relation, setOfLocationObjects) : DNFFormula  {
       // return all possible combinations of the objects and the locations
+      return null;
     }
 
     function getCombinations(setOfObjects, relation) : DNFFormula {
       // return all possible combinations of the objects and the relation
+      return null;
     }
 
     /**
     --------------------------------------------------------------------
     TODO: in case these naiive implementations are not efficient enough,
-    reimplement them maybe using maps.
+    reimplement them mabbe using maps.
     TODO: the following functions should likely be moved somewhere else.
     */
-    export function onTopOf(state : WorldState, x : string, y : string) : boolean {
-      var xPos = getYPosition(state, x);
-      var yPos = getYPosition(state, y);
-      return xPos != -1 && yPos != -1 && xPos == yPos + 1;
+    export function onTopOf(state : WorldState, a : string, b : string) : boolean {
+      var aPos = getYPosition(state, a);
+      var bPos = getYPosition(state, b);
+      return aPos != -1 && bPos != -1 && aPos == bPos + 1;
     }
 
-    export function inside(state : WorldState, x : string, y : string) : boolean {
+    export function inside(state : WorldState, a : string, b : string) : boolean {
       // TODO: do we need both onTopOf and inside?
-      return onTopOf(state, x, y);
+      return onTopOf(state, a, b);
     }
 
-    export function above(state : WorldState, x : string, y : string) : boolean {
-      var xPos = getYPosition(state, x);
-      var yPos = getYPosition(state, y);
-      return xPos != -1 && yPos != -1 && xPos > yPos;
+    export function above(state : WorldState, a : string, b : string) : boolean {
+      var aPos = getYPosition(state, a);
+      var bPos = getYPosition(state, b);
+      return aPos != -1 && bPos != -1 && aPos > bPos;
     }
 
-    export function under(state : WorldState, x : string, y : string) : boolean {
-        return above(state, y, x);
+    export function under(state : WorldState, a : string, b : string) : boolean {
+        return above(state, b, a);
     }
 
-    export function beside(state : WorldState, x : string, y : string) : boolean {
-      var xCol = getColumn(state, x);
-      var yCol = getColumn(state, y);
-      return xCol != -1 && yCol != -1 && Math.abs(xCol - yCol) == 1;
+    export function beside(state : WorldState, a : string, b : string) : boolean {
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+      return aCol != -1 && bCol != -1 && Math.abs(aCol - bCol) == 1;
     }
 
-    export function leftOf(state : WorldState, x : string, y : string) : boolean {
-      var xCol = getColumn(state, x);
-      var yCol = getColumn(state, y);
-      return xCol != -1 && yCol != -1 && xCol < yCol;
+    export function leftOf(state : WorldState, a : string, b : string) : boolean {
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+      return aCol != -1 && bCol != -1 && aCol < bCol;
     }
 
-    export function rightOf(state : WorldState, x : string, y : string) : boolean {
-      var xCol = getColumn(state, x);
-      var yCol = getColumn(state, y);
-      return xCol != -1 && yCol != -1 && xCol > yCol;
+    export function rightOf(state : WorldState, a : string, b : string) : boolean {
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+      return aCol != -1 && bCol != -1 && aCol > bCol;
     }
 
     /**
     @ returns The zero-based column the the object is in, or -1 if it's not
     part of the world.
     */
-    function getColumn(state : WorldState, x : string) : number {
-      if (state.objects[x] != null) {
+    function getColumn(state : WorldState, a : string) : number {
+      if (state.objects[a] != null) {
         for (let s : number = 0; s < state.stacks.length; s++ ) {
-            if (state.stacks[s].indexOf(x) > -1)
+            if (state.stacks[s].indexOf(a) > -1)
               return s;
         }
       }
@@ -284,10 +286,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     @ returns The zero-based position (counted from the floor) in the stack
       the given object is located in, or -1 if it's not part of the world.
     */
-    function getYPosition(state : WorldState, y : string) : number {
-      var stack = getColumn(state, y);
+    function getYPosition(state : WorldState, b : string) : number {
+      var stack = getColumn(state, b);
       if (stack != -1)
-        return state.stacks[stack].indexOf(y);
+        return state.stacks[stack].indexOf(b);
       else
         return -1;
     }
