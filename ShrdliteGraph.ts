@@ -2,7 +2,8 @@
 
 class StateNode {
     constructor(
-        public state : WorldState
+        public state : WorldState,
+        public action? : string
     ) {}
 
     compareTo(other : StateNode) : number {
