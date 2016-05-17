@@ -76,6 +76,17 @@ module Planner {
      */
     function planInterpretation(interpretation : Interpreter.DNFFormula, state : WorldState) : string[] {
       var goal = ((node : StateNode) => {
+        for (var conjunction of interpretation) { // conjunctions connected by ORs
+
+          var conjunctionTrue = true;
+          for (var literal of conjunction) { // literals connected by ANDs
+            conjunctionTrue = conjunctionTrue && literalHolds(literal, node.state);
+          }
+
+          if (conjunctionTrue)
+            return true;
+        }
+
         // TODO: check whether the DNF holds for the given node
         return false;
       });
@@ -94,5 +105,9 @@ module Planner {
 
       // TODO: add all actions from result to a list of strings to return and then return it
         return null;
+    }
+
+    function literalHolds(literal : Interpreter.Literal, state : WorldState) : boolean {
+      return false; //TODO implement
     }
 }
