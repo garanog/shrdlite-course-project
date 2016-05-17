@@ -7,7 +7,7 @@ class StateNode {
     ) {}
 
     compareTo(other : StateNode) : number {
-        return 0; //TODO implement
+        return 0; //TODO implement. compare each object in the world, return 1 once difference is found
     }
 
     toString() : string {
@@ -23,6 +23,15 @@ class ShrdliteGraph implements Graph<StateNode> {
 
         // r l p d
         //TODO: create the up to four nodes, check whether states are possible.
+
+        var rState : WorldState = node.state; //TODO deep copy state!
+        rState.arm = rState.arm + 1;
+        var r : StateNode = new StateNode(node.state, "r");
+        if (true/*arm position is valid (compare to number of stacks?)*/)
+          outgoing.push({
+            from: node,
+            to: r, cost: 1}
+          );
 
         return outgoing;
     }
