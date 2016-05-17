@@ -66,13 +66,13 @@ function aStarSearch<Node> (
 
   // Set of all visited nodes, to be able to make sure we don't test the same paths multiple times
   // and don't get stuck in loops.
-  var visited : collections.Set<Node> = new collections.Set<Node>();
+  var visited : collections.BSTree<Node> = new collections.BSTree<Node>(graph.compareNodes); 
   frontier.enqueue(new SearchResult([start], heuristics(start)));
 
-  // Check for each path in the frontier. If the frontier becomes empty, it means there are no more 
+  // Check for each path in the frontier. If the frontier becomes empty, it means there are no more
   // reachable nodes and if we have not yet found the goal node there is no solution.
   while (!frontier.isEmpty()) {
-  
+
     // Check if we have exeeded allowed time, or if a timeout must happen.
     var end = new Date().getTime();
     if (end - initTime > timeout * 1000) {
@@ -98,7 +98,7 @@ function aStarSearch<Node> (
       for (var edge of graph.outgoingEdges(endNode)) {
         if (!visited.contains(edge.to)){
 
-          // Create a new searchResult (the representation of a path) by making a deep copy of the current 
+          // Create a new searchResult (the representation of a path) by making a deep copy of the current
           // path and the new edge, and calculate a new cost. When calculating the new cost, make sure to
           // update the heuristic from the previous endnode ot that of the new endnode.
           var extendedPath : Array<Node> = extendPath(shortestPath, edge);
