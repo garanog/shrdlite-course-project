@@ -1,5 +1,6 @@
 ///<reference path="World.ts"/>
 ///<reference path="Interpreter.ts"/>
+///<reference path="ShrdliteGraph.ts"/>
 
 /**
 * Planner module
@@ -91,8 +92,18 @@ module Planner {
       });
 
       var heuristics = ((node : StateNode) => {
-        // TODO: implement heurstics
-        return 0;
+        var minDistance = 0;
+        for (var conjunction of interpretation) { // conjunctions connected by ORs
+
+          var distance : number = 0;
+          for (var literal of conjunction) { // literals connected by ANDs
+            distance = distance + 
+                (literalHolds(literal, node.state) ? 0 : 1);
+          }
+
+          minDistance = distance < minDistance ? distance : minDistance;
+        }
+        return minDistance;
       });
 
       var result : SearchResult<StateNode> = aStarSearch(

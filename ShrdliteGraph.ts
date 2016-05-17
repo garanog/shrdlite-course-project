@@ -1,4 +1,5 @@
 ///<reference path="Graph.ts"/>
+///<reference path="World.ts"/>
 
 class StateNode {
     constructor(
