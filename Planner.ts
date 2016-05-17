@@ -86,8 +86,7 @@ module Planner {
           if (conjunctionTrue)
             return true;
         }
-
-        // TODO: check whether the DNF holds for the given node
+        
         return false;
       });
 
