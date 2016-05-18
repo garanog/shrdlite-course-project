@@ -158,23 +158,50 @@ module Planner {
     }
 
     function calculateDistance(literal : Interpreter.Literal, state : WorldState) : number{
+      
+      // Version 0
       var lowestDistance : number = 1;
+      
       /*
-      var lowestDistance : number = 0;
+      // Version 1
+      var lowestDistance : number = 1;
       var distanceInStack : number;
       for (var stack of state.stacks) {
         distanceInStack = -1;
         for (var objectName of stack) {
           if (collections.arrays.contains(literal.args, objectName)){
-              distanceInStack = 0;
+              distanceInStack = 1;
           } else if (distanceInStack != -1){
-              distanceInStack = distanceInStack + 1;
+              distanceInStack = distanceInStack + 3;
           }
         }
         if (distanceInStack != -1){
-          lowestDistance = lowestDistance < distanceInStack ? lowestDistance : distanceInStack;
+          lowestDistance = lowestDistance < (distanceInStack) ? lowestDistance : (distanceInStack);
         }
       }
+      */
+      /*
+      // Version 3
+      var totalDistance : number = 0;
+      for (var argument of literal.args){
+        var lowestDistance : number = 1;
+        var distanceInStack : number;
+        for (var stack of state.stacks){
+          distanceInStack = -1;
+          for (var objectName of stack){
+            if (argument == objectName){
+              distanceInStack = 1;
+            } else if (distanceInStack != -1){
+              distanceInStack = distanceInStack + 3;
+            }
+          }
+          if (distanceInStack != -1){
+            lowestDistance = lowestDistance < (distanceInStack) ? lowestDistance : (distanceInStack);
+          }
+        }
+        totalDistance = totalDistance + lowestDistance;
+      }
+      return totalDistance;
       */
       return lowestDistance;
     }
