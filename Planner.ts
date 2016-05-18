@@ -98,7 +98,7 @@ module Planner {
           var distance : number = 0;
           for (var literal of conjunction) { // literals connected by ANDs
             distance = distance +
-                (literalHolds(literal, node.state) ? 0 : 1);
+                (literalHolds(literal, node.state) ? 0 : calculateDistance(literal, state));
           }
 
           minDistance = distance < minDistance ? distance : minDistance;
@@ -155,5 +155,27 @@ module Planner {
       }
 
       return literal.polarity ? relationHolds : !relationHolds;
+    }
+
+    function calculateDistance(literal : Interpreter.Literal, state : WorldState) : number{
+      var lowestDistance : number = 1;
+      /*
+      var lowestDistance : number = 0;
+      var distanceInStack : number;
+      for (var stack of state.stacks) {
+        distanceInStack = -1;
+        for (var objectName of stack) {
+          if (collections.arrays.contains(literal.args, objectName)){
+              distanceInStack = 0;
+          } else if (distanceInStack != -1){
+              distanceInStack = distanceInStack + 1;
+          }
+        }
+        if (distanceInStack != -1){
+          lowestDistance = lowestDistance < distanceInStack ? lowestDistance : distanceInStack;
+        }
+      }
+      */
+      return lowestDistance;
     }
 }
