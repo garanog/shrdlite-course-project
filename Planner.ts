@@ -87,7 +87,7 @@ module Planner {
           if (conjunctionTrue)
             return true;
         }
-        
+
         return false;
       });
 
@@ -97,7 +97,7 @@ module Planner {
 
           var distance : number = 0;
           for (var literal of conjunction) { // literals connected by ANDs
-            distance = distance + 
+            distance = distance +
                 (literalHolds(literal, node.state) ? 0 : 1);
           }
 
@@ -113,11 +113,47 @@ module Planner {
           heuristics,
           10);
 
-      // TODO: add all actions from result to a list of strings to return and then return it
-        return null;
+      return searchResultToActions(result);
     }
 
-    function literalHolds(literal : Interpreter.Literal, state : WorldState) : boolean {
-      return false; //TODO implement
+    function searchResultToActions(result : SearchResult<StateNode>) {
+      var actions: Array<string> = new Array<string>();
+      for (var pathElement of result.path)
+        actions.push(pathElement.action);
+      return actions;
+    }
+
+    export function literalHolds(literal : Interpreter.Literal, state : WorldState) : boolean {
+      var relationHolds : boolean = false;
+
+      //TODO we might want to extract this and some other things
+      //into a "relation" class
+      switch (literal.relation) {
+        case "ontop":
+          relationHolds = Interpreter.onTopOf(state, literal.args[0], literal.args[1]);
+          break;
+        case "inside":
+          relationHolds = Interpreter.inside(state, literal.args[0], literal.args[1]);
+          break;
+        case "above":
+          relationHolds = Interpreter.above(state, literal.args[0], literal.args[1]);
+          break;
+        case "under":
+          relationHolds = Interpreter.under(state, literal.args[0], literal.args[1]);
+          break;
+        case "beside":
+          relationHolds = Interpreter.beside(state, literal.args[0], literal.args[1]);
+          break;
+        case "leftof":
+          relationHolds = Interpreter.leftOf(state, literal.args[0], literal.args[1]);
+          break;
+        case "rightof":
+          relationHolds = Interpreter.rightOf(state, literal.args[0], literal.args[1]);
+          break;
+        default:
+          throw new Error("Unknown relation: " + literal.relation);
+      }
+
+      return literal.polarity ? relationHolds : !relationHolds;
     }
 }
