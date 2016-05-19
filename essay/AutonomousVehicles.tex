@@ -91,27 +91,27 @@ For a more functional perspective, the sensors can be organized into categories 
 Sensor are not perfect, they have reliability issues and the data provided is generally noisy. It is therefore common to use sensor fusion, a probabilistic approach to sensor reading in which each sensor readout gives a probability for the results, many readouts are then fused into a combined result. The resulting information has less uncertainty than would be possible when these sources were used individually.\cite{HellstromUmea}
 
 \subsection{Software}
-In order to use the sensors to drive, humans need to program how to interpret all the data the sensors collect. The main concerns of AV are driving, and avoiding all other objects. The cars use the information from the sensors to determined where they are. Google has created very specific maps that the cars use to find their location. These maps include everything about an area including curb height, intersection width, and lane layout \cite{chrisurmson2016}.
+In order to use the sensors to drive, humans need to program how to interpret all the data the sensors collect. With this information the AVs need to focus on the two main accpects of operating the car, driving and avoiding all other objects. To drive the cars use the information from the sensors to determined where they are. Google has created very specific maps that the cars use to find their location. These maps include everything about an area including curb height, intersection width, and lane layout \cite{chrisurmson2016}.
 The cars determine where they are by matching the images from the sensors to
 a specific place on the map. They use where the car was a few seconds prior to help them make location matches in real
-time. The preinstalled maps are not a perfect solution. For example the
-cars are not able to drive in snow because the snow changes the landscape and therefore the physical markers Google
-uses to place a car\cite{chrisurmson2016}. While the cars rely on the maps immensely they are programed to expect change. When the car notices something about their surrounding is
+time. While the cars rely on the maps immensely they are programed to expect some change. When something in a cars surrounding is
 different than the preprogrammed map they send the differences back to Google. Every detail from current construction sites to changes in the road due to erosion
-is saved \cite{chrisurmson2016}.
+is reported \cite{chrisurmson2016}. The preinstalled maps are not a perfect solution. For example the
+cars are not able to drive in snow because the snow changes the landscape and therefore the physical markers Google
+uses to place a car\cite{chrisurmson2016}. 
 
 
-After the cars locate exactly where they are they need to then worry about following road rules. Many driving rules are trivial and just need to be programed
+After the cars locate exactly where they are they need to then worry about following road rules. Many of these driving rules are trivial and just need to be programed
 into the car. With the help of the very detailed maps that show things like stoplights, stop signs, and speed limits, the cars can deduce the correct and
 law abiding action. However to drive safely the cars also need to be aware of everything else on the road. The cars attempt to specify all other nonnative
 objects. Once they recognize that there is something in the surrounding area the computers use machine learning techniques to
 differentiate between every possibility \cite{zhu2012object}. The three main categories it tries to classify objects as are cars, pedestrians, or cyclists.
-Within those categories there are more specific categorizations. For example the cars differentiate between, trucks or
-road worker in orange vests \cite{zhu2012object}. They also look out for common things in the road like traffic cones. As shown in the picture below the car recognizes many other cars. All the purple boxes are other cars. The light
+Within those categories there are more specific categorizations, for example the cars differentiate between, trucks or
+road worker in orange vests \cite{zhu2012object}. They also look out for common things in the road like traffic cones. As shown in Figure 1 the car recognizes many objects including cars and bikers. All the purple boxes are other cars, the light
 blue box in the bottom right of the intersection is thought to be a human. Once the car guesses what type of object something is it starts to make assumptions
-about what the object will do next. If a car is driving straight it assumes the car will continue to drive straight. If
+about what the object will do next. These guesses are usually pretty simple, if a car is driving straight it assumes the car will continue to drive straight and if
 a car is in the turning lane it will probably turn. The cars are programmed to anticipate the next move while also
-keeping in mind that might not happen \cite{chrisurmson2016}. As shown in the picture the long green and red cuboids are the projections of other vehicle that might interfere with
+keeping in mind that other drivers might do something different. \cite{chrisurmson2016}. As shown in the picture the long green and red cuboids are the projections of other vehicle that might interfere with
 the autonomous vehicles current path. If the car sees something in the road that is cannot recognize it stops. Unlike a human the car has no problem focusing on and predicting directions of many different cars at one.  
 \begin{figure}[!ht]
   \centering
@@ -127,7 +127,7 @@ the autonomous vehicles current path. If the car sees something in the road that
 
 Because these cars are programmed to there choices are very automatic. It is relativity easy to predict how they will act
 exactly how people have programmed them. While they are far from perfect Google has gone very far to make them at least as
-reliable as human drivers. 
+reliable as human drivers. This can be shown in the number of accidents the cars have caused. The cars have driven 1.5 million miles on public roads. They have been considered at fault for exactly one car accident \cite{chrisurmson2016}. While more miles need to be driven before confirming they are safter than humans the numbers are pointing in that direction. 
 
 \section{Social and Ethical Implications of AVs}
 \paragraph{Impact on the society in general.}
