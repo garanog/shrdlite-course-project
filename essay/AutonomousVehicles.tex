@@ -50,9 +50,9 @@ We highlight open questions and active fields of research, important aspects of 
 \end{abstract}
 
 \section{Introduction}
-Soon will \textit{Autonomous Vehicles} (AV) traverse the streets of Gothenburg, and what was once regarded as the transportation of the future is coming closer to being a part of today's reality. 
+Soon will \textit{Autonomous Vehicles} (AV) traverse the streets of Gothenburg \todo{maybe add a reference / link here?}, and what was once regarded as the transportation of the future is coming closer to being a part of today's reality. 
 
-Among the earlier uses of the technologies used in the AVs of today was during the DARPA Grand Challenge, where the challenge was to develop an AV capable of completing a 142-mile course of unrehearsed off-road terrain. The robot Stanley was the first to finish the race in 2005. Stanley used a combination of GPS and several sensor, such as RADAR mounted on the roof, to get an accurate position and used laser terrain mapping to identify obstacles on the path, similarly to how AVs work today \cite{Thrun2006stanley}. However, Stanley was designed for a static environment and would be unable to travel on populated roads, due to the difficulties and dangers accompanied with sharing space with pedestrians and other drivers.
+Among the earlier uses of the technologies used in the AVs of today was during the DARPA Grand Challenge \todo{confusing sentence}, where the challenge was to develop an AV capable of completing a 142-mile course of unrehearsed off-road terrain. The robot Stanley was the first to finish the race in 2005. Stanley used a combination of GPS and several sensor, such as RADAR mounted on the roof, to get an accurate position and used laser terrain mapping to identify obstacles on the path, similarly to how AVs work today \cite{Thrun2006stanley}. However, Stanley was designed for a static environment and would be unable to travel on populated roads, due to the difficulties and dangers accompanied with sharing space with pedestrians and other drivers.
 
 Along with the technological difficulties AVs faces both ethical and legal questions, such as who is responsible in the event of an accident or where to crash in the case it's unavoidable. 
 
@@ -152,26 +152,9 @@ In the former, an AV must either adhere to a predefined set of rules or try to m
 
 The basic idea of AI approaches to AV ethics is to train a \textit{neural network} (NN) on a combination of simulations and recordings of real crashes, with human feedback on the ethical response. This \changed{eliminates} the problem of having to encode the complex human ethics into a mathematical set of rules. However, the inconsistency between how humans actually behave and what they believe, and lacking traceability (why did the NN decide the way it did in an accident?) involve a risk of missing transparency and manipulation. NNs capable of providing natural-language feedback of how they came to certain decisions are a active field of research \cite[p. 63]{Goodall2014ethical}.
 
-Goodall proposes a three-phase ethical vehicle deployment strategy \cite[p.63]{Goodall2014ethical} which can be compared to the moral education of a child. \changed{Those phases are not supposed to be interpreted as a timed technological roadmap, but rather as rough guidance where the phases are to be implemented as the corresponding technology becomes available}. In the first phase, rational ethics are used, i.e. the AV must follow some clearly defined set of rules. In the second phase, a hybrid rational and AI approach is used: The strict rules from phase one remain active as a boundary, but additionally the complex specifics of human ethics are learned using AI technology. In the third phase, once the technical obstacles have been overcome, natural language feedback should be added to the AI technology of phase two. \changed{The presented approach can be compared to the behaviour of parents who usually try to give their children the possibility to think about and develop their own morals, while still enforcing some boundaries.} Current state-of-the-art AVs are in the first of these three phases, whereat active research is happening in all of them.
+Goodall proposes a three-phase ethical vehicle deployment strategy \cite[p.63]{Goodall2014ethical} which can be compared to the moral education of a child. \changed{Those phases are not supposed to be interpreted as a timed technological roadmap, but rather as rough guidance for society in general, and the AV development community in particular. The phases are to be implemented as the corresponding technology becomes available}. In the first phase, rational ethics are used, i.e. the AV must follow some clearly defined set of rules. In the second phase, a hybrid rational and AI approach is used: The strict rules from phase one remain active as a boundary, but additionally the complex specifics of human ethics are learned using AI technology. In the third phase, once the technical obstacles have been overcome, natural language feedback should be added to the AI technology of phase two. \changed{The presented approach can be compared to the behaviour of parents who usually try to give their children the possibility to think about and develop their own morals, while still enforcing some boundaries.} Current state-of-the-art AVs are in the first of these three phases, whereat active research is happening in all of them.
 
-
-
-\TODO{It would be nice to talk more about Goodall and his paper: how will that strategy be more/less effective?}
-
-\begin{itemize}
-\item test
-\end{itemize}
-
-\TODO{Will those address the various shortcomings of rational and AI-based s/w?}
-\begin{itemize}
-\item The approach 
-\end{itemize}
-
-\TODO{And what are phases?}
-\begin{itemize}
-\item ``The phases are theoretical and should be implemented as the technology becomes available''
-\end{itemize}
-
+\changed{The approach presented by Goodall by itself does not solve any of the aforementioned problems regarding the ethical decision making of AVs. Instead, it offers a framework that is supposed to allow for continuous development in this to a very large extent open field of research. }
 
 \section{Conclusion}
 In conclusion AVs need the operational, ethical, and legal structure to become commonplace on roads. The technology for AVs has gotten incredibly far in the past decade. As of 2016 cars can drive successfully and safely using exteroceptive and proprioceptive sensors in combination with programmed driving rules and machine learning techniques. Even though corporations like Volvo have acknowledged their liability will increase as a direct result of producing AVs, they are still enthusiastically embracing this technology.  Once the technology has reached the third phase described by Goodall, AVs should be able to make their own ethical decisions. Overall most of these condition are close to being met. 
