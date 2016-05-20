@@ -59,9 +59,6 @@ class AWorldState implements WorldState {
 class ShrdliteGraph implements Graph<StateNode> {
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
-      console.log("Outgoing edges.");
-      console.log(node.state.stacks);
-
         var outgoing : Edge<StateNode>[] = [];
 
         // r l p d
@@ -89,13 +86,18 @@ class ShrdliteGraph implements Graph<StateNode> {
           // Get the last element of the stack the arm's over and put it in the holding property
           newState.holding = newState.stacks[newState.arm][newState.stacks[newState.arm].length-1];
           // Remove the last element from said stack
-          newState.stacks[newState.arm].pop;
+          newState.stacks[newState.arm].pop();
           var newNode : StateNode = new StateNode(newState, "p");
           outgoing.push({from: node, to: newNode, cost:1});
         }
 
         // Case d - if holding anything and the physical rules are observed when dropping that object
-        if(node.state.holding != null && this.checkPhysics(node.state, node.state.holding, node.state.stacks[node.state.arm][node.state.stacks[node.state.arm].length-1])) {
+        var armStack = node.state.stacks[node.state.arm];
+        var topObject : string = armStack.length == 0 ?
+          "floor" : armStack[armStack.length - 1];
+
+        if (node.state.holding != null &&
+          this.checkPhysics(node.state, node.state.holding, topObject)) {
           var newState = this.stateDeepCopy(node.state);
           // Put the element held in the arm on the stack it is currently over
           newState.stacks[newState.arm].push(newState.holding);
@@ -104,21 +106,22 @@ class ShrdliteGraph implements Graph<StateNode> {
           outgoing.push({from: node, to: newNode, cost:1});
         }
 
-<<<<<<< HEAD
-=======
         console.log("-----------");
         console.log("outgoing edges.");
         console.log(node);
         console.log(outgoing);
->>>>>>> debug outputs
         return outgoing;
     }
 
     checkPhysics (state: WorldState, a: string, b: string): boolean {
+      console.log("---- CHECK");
+      console.log(b);
+
       let objectA = state.objects[a];
 
       //TODO: is the floor really large?
-      let objectB = b == "floor" ? {color:null, size:"large", form:"floor"} : state.objects[b];
+      let objectB = (b == "floor") ?
+        {color:null, size:"large", form:"floor"} : state.objects[b];
 
       if (objectB.form == "ball") return false;
       if (objectA.size == "large" && objectB.size == "small") return false;
@@ -129,7 +132,6 @@ class ShrdliteGraph implements Graph<StateNode> {
 
 
     stateDeepCopy(state : WorldState) : WorldState {
-      console.log("stateDeepCopy()");
       var newState : WorldState = new AWorldState() ;
       newState.stacks = new Array<string[]>();
 
