@@ -69,10 +69,19 @@ function testPlanner() {
   var testWorld : World = new TextWorld(ExampleWorlds["test"]);
 
   var parses : Parser.ParseResult[] = Parser.parse("put the red brick on the white brick");
-  var interpretation : Interpreter.InterpretationResult[] = Interpreter.interpret(parses, world.currentState);
+  console.log(parses);
 
-  var plan : string[] = Planner.plan(interpretation, testWorld.currentState)[0].plan;
-  return plan == ["p","r","d"];
+  var interpretations : Interpreter.InterpretationResult[] = Interpreter.interpret(parses,
+      testWorld.currentState);
+  console.log(interpretations);
+
+  var plan : string[] = Planner.plan(interpretations, testWorld.currentState)[0].plan;
+
+  var pass : boolean = plan == ["p","r","d"];
+  if (!pass)
+    console.log("Planner test failed. Plan: ");
+    console.log(plan);
+  return pass;
 }
 
 // -----------------------------------------------
