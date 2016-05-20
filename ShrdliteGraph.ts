@@ -36,6 +36,20 @@ class StateNode {
     }
 }
 
+class AWorldState implements WorldState {
+  /** The stack of objects in each column, given as a list of
+   * stacks. Each stack is a list of strings. The strings themselves
+   * are keys into the `objects` map, i.e. identifiers. */
+  stacks: Stack[];
+  /** Which object the robot is currently holding. */
+  holding: string;
+  /** The column position of the robot arm. */
+  arm: number;
+  /** A mapping from strings to `ObjectDefinition`s. The strings are meant to be identifiers for the objects (see ExampleWorlds.ts for an example). */
+  objects: { [s:string]: ObjectDefinition; };
+  /** List of predefined example sentences/utterances that the user can choose from in the UI. */
+  examples: string[];
+}
 
 class ShrdliteGraph implements Graph<StateNode> {
 
@@ -98,20 +112,30 @@ class ShrdliteGraph implements Graph<StateNode> {
       return true;
     }
 
+
     stateDeepCopy(state : WorldState) : WorldState {
-      var newState : WorldState;
+      console.log("stateDeepCopy()");
+      var newState : WorldState = new AWorldState() ;
+      newState.stacks = new Array<string[]>();
 
       for(let stack = 0; stack < state.stacks.length; stack++) {
-        newState.stacks.push([]);
+        console.log("a");
+        newState.stacks.push(new Array<string>());
+        console.log("b");
         for(let stackElement of state.stacks[stack]){
           newState.stacks[stack].push(stackElement);
         }
       }
+
+      console.log("deep copy done");
       //newState.stacks = state.stacks;
       newState.holding = state.holding;
       newState.arm = state.arm;
       newState.objects = state.objects; // Not deep copy, but not necesary
       newState.examples = state.examples; // Not deep copy, but not necesary
+
+      console.log("check");
+      console.log(state.stacks == newState.stacks);
 
       return newState;
     }
