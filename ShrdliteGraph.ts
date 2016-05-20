@@ -8,9 +8,24 @@ class StateNode {
     ) {}
 
     compareTo(other : StateNode) : number {
-    for(var key in this.state.objects) {
-        if(!((other.state.objects[key] === this.state.objects[key]))) {
+    if(this.state.stacks.length != other.state.stacks.length){
+        return 1;
+    }
+
+    for(var i: number = 0; i < this.state.stacks.length; i++){
+        var otherStack: string[]  = other.state.stacks[i];
+        var thisStack: string[] = this.state.stacks[i];
+        if(otherStack.length != thisStack.length){
             return 1;
+        }
+        for(var j: number = 0; j < thisStack.length; ++j){
+        var thisObject: ObjectDefinition = this.state.objects[thisStack[j]];
+        var otherObject: ObjectDefinition = other.state.objects[otherStack[j]];
+        if(!(thisObject.form === otherObject.form &&
+            thisObject.size === otherObject.size &&
+            thisObject.color === otherObject.color)) {
+                return 1;
+            }
         }
     }
     return 0; //TODO implement. compare each object in the world, return 1 once difference is found
