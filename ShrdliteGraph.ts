@@ -45,16 +45,50 @@ class ShrdliteGraph implements Graph<StateNode> {
         // r l p d
         //TODO: create the up to four nodes, check whether states are possible.
 
-        var rState : WorldState = node.state; //TODO deep copy state!
-        rState.arm = rState.arm + 1;
-        var r : StateNode = new StateNode(node.state, "r");
-        if (true/*arm position is valid (compare to number of stacks?)*/)
-          outgoing.push({
-            from: node,
-            to: r, cost: 1}
-          );
+        // Case r
+        if(node.state.arm < node.state.stacks.length) {
+          var newState = this.stateDeepCopy(node.state);
+          newState.arm = newState.arm + 1;
+          var newNode : StateNode = new StateNode(newState, "r");
+          outgoing.push({from: node, to: newNode, cost:1});
+        }
 
+        // Case l
+        if(node.state.arm > 0) {
+          var newState = this.stateDeepCopy(node.state);
+          newState.arm = newState.arm - 1;
+          var newNode : StateNode = new StateNode(newState, "l");
+          outgoing.push({from: node, to: newNode, cost:1});
+        }
+
+        // Case p - if not holding anything and there is something to pick up
+        if(node.state.holding == null && node.state.stacks[node.state.arm].length > 0) {
+          var newState = this.stateDeepCopy(node.state);
+          // TODO Make modifications
+          var newNode : StateNode = new StateNode(newState, "p");
+          outgoing.push({from: node, to: newNode, cost:1});
+        }
+
+        // Case d - if holding anything and the physical rules are observed when dropping that object
+        if(node.state.holding != null && node.state.stacks[node.state.arm].length > 0) {
+          var newState = this.stateDeepCopy(node.state);
+          // TODO Make modifications
+          var newNode : StateNode = new StateNode(newState, "d");
+          outgoing.push({from: node, to: newNode, cost:1});
+        }
+        
         return outgoing;
+    }
+
+    stateDeepCopy(state : WorldState) : WorldState {
+      var newState : WorldState;
+      newState.stacks = state.stacks;
+      newState.holding = state.holding;
+      newState.arm = state.arm;
+      newState.objects = state.objects;
+      newState.examples = state.examples;
+
+      return newState;
     }
 
     compareNodes(a : StateNode, b : StateNode) : number {
@@ -62,7 +96,7 @@ class ShrdliteGraph implements Graph<StateNode> {
     }
 
     toString(start? : StateNode, goal? : (n:StateNode) => boolean, path? : StateNode[]) : string {
-        let retV: string; 
+        let retV: string;
         if(start){
             retV += "start: " + start.toString() + "\n";
         }
