@@ -86,8 +86,13 @@ module Planner {
             conjunctionTrue = conjunctionTrue && literalHolds(literal, node.state);
           }
 
-          if (conjunctionTrue)
+          if (conjunctionTrue) {
+            console.log("-----------------")
+            console.log("goal found: ");
+            console.log(conjunction);
+            console.log("-----------------")
             return true;
+          }
         }
 
         return false;
@@ -119,6 +124,12 @@ module Planner {
           heuristics,
           10);
 
+      console.log("------------------")
+      console.log("astar search result.");
+      console.log(result);
+      console.log("------------------")
+
+
       return searchResultToActions(result);
     }
 
@@ -136,7 +147,11 @@ module Planner {
       //into a "relation" class
       switch (literal.relation) {
         case "ontop":
+          console.log("ontopof");
+          console.log(literal);
+          console.log(state);
           relationHolds = Interpreter.onTopOf(state, literal.args[0], literal.args[1]);
+          console.log(relationHolds);
           break;
         case "inside":
           relationHolds = Interpreter.inside(state, literal.args[0], literal.args[1]);
