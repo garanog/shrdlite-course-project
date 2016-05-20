@@ -101,14 +101,17 @@ class ShrdliteGraph implements Graph<StateNode> {
     stateDeepCopy(state : WorldState) : WorldState {
       var newState : WorldState;
 
-      for(let stack in state.stacks) {
-        newState.stacks[stack] = state.stacks[stack];
+      for(let stack = 0; stack < state.stacks.length; stack++) {
+        newState.stacks.push([]);
+        for(let stackElement of state.stacks[stack]){
+          newState.stacks[stack].push(stackElement);
+        }
       }
       //newState.stacks = state.stacks;
       newState.holding = state.holding;
       newState.arm = state.arm;
-      newState.objects = state.objects;
-      newState.examples = state.examples;
+      newState.objects = state.objects; // Not deep copy, but not necesary
+      newState.examples = state.examples; // Not deep copy, but not necesary
 
       return newState;
     }
