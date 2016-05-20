@@ -146,11 +146,7 @@ module Planner {
       //into a "relation" class
       switch (literal.relation) {
         case "ontop":
-          console.log("ontopof");
-          console.log(literal);
-          console.log(state);
           relationHolds = Interpreter.onTopOf(state, literal.args[0], literal.args[1]);
-          console.log(relationHolds);
           break;
         case "inside":
           relationHolds = Interpreter.inside(state, literal.args[0], literal.args[1]);
