@@ -133,6 +133,18 @@ ExampleWorlds["impossible"] = {
     ]
 };
 
+ExampleWorlds["test"] = {
+    "stacks": [["a","c"],["b"]],
+    "holding": null,
+    "arm": 0,
+    "objects": {
+        "a": { "form":"brick",   "size":"large",  "color":"yellow" },
+        "b": { "form":"brick",   "size":"large",  "color":"white" },
+        "c": { "form":"brick",   "size":"small",  "color":"red"   }
+    },
+    "examples": []
+};
+
 /*
 // The world used in the example on the course webpage
 ExampleWorlds["example"] = {
