@@ -60,13 +60,15 @@ class ShrdliteGraph implements Graph<StateNode> {
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
       console.log("Outgoing edges.");
+      console.log(node.state.stacks);
+
         var outgoing : Edge<StateNode>[] = [];
 
         // r l p d
         //TODO: create the up to four nodes, check whether states are possible.
 
         // Case r
-        if(node.state.arm < node.state.stacks.length) {
+        if(node.state.arm < node.state.stacks.length - 1) {
           var newState = this.stateDeepCopy(node.state);
           newState.arm = newState.arm + 1;
           var newNode : StateNode = new StateNode(newState, "r");
