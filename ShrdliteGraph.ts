@@ -104,23 +104,17 @@ class ShrdliteGraph implements Graph<StateNode> {
       newState.stacks = new Array<string[]>();
 
       for(let stack = 0; stack < state.stacks.length; stack++) {
-        console.log("a");
         newState.stacks.push(new Array<string>());
-        console.log("b");
         for(let stackElement of state.stacks[stack]){
           newState.stacks[stack].push(stackElement);
         }
       }
 
-      console.log("deep copy done");
       //newState.stacks = state.stacks;
       newState.holding = state.holding;
       newState.arm = state.arm;
       newState.objects = state.objects; // Not deep copy, but not necesary
       newState.examples = state.examples; // Not deep copy, but not necesary
-
-      console.log("check");
-      console.log(state.stacks == newState.stacks);
 
       return newState;
     }
