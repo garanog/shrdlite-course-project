@@ -380,6 +380,7 @@ module Interpreter {
         return aPos != -1 && bPos != -1 && aPos == bPos + 1;
     }
 
+    //TODO recheck those functions: same stack?!
     export function inside(state : WorldState, a : string, b : string) : boolean {
       // TODO: do we need both onTopOf and inside?
       return onTopOf(state, a, b);

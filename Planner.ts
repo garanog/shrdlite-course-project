@@ -135,7 +135,8 @@ module Planner {
     function searchResultToActions(result : SearchResult<StateNode>) {
       var actions: Array<string> = new Array<string>();
       for (var pathElement of result.path)
-        actions.push(pathElement.action);
+        if (pathElement.action != undefined)
+          actions.push(pathElement.action);
       return actions;
     }
 

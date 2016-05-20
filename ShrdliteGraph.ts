@@ -110,9 +110,6 @@ class ShrdliteGraph implements Graph<StateNode> {
     }
 
     checkPhysics (state: WorldState, a: string, b: string): boolean {
-      console.log("---- CHECK");
-      console.log(b);
-
       let objectA = state.objects[a];
 
       //TODO: is the floor really large?
