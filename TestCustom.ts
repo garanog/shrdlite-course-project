@@ -79,7 +79,7 @@ function testPlanner() {
 
     var plan : string[] = Planner.plan(interpretations, testWorld.currentState)[0].plan;
 
-    pass = plan == ["p","r","d"];
+    pass = collections.arrays.equals(plan, ['p','r','d']);
     if (!pass)
       console.log("Planner test failed. Plan: ");
       console.log(plan);
