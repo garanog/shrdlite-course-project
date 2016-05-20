@@ -78,10 +78,12 @@ module Planner {
     function planInterpretation(interpretation : Interpreter.DNFFormula, state : WorldState) : string[] {
       var goal = ((node : StateNode) => {
         for (var conjunction of interpretation) { // conjunctions connected by ORs
-
+          console.log("Conjunction: ");
+          console.log(conjunction);
           var conjunctionTrue = true;
           for (var literal of conjunction) { // literals connected by ANDs
             conjunctionTrue = conjunctionTrue && literalHolds(literal, node.state);
+            console.log("ConjunctionTrue: " + conjunctionTrue);
           }
 
           if (conjunctionTrue)
@@ -158,10 +160,10 @@ module Planner {
     }
 
     function calculateDistance(literal : Interpreter.Literal, state : WorldState) : number{
-      
+
       // Version 0
       var lowestDistance : number = 1;
-      
+
       /*
       // Version 1
       var lowestDistance : number = 1;
