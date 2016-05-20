@@ -152,7 +152,7 @@ module Interpreter {
       return interpretObject(entity.object, state);
     }
 
-    /* 
+    /*
     * Interprets the information given from the entityObject, and returns a list
     * of the keys to all objects from the world that matches that information.
     */
@@ -168,10 +168,10 @@ module Interpreter {
       }
     }
 
-    /* 
+    /*
     * Interprets information about a "simple" parser-obejct.
     * A simple object contains information about the color, size and form of the
-    * objects searched for. All objects that match the description will be found 
+    * objects searched for. All objects that match the description will be found
     * by searching through all obects in the given worldstate and compared.
     */
     function interpretSimpleObject(entityObject : Parser.Object,
@@ -201,11 +201,11 @@ module Interpreter {
       return matchingSet;
     }
 
-    /* 
+    /*
     * Interprets information about a "complex" parser-object.
     * A complex object contains information about a kind of object that is related to
     * another type of object, and will return a list of all obects that fits the
-    * description and is correctly related to a object of the second type. It will 
+    * description and is correctly related to a object of the second type. It will
     * recursively find lists of all objects matching the given information, and check
     * which ones fulfills the relation.
     */
@@ -367,6 +367,12 @@ module Interpreter {
     export function onTopOf(state : WorldState, a : string, b : string) : boolean {
       var aPos = getYPosition(state, a);
       var bPos = getYPosition(state, b);
+
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+
+      if (aCol != bCol)
+        return false;
 
       if (b == "floor")
         return aPos == 0;
