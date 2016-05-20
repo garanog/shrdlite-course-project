@@ -76,6 +76,8 @@ module Planner {
      * be added using the `push` method.
      */
     function planInterpretation(interpretation : Interpreter.DNFFormula, state : WorldState) : string[] {
+      console.log("Plan interpretation.");
+
       var goal = ((node : StateNode) => {
         for (var conjunction of interpretation) { // conjunctions connected by ORs
 
@@ -106,6 +108,10 @@ module Planner {
         return minDistance;
       });
 
+      console.log("------------------")
+      console.log("Running astar search.");
+      console.log(state);
+      console.log("------------------")
       var result : SearchResult<StateNode> = aStarSearch(
           new ShrdliteGraph(),
           new StateNode(state),
@@ -158,10 +164,10 @@ module Planner {
     }
 
     function calculateDistance(literal : Interpreter.Literal, state : WorldState) : number{
-      
+
       // Version 0
       var lowestDistance : number = 1;
-      
+
       /*
       // Version 1
       var lowestDistance : number = 1;

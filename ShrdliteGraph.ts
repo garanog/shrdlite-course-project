@@ -40,6 +40,7 @@ class StateNode {
 class ShrdliteGraph implements Graph<StateNode> {
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
+      console.log("Outgoing edges.");
         var outgoing : Edge<StateNode>[] = [];
 
         // r l p d
@@ -82,6 +83,13 @@ class ShrdliteGraph implements Graph<StateNode> {
           outgoing.push({from: node, to: newNode, cost:1});
         }
 
+<<<<<<< HEAD
+=======
+        console.log("-----------");
+        console.log("outgoing edges.");
+        console.log(node);
+        console.log(outgoing);
+>>>>>>> debug outputs
         return outgoing;
     }
 
