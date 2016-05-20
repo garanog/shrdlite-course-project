@@ -66,22 +66,28 @@ function testHolds(testcase : HoldsTestCase) {
 }
 
 function testPlanner() {
-  var testWorld : World = new TextWorld(ExampleWorlds["test"]);
+  var pass : boolean = false;
+  try {
+    var testWorld : World = new TextWorld(ExampleWorlds["test"]);
 
-  var parses : Parser.ParseResult[] = Parser.parse("put the red brick on the white brick");
-  console.log(parses);
+    var parses : Parser.ParseResult[] = Parser.parse("put the red brick on the white brick");
+    console.log(parses);
 
-  var interpretations : Interpreter.InterpretationResult[] = Interpreter.interpret(parses,
-      testWorld.currentState);
-  console.log(interpretations);
+    var interpretations : Interpreter.InterpretationResult[] = Interpreter.interpret(parses,
+        testWorld.currentState);
+    console.log(interpretations);
 
-  var plan : string[] = Planner.plan(interpretations, testWorld.currentState)[0].plan;
+    var plan : string[] = Planner.plan(interpretations, testWorld.currentState)[0].plan;
 
-  var pass : boolean = plan == ["p","r","d"];
-  if (!pass)
-    console.log("Planner test failed. Plan: ");
-    console.log(plan);
-  return pass;
+    pass = plan == ["p","r","d"];
+    if (!pass)
+      console.log("Planner test failed. Plan: ");
+      console.log(plan);
+    }catch(err) {
+        console.log("ERROR: Planning error!", err);
+        pass = false;
+    }
+    return pass;
 }
 
 // -----------------------------------------------
