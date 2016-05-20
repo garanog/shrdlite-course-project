@@ -80,12 +80,9 @@ module Planner {
 
       var goal = ((node : StateNode) => {
         for (var conjunction of interpretation) { // conjunctions connected by ORs
-          console.log("Conjunction: ");
-          console.log(conjunction);
           var conjunctionTrue = true;
           for (var literal of conjunction) { // literals connected by ANDs
             conjunctionTrue = conjunctionTrue && literalHolds(literal, node.state);
-            console.log("ConjunctionTrue: " + conjunctionTrue);
           }
 
           if (conjunctionTrue) {
