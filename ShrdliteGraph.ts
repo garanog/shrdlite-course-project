@@ -1,14 +1,19 @@
 ///<reference path="Graph.ts"/>
 ///<reference path="World.ts"/>
 
+
 class StateNode {
     constructor(
         public state : WorldState,
         public action? : string
     ) {}
 
-    compareTo(other : StateNode) : number {
-    if(this.state.stacks.length != other.state.stacks.length){
+
+compareTo(other : StateNode) : number {
+
+    if(this.state.stacks.length != other.state.stacks.length ||
+        this.state.holding != other.state.holding ||
+        this.state.arm != other.state.arm) {
         return 1;
     }
 
