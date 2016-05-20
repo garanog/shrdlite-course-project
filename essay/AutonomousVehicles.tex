@@ -58,35 +58,37 @@ Along with the technological difficulties \changed{the developers of AVs} face b
 
 The dream of self-driving cars does however hold many promises, with one of it's bigger points being safety. In 2011 more than 2.2 million injuries were caused by automobile crashes in the United States alone \cite[p. 14]{Anderson2014rand}, while more than 39 percent of all fatalities involved alcohol \cite[p. 16]{Anderson2014rand}. With a far greater field of vision, reaction time and control of safety-critical functions, the hope is that AV could drastically reduce these statistics. 
 
-\changed{In this essay we intend to answer the questions of how the technology works today, whether or not it will change our life in a positive way and what problems still needs to be addressed as well as how the current technology handles those problems.
+In this essay we intend to answer the questions of how the technology works today, whether or not it will change our life in a positive way and what problems still needs to be addressed as well as how the current technology handles those problems.
 
 \section{How AVs work}
 \label{sec:howavswork}
-In order to get autonomous vehicles onto the road many different technologies need to combined into one final product. Below is a description of these technologies and how each is encapsulated in the system as a whole. The description is split into two main sections, one about the sensors used on the car and the other on the software used by the car. The physical body of the car and the engine tend to be similar to normal cars. The focus of these section is on the Google self driving car. 
+\changed{In order to get autonomous vehicles onto the road, many different technologies need to be combined into one final product. We give a description of these technologies and how they are encapsulated in the system as a whole in the following two subsections, one of which focuses on the sensors and the other on the software used in the car. The physical body of the car and the engine tend to be similar to normal cars. The focus of this section is on the Google self driving car.}
 
 \subsection{Sensors}
-In order for the autonomous vehicles to navigate the real world, its software needs to obtain data about itself and its surroundings. For that purpose, AVs have several types of sensors incorporated to its body. The software processes the data provided by those sensors to create a virtual representation of the real world which can then use to calculate which actions to take to reach its destination. There are two main types of sensors: Exterioceptive and proprioceptive. The former deals with information from the AV's environment, while the later deals with information internal to the system\cite{BeesonTexas09}. Some examples of the data that can be obtained within each class are:
+\changed{In order for an AV to navigate the real world, its software needs to obtain data about itself and its surroundings}. For that purpose, it has several types of sensors incorporated into its body. The software processes the data provided by those sensors to create a virtual representation of the real world which can then be used to calculate which actions to perform to reach its destination. There are two main types of sensors: Exterioceptive and proprioceptive. The former deals with information from the AV's environment, while the latter deals with information internal to the system \cite{BeesonTexas09}. Some examples of the data that can be obtained within each class are:
 \begin{itemize}
 	\item Extereoceptive: Distances to objects, object types, objects' speed and heading.
 	\item Proprioceptive: Motor speed, wheel load, heading, position, battery status.
 \end{itemize}
 For a more functional perspective, the sensors can be organized into categories defined by its use cases for AVs:
 \\\\\textbf{Know where you are going}:
-		\begin{itemize}
-			\item \textbf{GPS}: It allows the AV to determine its position in absolute terms. In optimal conditions it has good accuracy and precision. It cannot be constantly relied upon due to intermittent coverage caused by tunnels, canyons, buildings, radio interference, etc. \cite{SchweberMouser}
-			\item \textbf{IMU} (Inertial Measurement Unit): A type of dead-reckoning\footnote{Dead-reckoning is the process of calculating one's current position by using a previously determined position, and advancing that position based upon known speeds over elapsed time and course.} system using a 3-axis accelerometer providing data on linear motion, and a 3-axis gyroscope providing data on rotational motion. This data is then used to calculate the motion and relative position of the vehicle regardless of any sort of signal obstruction. It has good accuracy for short periods but has cumulative error so over time it gets very inaccurate.\cite{SchweberMouser}\cite{HellstromUmea}
-			\item \textbf{Compass}: It can be used to determine the AV's heading. It has good accuracy which doesn't change over time but it is subject to interference by magnetic objects and electrical sources. It also can be slow to settle except for the most expensive types.\cite{HellstromUmea}\cite{BeesonTexas09}
-			\item \textbf{Ground speed RADAR}: Measures real ground speed using the Doppler effect. It can be used for dead-reckoning.\cite{HellstromUmea}
-			\item \textbf{Wheel odometry}: Used for dead-reckoning. Uses optical encoders to measure the speed of the wheels and the direction of the steering wheel from which the relative position of the AV can be calculated.\cite{HellstromUmea}\cite{BeesonTexas09}
-		\end{itemize}
+\begin{itemize}
+\item \textbf{GPS}: It allows the AV to determine its position in absolute terms. In optimal conditions it has good accuracy and precision. It cannot be constantly relied upon due to intermittent coverage caused by tunnels, canyons, buildings, radio interference, etc. \cite{SchweberMouser}
+\item \textbf{IMU} (Inertial Measurement Unit): A type of dead-reckoning\footnote{Dead-reckoning is the process of calculating one's current position by using a previously determined position, and advancing that position based upon known speeds over elapsed time and course.} system using a 3-axis accelerometer providing data on linear motion, and a 3-axis gyroscope providing data on rotational motion. This data is then used to calculate the motion and relative position of the vehicle regardless of any sort of signal obstruction. It has good accuracy for short periods but has cumulative error so over time it gets very inaccurate.\cite{SchweberMouser}\cite{HellstromUmea}
+\item \textbf{Compass}: It can be used to determine the AV's heading. It has good accuracy which doesn't change over time but it is subject to interference by magnetic objects and electrical sources. It also can be slow to settle except for the most expensive types.\cite{HellstromUmea}\cite{BeesonTexas09}
+\item \textbf{Ground speed RADAR}: Measures real ground speed using the Doppler effect. It can be used for dead-reckoning.\cite{HellstromUmea}
+\item \textbf{Wheel odometry}: Used for dead-reckoning. Uses optical encoders to measure the speed of the wheels and the direction of the steering wheel from which the relative position of the AV can be calculated.\cite{HellstromUmea}\cite{BeesonTexas09}
+\end{itemize}
+
 \textbf{See where you are going}:
-		\begin{itemize}
-			\item \textbf{LIDAR}: The device emits laser pulses, and measures the time the beam takes to reflect back to the sensor (Time-of-flight), then it calculates the distance using that measurement. By using a rotating, scanning mirror assembly on top of the AV, it provides 3D 360{\textdegree} view suitable for ``big picture'' imaging. It is not very effective for close-in control.\cite{SchweberMouser}\cite{BeesonTexas09}
-			\item \textbf{Cameras}: They are typically used to enhance the resolution of the 3D information obtained by the LIDAR, as well as detecting street signs and road markings. Its effectiveness is affected by reduced visibility conditions such as dusk, bad weather and dirt on the lens.\cite{SchweberMouser}\cite{HellstromUmea}
-			\item \textbf{RADAR}: Similar to LIDAR but instead of laser it uses a normal radio wave beam (usually 77GHz) to measure distance. It is used for close-in control instead of LIDAR: Parking, lane-changing and bumper-to-bumper traffic.\cite{SchweberMouser}\cite{BeesonTexas09}\cite{HellstromUmea}
-		\end{itemize}
+\begin{itemize}
+\item \textbf{LIDAR}: The device emits laser pulses, and measures the time the beam takes to reflect back to the sensor (Time-of-flight), then it calculates the distance using that measurement. By using a rotating, scanning mirror assembly on top of the AV, it provides 3D 360{\textdegree} view suitable for ``big picture'' imaging. It is not very effective for close-in control.\cite{SchweberMouser}\cite{BeesonTexas09}
+\item \textbf{Cameras}: They are typically used to enhance the resolution of the 3D information obtained by the LIDAR, as well as detecting street signs and road markings. Its effectiveness is affected by reduced visibility conditions such as dusk, bad weather and dirt on the lens.\cite{SchweberMouser}\cite{HellstromUmea}
+\item \textbf{RADAR}: Similar to LIDAR but instead of laser it uses a normal radio wave beam (usually 77GHz) to measure distance. It is used for close-in control instead of LIDAR: Parking, lane-changing and bumper-to-bumper traffic.\cite{SchweberMouser}\cite{BeesonTexas09}\cite{HellstromUmea}
+\end{itemize}
+
 \textbf{Get where you are going}:
-		Other sensors are needed for the correct operation of the AV, which deal with the internal state of the vehicle, such as: Battery \& fuel level sensors, engine temperature, oil pressure, etc.
+Other sensors are needed for the correct operation of the AV, which deal with the internal state of the vehicle, such as: Battery \& fuel level sensors, engine temperature, oil pressure, etc.
 
 Sensor are not perfect, they have reliability issues and the data provided is generally noisy. It is therefore common to use sensor fusion, a probabilistic approach to sensor reading in which each sensor readout gives a probability for the results, many readouts are then fused into a combined result. The resulting information has less uncertainty than would be possible when these sources were used individually.\cite{HellstromUmea}
 
