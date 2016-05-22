@@ -196,6 +196,15 @@ module Interpreter {
             }
           }
         }
+        if (state.holding != null){
+          let heldObject : ObjectDefinition = state.objects[state.holding];
+          if  ((desiredSize  == null || heldObject.size  == desiredSize) &&
+                (desiredColor == null || heldObject.color == desiredColor) &&
+                (desiredForm  == null || desiredForm == "anyform" || heldObject.form  == desiredForm)) {
+                  matchingSet.add(state.holding);
+            }
+        }
+              
       }
 
       return matchingSet;
