@@ -222,7 +222,7 @@ module Interpreter {
 
       for (let originalObject of originalObjects.toArray()) {
         let correctlyPlaced : boolean = true;
-        /*
+        
         switch (relation) {
           case "ontop":
             correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
@@ -247,7 +247,7 @@ module Interpreter {
             break;
           default:
             break;
-        }*/
+        }
 
         if (correctlyPlaced)
           matchingSet.add(originalObject);

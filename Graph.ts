@@ -77,12 +77,12 @@ function aStarSearch<Node> (
   // reachable nodes and if we have not yet found the goal node there is no solution.
   while (!frontier.isEmpty()) {
 
-    if (visited.size() < 5){
+    /*if (visited.size() < 5){
       console.log("\n----------------");
       for (var node of visited.toArray()){
         console.log("Visited node: " + node);
       }
-    }
+    }*/
 
     // Check if we have exeeded allowed time, or if a timeout must happen.
     var end = new Date().getTime();
