@@ -167,6 +167,9 @@ module Planner {
         case "rightof":
           relationHolds = Interpreter.rightOf(state, literal.args[0], literal.args[1]);
           break;
+        case "holding":
+          relationHolds = state.holding === literal.args[0]; 
+          break;
         default:
           throw new Error("Unknown relation: " + literal.relation);
       }
@@ -175,10 +178,10 @@ module Planner {
     }
 
     function calculateDistance(literal : Interpreter.Literal, state : WorldState) : number{
-
+      /*
       // Version 0
       var lowestDistance : number = 1;
-
+      */
       /*
       // Version 1
       var lowestDistance : number = 1;
@@ -197,7 +200,7 @@ module Planner {
         }
       }
       */
-      /*
+      ///*
       // Version 3
       var totalDistance : number = 0;
       for (var argument of literal.args){
@@ -218,8 +221,9 @@ module Planner {
         }
         totalDistance = totalDistance + lowestDistance;
       }
+      console.log(totalDistance);
       return totalDistance;
-      */
-      return lowestDistance;
+      //*/
+      //return lowestDistance;
     }
 }
