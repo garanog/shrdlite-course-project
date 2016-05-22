@@ -389,6 +389,13 @@ module Interpreter {
     export function above(state : WorldState, a : string, b : string) : boolean {
       var aPos = getYPosition(state, a);
       var bPos = getYPosition(state, b);
+
+      var aCol = getColumn(state, a);
+      var bCol = getColumn(state, b);
+
+      if (aCol != bCol)
+        return false;
+        
       if (b == "floor")
         return aPos != -1;
       else
