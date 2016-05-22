@@ -96,6 +96,7 @@ module Interpreter {
     }
 
     function stringifyDNF(formula: DNFFormula): string {
+      console.log("stringifyDNF")
       return formula.map((literals) => {
           return literals.map((lit) => stringifyLiteral(lit)).join(" & ");
           // return literals.map(stringifyLiteral).join(" & ");
@@ -222,7 +223,7 @@ module Interpreter {
 
       for (let originalObject of originalObjects.toArray()) {
         let correctlyPlaced : boolean = true;
-        
+
         switch (relation) {
           case "ontop":
             correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
@@ -286,8 +287,7 @@ module Interpreter {
         }
       }
       if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
-      console.log("DNFFormula ", stringifyDNF(result));
-      console.log("DNF: " + result);
+      //console.log("DNFFormula " + stringifyDNF(result));
       return result;
     }
 
@@ -303,7 +303,7 @@ module Interpreter {
         result.push([{polarity:true, relation:theRelation, args:[object.toString()]}]);
       }
       if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
-      console.log("DNFFormula ", stringifyDNF(result));
+      //console.log("DNFFormula ", stringifyDNF(result));
       return result;
     }
 
@@ -373,11 +373,10 @@ module Interpreter {
       var aCol = getColumn(state, a);
       var bCol = getColumn(state, b);
 
-      if (aCol != bCol)
-        return false;
-
       if (b == "floor")
         return aPos == 0;
+      else if (aCol != bCol)
+        return false;
       else
         return aPos != -1 && bPos != -1 && aPos == bPos + 1;
     }
@@ -395,11 +394,12 @@ module Interpreter {
       var aCol = getColumn(state, a);
       var bCol = getColumn(state, b);
 
-      if (aCol != bCol)
-        return false;
+      
         
       if (b == "floor")
         return true;//aPos != -1;
+      else if (aCol != bCol)
+        return false;
       else
         return aPos != -1 && bPos != -1 && aPos > bPos;
     }

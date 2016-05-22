@@ -121,7 +121,7 @@ module Planner {
           new StateNode(state),
           goal,
           heuristics,
-          10);
+          15);
 
       console.log("------------------")
       console.log("astar search result.");
