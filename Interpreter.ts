@@ -397,7 +397,7 @@ module Interpreter {
         return false;
         
       if (b == "floor")
-        return aPos != -1;
+        return true;//aPos != -1;
       else
         return aPos != -1 && bPos != -1 && aPos > bPos;
     }
