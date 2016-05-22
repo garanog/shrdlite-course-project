@@ -221,7 +221,8 @@ module Interpreter {
       let relation : string = entityObject.location.relation;
 
       for (let originalObject of originalObjects.toArray()) {
-        let correctlyPlaced : boolean = false;
+        let correctlyPlaced : boolean = true;
+        /*
         switch (relation) {
           case "ontop":
             correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
@@ -246,7 +247,7 @@ module Interpreter {
             break;
           default:
             break;
-        }
+        }*/
 
         if (correctlyPlaced)
           matchingSet.add(originalObject);
@@ -286,6 +287,7 @@ module Interpreter {
       }
       if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
       console.log("DNFFormula ", stringifyDNF(result));
+      console.log("DNF: " + result);
       return result;
     }
 
