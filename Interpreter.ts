@@ -96,7 +96,6 @@ module Interpreter {
     }
 
     function stringifyDNF(formula: DNFFormula): string {
-      console.log("stringifyDNF")
       return formula.map((literals) => {
           return literals.map((lit) => stringifyLiteral(lit)).join(" & ");
           // return literals.map(stringifyLiteral).join(" & ");
@@ -286,8 +285,11 @@ module Interpreter {
             result.push([{polarity:true, relation:theRelation, args:[object.toString(),location.toString()]}]);
         }
       }
-      if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
-      //console.log("DNFFormula " + stringifyDNF(result));
+      if (result.length == 0) {
+        result.push([{polarity:null, relation:null, args:null}]);
+        throw "No results found";
+      }
+      else console.log("DNFFormula " + stringifyDNF(result));
       return result;
     }
 
@@ -302,8 +304,11 @@ module Interpreter {
       for (let object of objectSet) {
         result.push([{polarity:true, relation:theRelation, args:[object.toString()]}]);
       }
-      if (result.length == 0) result.push([{polarity:null, relation:null, args:null}]);
-      //console.log("DNFFormula ", stringifyDNF(result));
+      if (result.length == 0) {
+        result.push([{polarity:null, relation:null, args:[]}]);
+        throw "no results found"
+      }
+      else console.log("DNFFormula ", stringifyDNF(result));
       return result;
     }
 
@@ -321,7 +326,6 @@ module Interpreter {
 
       switch (relation) {
         case "ontop":
-          //console.log("ontop check, ", objectA, objectB);
           if (objectA.form == "ball")                                           // Balls must be in boxes or on the floor, otherwise they roll away.
             if (objectB.form != "box" && objectB.form != "floor")
               return false;
@@ -393,7 +397,6 @@ module Interpreter {
 
       var aCol = getColumn(state, a);
       var bCol = getColumn(state, b);
-
       
         
       if (b == "floor")
