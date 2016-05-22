@@ -34,6 +34,18 @@ interface WorldState {
 
 type Stack = string[];
 
+function worldStateString(state: WorldState) {
+    var retV: string = "\n";
+    for(var stack of state.stacks){
+        for(var str of stack){
+            retV += " " + str + ", ";
+        }
+        retV += "\n";
+    }
+    retV += "arm: " + state.arm + " holding: " + state.holding + "\n"; 
+    return retV;
+}
+
 /**
 * Interface for a world. Abstracts over the I/O required to read user
 * input, print the world and perform a plan. This is needed to support

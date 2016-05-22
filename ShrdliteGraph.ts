@@ -37,7 +37,7 @@ compareTo(other : StateNode) : number {
     }
 
     toString() : string {
-        return "(" + this.state + ")";
+        return "(" + worldStateString(this.state) + ")";
     }
 }
 

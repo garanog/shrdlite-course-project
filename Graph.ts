@@ -15,6 +15,10 @@ class Edge<Node> {
     from : Node;
     to   : Node;
     cost : number;
+
+    toString(): string {
+        return "from:" + this.from + " to:" + this.to + " cost:" + this.cost;
+    } 
 }
 
 /** A directed graph. */
@@ -72,6 +76,13 @@ function aStarSearch<Node> (
   // Check for each path in the frontier. If the frontier becomes empty, it means there are no more
   // reachable nodes and if we have not yet found the goal node there is no solution.
   while (!frontier.isEmpty()) {
+
+    if (visited.size() < 5){
+      console.log("\n----------------");
+      for (var node of visited.toArray()){
+        console.log("Visited node: " + node);
+      }
+    }
 
     // Check if we have exeeded allowed time, or if a timeout must happen.
     var end = new Date().getTime();
