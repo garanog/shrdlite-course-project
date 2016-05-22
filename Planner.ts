@@ -181,8 +181,8 @@ module Planner {
       /*
       // Version 0
       var lowestDistance : number = 1;
-      */
-      ///*
+      //*/
+      /*
       // Version 1
       var lowestDistance : number = 1;
       var distanceInStack : number;
@@ -200,29 +200,31 @@ module Planner {
         }
       }
       //*/
-      /*
+      //*
       // Version 3
       var totalDistance : number = 0;
       for (var argument of literal.args){
         var lowestDistance : number = 1;
-        var distanceInStack : number;
-        for (var stack of state.stacks){
-          distanceInStack = -1;
-          for (var objectName of stack){
-            if (argument == objectName){
-              distanceInStack = 1;
-            } else if (distanceInStack != -1){
-              distanceInStack = distanceInStack + 3;
+        if(state.holding !== argument){
+          var distanceInStack : number;
+          for (var stack of state.stacks){
+            distanceInStack = -1;
+            for (var objectName of stack){
+              if (argument == objectName){
+                distanceInStack = 1;
+              } else if (distanceInStack != -1){
+                distanceInStack = distanceInStack + 3;
+              }
             }
-          }
-          if (distanceInStack != -1){
-            lowestDistance = lowestDistance < (distanceInStack) ? lowestDistance : (distanceInStack);
+            if (distanceInStack != -1){
+              lowestDistance = lowestDistance < (distanceInStack) ? lowestDistance : (distanceInStack);
+            }
           }
         }
         totalDistance = totalDistance + lowestDistance;
       }
       return totalDistance;
-      */
-      return lowestDistance;
+      //*/
+      //return lowestDistance;
     }
 }
