@@ -122,6 +122,8 @@ module Interpreter {
           return interpretTakeCommand(cmd, state);
         case "put":
           return interpretPutCommand(cmd, state);
+        case "where is":
+            return interpretWhereIsQuestion(cmd, state);    
         }
         return null;
     }
