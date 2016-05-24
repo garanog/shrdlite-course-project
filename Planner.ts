@@ -121,7 +121,7 @@ module Planner {
           new StateNode(state),
           goal,
           heuristics,
-          15);
+          10);
 
       console.log("------------------")
       console.log("astar search result.");
@@ -182,7 +182,7 @@ module Planner {
       // Version 0
       var lowestDistance : number = 1;
       //*/
-      /*
+      //*
       // Version 1
       var lowestDistance : number = 1;
       var distanceInStack : number;
@@ -200,7 +200,7 @@ module Planner {
         }
       }
       //*/
-      //*
+      /*
       // Version 3
       var totalDistance : number = 0;
       for (var argument of literal.args){
@@ -224,7 +224,7 @@ module Planner {
         totalDistance = totalDistance + lowestDistance;
       }
       return totalDistance;
-      //*/
-      //return lowestDistance;
+      /*/
+      return lowestDistance;
     }
 }
