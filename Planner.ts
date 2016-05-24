@@ -223,8 +223,8 @@ module Planner {
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
-        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
-        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objA : objB)) + 1;
+        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
+        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objB : objA)) + 1;
         
         let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
         if (notHeldYPos == state.stacks[notHeldCol].length){
@@ -297,7 +297,7 @@ module Planner {
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
-        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
+        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
         
         let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
         return distanceToStack == 0 ? 2 : distanceToStack;
@@ -328,7 +328,7 @@ module Planner {
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
-        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
+        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
         
         if (state.arm < notHeldCol) return 1;
 
