@@ -188,6 +188,11 @@ module Planner {
             return calculateDistanceOntop(literal.args[0], literal.args[1], state);
           case "under":
             return calculateDistanceOntop(literal.args[1], literal.args[0], state);
+          case "beside":
+
+          case "leftof":
+          case "rightof":
+          case "holding":
           default:
               // code...
               break;
@@ -256,10 +261,25 @@ module Planner {
           return state.holding === objA ? 1 : 0;
       }
 
+      if (state.holding === objA){
+        let col = Interpreter.getColumn(state, objB);
+        let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
+        return distanceToStack + 1;
+
+      } else if (state.holding === objB){
+        let col = Interpreter.getColumn(state, objA);
+        let yPos = Interpreter.getYPosition(state, objA);
+        
+        let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
+        let emptyStack : number = (state.stacks[col].length - yPos) * 4;
+        return distanceToStack + emptyStack + 2;
+
+      }
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
       var yPosA : number = Interpreter.getYPosition(state, objA);
+<<<<<<< HEAD
       var yPosB : number = Interpreter.getYPosition(state, objB);
 
       if (colA == colB){
@@ -268,5 +288,11 @@ module Planner {
           return initialArmMovement + emptyStack + 3;
 
       }
+=======
+      let initialArmMovement : number = state.arm > colA ? state.arm - colA : colA - state.arm;
+      let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
+      return initialArmMovement + emptyStack + 3;
+>>>>>>> finished heuristics for 'above'
     }
+
 }
