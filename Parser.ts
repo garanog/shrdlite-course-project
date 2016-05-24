@@ -18,7 +18,7 @@ module Parser {
         var nearleyParser = new nearley.Parser(grammar.ParserRules, grammar.ParserStart);
         var parsestr = input.toLowerCase().replace(/\W/g, "");
         try {
-            var results : Command[] = nearleyParser.feed(parsestr).results;
+            var results : Utterance[] = nearleyParser.feed(parsestr).results;
         } catch(err) {
             if ('offset' in err) {
                 throw new Error('Parsing failed after ' + err.offset + ' characters');
@@ -40,8 +40,14 @@ module Parser {
     export interface ParseResult {
 	/** The input string given by the user. */
         input : string;
-	/** The `Command` structure that the parser built from `input`. */
-        parse : Command;
+	/** The `utterance` structure that the parser built from `input`. */
+        parse : Utterance;
+    }
+
+    export interface Utterance {
+        type: string;
+        command?: Command;
+        question?: Question;
     }
 
     /** The type of a command for the robot. */
@@ -52,6 +58,11 @@ module Parser {
         entity? : Entity;
 	/** For verbs of motion, this specifies the destination of the action. */
         location? : Location;
+    }
+
+    export interface Question {
+        question: string;
+        entity?: Entity;
     }
 
     /** A quantified reference (as yet uninterpreted) to an object in the world. */
@@ -122,7 +133,7 @@ declare module "nearley" {
     export class Parser {
         constructor(rules: {[s:string]:any}, start: string);
         feed(sentence: string) : {
-            results : Parser.Command[];
+            results : Parser.Utterance[];
         }
     }
 }

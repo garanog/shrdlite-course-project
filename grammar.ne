@@ -35,14 +35,14 @@ function R(obj) {
 
 ## Grammar rules
 
-main --> will_you:? please:? command please:?  {% R(2) %}  
-main --> please? command please? { R
+main --> will_you:? please:? command please:?  {% R({type:"command", command:2}) %}  
+main --> please:? question please:? {% R({type:"question", question:1}) %}
 
 command --> take entity           {% R({command:"take", entity:1}) %}
 command --> move  it    location  {% R({command:"put", location:2}) %}
 command --> move entity location  {% R({command:"move", entity:1, location:2}) %}
 
-question  --> questionWord entity    {% R({command:"where is", entity:1}) %}
+question  --> questionWord entity    {% R({question:"where is", entity:1}) %}
     
 
 location --> relation entity  {% R({relation:0, entity:1}) %}

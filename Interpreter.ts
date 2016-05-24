@@ -44,7 +44,7 @@ module Interpreter {
         parses.forEach((parseresult) => {
             try {
                 let result: InterpretationResult = <InterpretationResult>parseresult;
-                result.interpretation = interpretCommand(result.parse, currentState);
+                result.interpretation = interpretUtterance(result.parse, currentState);
                 interpretations.push(result);
             } catch (err) {
                 errors.push(err);
@@ -104,6 +104,11 @@ module Interpreter {
 
     //////////////////////////////////////////////////////////////////////
     // private functions
+    
+    // function interpretUtterance(utr: Parser.Utterance, state: WorldState): void{
+    // }
+
+    
     /**
      * The core interpretation function. Interprets a command, as it has been
      * parsed by the parser into a DNF formula representing the goal of the
@@ -123,11 +128,11 @@ module Interpreter {
         case "put":
           return interpretPutCommand(cmd, state);
         case "where is":
-            return interpretWhereIsQuestion(cmd, state);    
+        //  return interpretWhereIsQuestion(cmd, state);    
         }
         return null;
     }
-
+    
     function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
       let setOfObjects = interpretEntity(cmd.entity, state);
       let relation = cmd.location.relation;
