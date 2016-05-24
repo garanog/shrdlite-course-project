@@ -195,6 +195,7 @@ module Planner {
           case "rightof":
             return calculateDistanceLeftOf(literal.args[1], literal.args[0], state);
           case "holding":
+            return calculateDistanceHolding(literal.args[0], state);
           default:
               // code...
               break;
@@ -344,6 +345,18 @@ module Planner {
 
       return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
           initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB;
+    }
+
+    function calculateDistanceHolding(obj : string, state : WorldState) : number {
+      if (state.holding === obj ) return 0;
+
+      let col = Interpreter.getColumn(state, obj);
+      let yPos = Interpreter.getYPosition(state, obj);
+
+      var initialArmMovements : number = state.arm >= col ? state.arm - col : col - state.arm;
+      var emptyStack : number = (state.stacks[col].length - yPos * 4);
+
+      return initialArmMovements + emptyStack + 1;
     }
 
 }
