@@ -266,6 +266,7 @@ module Planner {
           let initialArmMovement = state.arm > colA ? state.arm - colA : colA - state.arm;
           let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
           return initialArmMovement + emptyStack + 3;
+
       }
     }
 }
