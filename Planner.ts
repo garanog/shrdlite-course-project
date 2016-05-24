@@ -189,7 +189,7 @@ module Planner {
           case "under":
             return calculateDistanceOntop(literal.args[1], literal.args[0], state);
           case "beside":
-
+            return calculateDistanceBeside(literal.args[0], literal.args[1], state);
           case "leftof":
           case "rightof":
           case "holding":
@@ -282,6 +282,35 @@ module Planner {
       let initialArmMovement : number = state.arm > colA ? state.arm - colA : colA - state.arm;
       let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
       return initialArmMovement + emptyStack + 3;
+    }
+
+    function calculateDistanceBeside(objA : string, objB : string, state : WorldState) : number {
+      if (Interpreter.beside(state, objA, objB)) return 0;
+
+      if (state.holding === objA || state.holding === objB){
+        let held : string = state.holding;
+        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
+        
+        let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
+        return distanceToStack == 0 ? 2 : distanceToStack;
+
+      }
+
+      var colA : number = Interpreter.getColumn(state, objA);
+      var colB : number = Interpreter.getColumn(state, objB);
+
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+
+      var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
+      var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
+      var moveAToB : number = (colA > colB ? colA - colB : colB - colA) + 1;
+
+      var initialArmMovementsToB : number = state.arm >= colB ? state.arm - colB : colB - state.arm;
+      var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
+
+      return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
+          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB;
     }
 
 }
