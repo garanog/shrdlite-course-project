@@ -442,7 +442,7 @@ module Interpreter {
     @ returns The zero-based column the the object is in, or -1 if it's not
     part of the world.
     */
-    function getColumn(state : WorldState, a : string) : number {
+    export function getColumn(state : WorldState, a : string) : number {
       if (state.objects[a] != null) {
         for (let s : number = 0; s < state.stacks.length; s++ ) {
             if (state.stacks[s].indexOf(a) > -1)
@@ -456,7 +456,7 @@ module Interpreter {
     @ returns The zero-based position (counted from the floor) in the stack
       the given object is located in, or -1 if it's not part of the world.
     */
-    function getYPosition(state : WorldState, b : string) : number {
+    export function getYPosition(state : WorldState, b : string) : number {
       var stack = getColumn(state, b);
       if (stack != -1)
         return state.stacks[stack].indexOf(b);
