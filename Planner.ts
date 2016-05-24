@@ -191,7 +191,9 @@ module Planner {
           case "beside":
             return calculateDistanceBeside(literal.args[0], literal.args[1], state);
           case "leftof":
+            return calculateDistanceLeftOf(literal.args[0], literal.args[1], state);
           case "rightof":
+            return calculateDistanceLeftOf(literal.args[1], literal.args[0], state);
           case "holding":
           default:
               // code...
@@ -305,6 +307,37 @@ module Planner {
       var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
       var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
       var moveAToB : number = (colA > colB ? colA - colB : colB - colA) + 1;
+
+      var initialArmMovementsToB : number = state.arm >= colB ? state.arm - colB : colB - state.arm;
+      var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
+
+      return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
+          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB;
+    }
+
+    function calculateDistanceLeftOf(objA : string, objB : string, state : WorldState) : number {
+      if (Interpreter.leftOf(state, objA, objB)) return 0;
+
+      if (state.holding === objA || state.holding === objB){
+        let held : string = state.holding;
+        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
+        
+        if (state.arm < notHeldCol) return 1;
+
+        let distanceToStack : number = state.arm - notHeldCol;
+        return distanceToStack + 2;
+
+      }
+
+      var colA : number = Interpreter.getColumn(state, objA);
+      var colB : number = Interpreter.getColumn(state, objB);
+
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+
+      var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
+      var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
+      var moveAToB : number = (colA > colB ? colA - colB : colB - colA) + 3;
 
       var initialArmMovementsToB : number = state.arm >= colB ? state.arm - colB : colB - state.arm;
       var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
