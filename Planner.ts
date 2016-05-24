@@ -178,53 +178,70 @@ module Planner {
     }
 
     function calculateDistance(literal : Interpreter.Literal, state : WorldState) : number{
-      /*
-      // Version 0
-      var lowestDistance : number = 1;
-      //*/
-      //*
-      // Version 1
-      var lowestDistance : number = 1;
-      var distanceInStack : number;
-      for (var stack of state.stacks) {
-        distanceInStack = -1;
-        for (var objectName of stack) {
-          if (collections.arrays.contains(literal.args, objectName)){
-              distanceInStack = 1;
-          } else if (distanceInStack != -1){
-              distanceInStack = distanceInStack + 3;
-          }
-        }
-        if (distanceInStack != -1){
-          lowestDistance = lowestDistance < (distanceInStack) ? lowestDistance : (distanceInStack);
-        }
+      
+
+      switch (literal.relation) {
+          case "ontop":
+          case "inside":
+            return calculateDistanceOntop(literal.args[0], literal.args[1], state);
+          case "":
+          
+          default:
+              // code...
+              break;
       }
-      //*/
-      /*
-      // Version 3
-      var totalDistance : number = 0;
-      for (var argument of literal.args){
-        var lowestDistance : number = 1;
-        if(state.holding !== argument){
-          var distanceInStack : number;
-          for (var stack of state.stacks){
-            distanceInStack = -1;
-            for (var objectName of stack){
-              if (argument == objectName){
-                distanceInStack = 1;
-              } else if (distanceInStack != -1){
-                distanceInStack = distanceInStack + 3;
-              }
-            }
-            if (distanceInStack != -1){
-              lowestDistance = lowestDistance < (distanceInStack) ? lowestDistance : (distanceInStack);
-            }
-          }
+
+      return 1;
+    }
+
+    function calculateDistanceOntop(objA : string, objB : string, state : WorldState) : number{
+      if (objB === "floor"){ // possible that distance to "closest empty" stack should be calculated
+        if (state.holding === objA){
+          return 1;
         }
-        totalDistance = totalDistance + lowestDistance;
+        let col : number = Interpreter.getColumn(state, objA);
+        let yPos : number = Interpreter.getYPosition(state, objA);
+
+        let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
+        let emptyStack : number = (state.stacks[col].length - yPos) * 4;
+
+        return distanceToStack + emptyStack + 3;
       }
-      return totalDistance;
-      /*/
-      return lowestDistance;
+
+      if (state.holding === objA || state.holding === objB){
+        let held : string = state.holding;
+        let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
+        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objA : objB));
+        
+        let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
+        if (notHeldYPos == state.stacks[notHeldCol].length){
+          return distanceToStack + 1;
+        }
+
+        let emptyStack : number = (state.stacks[notHeldCol].length - notHeldYPos) * 4;
+        return distanceToStack + emptyStack + 2;
+
+      }
+
+      var colA : number = Interpreter.getColumn(state, objA);
+      var colB : number = Interpreter.getColumn(state, objB);
+
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+
+      if (colA == colB){
+        let initialArmMovements : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
+        let emptyStack : number = (state.stacks[colA].length - (yPosA < yPosB ? yPosA : yPosB)) * 4 - 1; // +1 depending on index of highest in stack?
+        return initialArmMovements + emptyStack;
+
+      } else {
+        let moveArmToStackA : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
+        let moveArmToStackB : number = (colB < state.arm ? state.arm - colB : colB - state.arm);
+        let moveArmToClosestStack : number = (moveArmToStackA < moveArmToStackB ? moveArmToStackA : moveArmToStackB);
+        let emptyStacks : number = (state.stacks[colA].length + state.stacks[colB].length
+                - yPosA - yPosB) * 4; // -2?
+        let moveObjectBetweenStacks  : number = (colA < colB ? colB - colA : colA - colB) + 2;
+        return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks;
+      }
     }
 }
