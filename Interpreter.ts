@@ -140,7 +140,7 @@ module Interpreter {
     }
 
     function interpretPutCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
-      let setOfObjects: collections.LinkedList<string>;
+      let setOfObjects: collections.LinkedList<string> = new collections.LinkedList<string>();
       setOfObjects.add(state.holding) ; //set containing only this
       let relation = cmd.location.relation;
       let setOfLocationObjects = interpretEntity(cmd.location.entity, state);
