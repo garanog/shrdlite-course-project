@@ -212,18 +212,19 @@ module Planner {
           return 1;
         }
         let col : number = Interpreter.getColumn(state, objA);
-        let yPos : number = Interpreter.getYPosition(state, objA);
+        let yPos : number = Interpreter.getYPosition(state, objA) + 1;
 
         let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
-        let emptyStack : number = (state.stacks[col].length - yPos) * 4;
+        let emptyStack : number = (state.stacks[col].length - yPos ) * 4;
 
-        return distanceToStack + emptyStack + 3;
+        let drop = state.holding == null ? 0 : 1;
+        return distanceToStack + emptyStack + drop + 3;
       }
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
         let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objA : objB));
-        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objA : objB));
+        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objA : objB)) + 1;
         
         let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
         if (notHeldYPos == state.stacks[notHeldCol].length){
@@ -238,23 +239,25 @@ module Planner {
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA);
-      var yPosB : number = Interpreter.getYPosition(state, objB);
+      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
+      var yPosB : number = Interpreter.getYPosition(state, objB) + 1;
+
+      let drop = state.holding == null ? 0 : 1;
 
       if (colA == colB){
         let initialArmMovements : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
         let emptyStack : number = (state.stacks[colA].length - (yPosA < yPosB ? yPosA : yPosB)) * 4 - 1; // +1 depending on index of highest in stack?
-        return initialArmMovements + emptyStack;
+        return initialArmMovements + emptyStack + drop ;
 
-      } else {
-        let moveArmToStackA : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
-        let moveArmToStackB : number = (colB < state.arm ? state.arm - colB : colB - state.arm);
-        let moveArmToClosestStack : number = (moveArmToStackA < moveArmToStackB ? moveArmToStackA : moveArmToStackB);
-        let emptyStacks : number = (state.stacks[colA].length + state.stacks[colB].length
-                - yPosA - yPosB) * 4; // -2?
-        let moveObjectBetweenStacks  : number = (colA < colB ? colB - colA : colA - colB) + 2;
-        return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks;
       }
+      
+      let moveArmToStackA : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
+      let moveArmToStackB : number = (colB < state.arm ? state.arm - colB : colB - state.arm);
+      let moveArmToClosestStack : number = (moveArmToStackA < moveArmToStackB ? moveArmToStackA : moveArmToStackB);
+      let emptyStacks : number = (state.stacks[colA].length + state.stacks[colB].length
+              - yPosA - yPosB) * 4; // -2?
+      let moveObjectBetweenStacks  : number = (colA < colB ? colB - colA : colA - colB) + 2;
+      return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks + drop;
     }
 
     function calculateDistanceAbove(objA : string, objB : string, state : WorldState) : number {
@@ -271,7 +274,7 @@ module Planner {
 
       } else if (state.holding === objB){
         let col = Interpreter.getColumn(state, objA);
-        let yPos = Interpreter.getYPosition(state, objA);
+        let yPos = Interpreter.getYPosition(state, objA) + 1;
         
         let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
         let emptyStack : number = (state.stacks[col].length - yPos) * 4;
@@ -281,21 +284,12 @@ module Planner {
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA);
-<<<<<<< HEAD
-      var yPosB : number = Interpreter.getYPosition(state, objB);
+      let drop = state.holding == null ? 0 : 1;
 
-      if (colA == colB){
-          let initialArmMovement = state.arm > colA ? state.arm - colA : colA - state.arm;
-          let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
-          return initialArmMovement + emptyStack + 3;
-
-      }
-=======
+      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
       let initialArmMovement : number = state.arm > colA ? state.arm - colA : colA - state.arm;
       let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
-      return initialArmMovement + emptyStack + 3;
->>>>>>> finished heuristics for 'above'
+      return initialArmMovement + emptyStack + drop + 3;
     }
 
     function calculateDistanceBeside(objA : string, objB : string, state : WorldState) : number {
@@ -313,8 +307,10 @@ module Planner {
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA);
-      var yPosB : number = Interpreter.getYPosition(state, objB);
+      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
+      var yPosB : number = Interpreter.getYPosition(state, objB) + 1;
+
+      let drop = state.holding == null ? 0 : 1;
 
       var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
       var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
@@ -324,7 +320,7 @@ module Planner {
       var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
 
       return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
-          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB;
+          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB + drop;
     }
 
     function calculateDistanceLeftOf(objA : string, objB : string, state : WorldState) : number {
@@ -344,8 +340,10 @@ module Planner {
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA);
-      var yPosB : number = Interpreter.getYPosition(state, objB);
+      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
+      var yPosB : number = Interpreter.getYPosition(state, objB) + 1;
+
+      let drop = state.holding == null ? 0 : 1;
 
       var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
       var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
@@ -355,19 +353,21 @@ module Planner {
       var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
 
       return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
-          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB;
+          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + drop + moveAToB;
     }
 
     function calculateDistanceHolding(obj : string, state : WorldState) : number {
       if (state.holding === obj ) return 0;
 
       let col = Interpreter.getColumn(state, obj);
-      let yPos = Interpreter.getYPosition(state, obj);
+      let yPos = Interpreter.getYPosition(state, obj) + 1;
+
+      let drop = state.holding == null ? 0 : 1;
 
       var initialArmMovements : number = state.arm >= col ? state.arm - col : col - state.arm;
       var emptyStack : number = (state.stacks[col].length - yPos * 4);
 
-      return initialArmMovements + emptyStack + 1;
+      return initialArmMovements + emptyStack + drop + 1;
     }
 
 }
