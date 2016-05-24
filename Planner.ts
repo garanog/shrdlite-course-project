@@ -184,8 +184,10 @@ module Planner {
           case "ontop":
           case "inside":
             return calculateDistanceOntop(literal.args[0], literal.args[1], state);
-          case "":
-          
+          case "above":
+            return calculateDistanceOntop(literal.args[0], literal.args[1], state);
+          case "under":
+            return calculateDistanceOntop(literal.args[1], literal.args[0], state);
           default:
               // code...
               break;
@@ -195,6 +197,8 @@ module Planner {
     }
 
     function calculateDistanceOntop(objA : string, objB : string, state : WorldState) : number{
+      if (Interpreter.onTopOf(state, objA, objB)) return 0;
+
       if (objB === "floor"){ // possible that distance to "closest empty" stack should be calculated
         if (state.holding === objA){
           return 1;
@@ -242,6 +246,26 @@ module Planner {
                 - yPosA - yPosB) * 4; // -2?
         let moveObjectBetweenStacks  : number = (colA < colB ? colB - colA : colA - colB) + 2;
         return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks;
+      }
+    }
+
+    function calculateDistanceAbove(objA : string, objB : string, state : WorldState) : number {
+      if (Interpreter.above(state, objA, objB)) return 0;
+
+      if (objB === "floor"){
+          return state.holding === objA ? 1 : 0;
+      }
+
+      var colA : number = Interpreter.getColumn(state, objA);
+      var colB : number = Interpreter.getColumn(state, objB);
+
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+
+      if (colA == colB){
+          let initialArmMovement = state.arm > colA ? state.arm - colA : colA - state.arm;
+          let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
+          return initialArmMovement + emptyStack + 3;
       }
     }
 }
