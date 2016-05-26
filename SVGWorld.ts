@@ -164,6 +164,9 @@ class SVGWorld implements World {
                 var action = this.getAction(item);
                 if (action) {
                     try {
+                        if (item.toLowerCase() === "p"){
+                            this.printSystemOutput(this.describeAction(plan));
+                        }
                         action.call(this, performNextAction);
                     } catch(err) {
                         this.printError(err);
@@ -353,6 +356,28 @@ class SVGWorld implements World {
             altitude += this.getObjectDimensions(stack[i]).heightadd + this.boxSpacing();
         }
         return altitude;
+    }
+
+    //////////////////////////////////////////////////////////////////////
+    private describeAction(plan : string[]) : string{
+        var moving : string = this.currentState.stacks[this.currentState.arm]
+                [this.currentState.stacks[this.currentState.arm].length - 1];
+        return this.describeObject(moving);
+    }
+
+    private describeObject(obj : string) : string {
+        var description : string = "the";
+        if (this.currentState.objects[obj].size){
+            description = description + " " + this.currentState.objects[obj].size;
+        }
+        if (this.currentState.objects[obj].color){
+            description = description + " " + this.currentState.objects[obj].color;
+        }
+        if (this.currentState.objects[obj].form){
+            description = description + " " + this.currentState.objects[obj].form;
+        }
+        return description;
+
     }
 
     //////////////////////////////////////////////////////////////////////
