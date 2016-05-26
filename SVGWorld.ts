@@ -359,10 +359,22 @@ class SVGWorld implements World {
     }
 
     //////////////////////////////////////////////////////////////////////
-    private describeAction(plan : string[]) : string{
+    private describeAction(plan : string[]) : string {
         var moving : string = this.currentState.stacks[this.currentState.arm]
                 [this.currentState.stacks[this.currentState.arm].length - 1];
-        return this.describeObject(moving);
+        var distance : number = 0;
+        if (plan[1]){
+            for(let i : number = 0; i < plan.length && plan[i].toLowerCase() != "d"; i++){
+                distance = distance + (plan[i].toLowerCase() === "l" ? -1 : 1);
+            }
+        }
+        
+        if (!distance) return ("Taking " + this.describeObject(moving));
+
+        var location : string = this.currentState.stacks[this.currentState.arm + distance]
+                    [this.currentState.stacks[this.currentState.arm + distance].length - 1];
+
+        return ("Moving " + this.describeObject(moving) + " onto " + (location ? this.describeObject(location) : " the floor"));
     }
 
     private describeObject(obj : string) : string {
