@@ -73,8 +73,8 @@ function testPlanner() {
     var parses : Parser.ParseResult[] = Parser.parse("put the red brick on the white brick");
     console.log(parses);
 
-    var interpretations : Interpreter.InterpretationResult[] = Interpreter.interpret(parses,
-        testWorld.currentState);
+    var interpretations : Interpreter.CommandInterpretationResult[] = Interpreter.interpret(parses,
+        testWorld.currentState).commandInterpretations;
     console.log(interpretations);
 
     var plan : string[] = Planner.plan(interpretations, testWorld.currentState)[0].plan;
@@ -88,6 +88,26 @@ function testPlanner() {
         pass = false;
     }
     return pass;
+}
+
+function testQuestion() : boolean {
+  var pass : boolean = false;
+  try {
+    var testWorld : World = new TextWorld(ExampleWorlds["small"]);
+
+    var parses : Parser.ParseResult[] = Parser.parse("where is the white ball");
+    console.log(parses);
+
+    var interpretations : Interpreter.QuestionInterpretationResult[] = Interpreter.interpret(parses,
+        testWorld.currentState).questionInterpretations;
+    console.log(interpretations);
+
+    pass = false;
+  } catch(err) {
+      console.log("ERROR: Question error!", err);
+      pass = false;
+  }
+  return pass;
 }
 
 // -----------------------------------------------
@@ -119,6 +139,14 @@ function runCustomTests(argv : string[]) {
     var ok = testPlanner();
     if (!ok) failed++;
     else passed++;
+    console.log();
+
+    // question test case
+    console.log("--------------------------------------------------------------------------------");
+    ok = testQuestion();
+    if (!ok) failed++;
+    else passed++;
+    console.log();
 
     console.log("--------------------------------------------------------------------------------");
     console.log("Summary statistics");

@@ -73,15 +73,15 @@ module Shrdlite {
               interpretations.commandInterpretations.forEach((result, n) => {
                   world.printDebugInfo("  (" + n + ") " + Interpreter.stringify(result));
               });
+
+              if (interpretations.commandInterpretations.length > 1) {
+                  // several interpretations were found -- how should this be handled?
+                  // should we throw an ambiguity error?
+                  // ... throw new Error("Ambiguous utterance");
+                  // or should we let the planner decide?
+              }
             } else if (interpretations.type == "question") {
               world.printDebugInfo("Found " + interpretations.questionInterpretations.length + " question interpretations");
-            }
-
-            if (interpretations.commandInterpretations.length > 1) {
-                // several interpretations were found -- how should this be handled?
-                // should we throw an ambiguity error?
-                // ... throw new Error("Ambiguous utterance");
-                // or should we let the planner decide?
             }
         }
         catch(err) {
