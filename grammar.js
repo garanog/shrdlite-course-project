@@ -46,7 +46,7 @@ var grammar = {
     {"name": "command", "symbols": ["take", "entity"], "postprocess": R({command:"take", entity:1})},
     {"name": "command", "symbols": ["move", "it", "location"], "postprocess": R({command:"put", location:2})},
     {"name": "command", "symbols": ["move", "entity", "location"], "postprocess": R({command:"move", entity:1, location:2})},
-    {"name": "question", "symbols": ["questionWord", "entity"], "postprocess": R({question:"where is", entity:1})},
+    {"name": "question", "symbols": ["questionWord", "is", "entity"], "postprocess": R({question:"where is", entity:2})},
     {"name": "location", "symbols": ["relation", "entity"], "postprocess": R({relation:0, entity:1})},
     {"name": "entity", "symbols": ["quantifierSG", "objectSG"], "postprocess": R({quantifier:0, object:1})},
     {"name": "entity", "symbols": ["quantifierPL", "objectPL"], "postprocess": R({quantifier:0, object:1})},
@@ -66,7 +66,7 @@ var grammar = {
     {"name": "objectPL$ebnf$3", "symbols": ["color"], "postprocess": id},
     {"name": "objectPL$ebnf$3", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "objectPL", "symbols": ["objectPL$ebnf$2", "objectPL$ebnf$3", "formPL"], "postprocess": R({size:0, color:1, form:2})},
-    {"name": "questionWord$subexpression$1$string$1", "symbols": [{"literal":"w"}, {"literal":"h"}, {"literal":"e"}, {"literal":"r"}, {"literal":"e"}, {"literal":" "}, {"literal":"i"}, {"literal":"s"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "questionWord$subexpression$1$string$1", "symbols": [{"literal":"w"}, {"literal":"h"}, {"literal":"e"}, {"literal":"r"}, {"literal":"e"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "questionWord$subexpression$1", "symbols": ["questionWord$subexpression$1$string$1"]},
     {"name": "questionWord", "symbols": ["questionWord$subexpression$1"], "postprocess": R("where is")},
     {"name": "quantifierSG$subexpression$1$string$1", "symbols": [{"literal":"a"}, {"literal":"n"}, {"literal":"y"}], "postprocess": function joiner(d) {return d.join('');}},
@@ -204,7 +204,9 @@ var grammar = {
     {"name": "will_you$string$1", "symbols": [{"literal":"y"}, {"literal":"o"}, {"literal":"u"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "will_you", "symbols": ["will_you$subexpression$1", "will_you$string$1"]},
     {"name": "please$string$1", "symbols": [{"literal":"p"}, {"literal":"l"}, {"literal":"e"}, {"literal":"a"}, {"literal":"s"}, {"literal":"e"}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "please", "symbols": ["please$string$1"]}
+    {"name": "please", "symbols": ["please$string$1"]},
+    {"name": "is$string$1", "symbols": [{"literal":"i"}, {"literal":"s"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "is", "symbols": ["is$string$1"]}
 ]
   , ParserStart: "main"
 }
