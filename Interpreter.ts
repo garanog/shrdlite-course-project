@@ -48,6 +48,7 @@ module Interpreter {
             try {
                 interpretationType = parseresult.parse.type;
 
+                console.log(parseresult)
                 if (parseresult.parse.type == "command") {
                     let result: CommandInterpretationResult = <CommandInterpretationResult> parseresult;
                     result.interpretation = interpretCommand(result.parse.command, currentState);
@@ -59,7 +60,7 @@ module Interpreter {
                     result.object = interpretationResult.object;
                     questionInterpretations.push(result);
                 } else {
-                  throw new Error("Unknown parseresult type.");
+                  throw new Error("Unknown parseresult type. ");
                 }
             } catch (err) {
                 errors.push(err);
