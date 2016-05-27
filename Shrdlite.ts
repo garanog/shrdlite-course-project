@@ -2,6 +2,7 @@
 ///<reference path="Parser.ts"/>
 ///<reference path="Interpreter.ts"/>
 ///<reference path="Planner.ts"/>
+///<reference path="Answerer.ts"/>
 
 module Shrdlite {
 
@@ -116,7 +117,7 @@ module Shrdlite {
           world.printDebugInfo("Final plan: " + finalPlan.join(", "));
           return finalPlan;
         } else {
-          //TODO: answer question somehow
+          var answers : Answerer.AnswererResult[] = Answerer.answer(interpretations.questionInterpretations, world.currentState);
           return null;
         }
     }
