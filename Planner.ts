@@ -23,7 +23,7 @@ module Planner {
      * @param currentState The current state of the world.
      * @returns Augments Interpreter.InterpretationResult with a plan represented by a list of strings.
      */
-    export function plan(interpretations : Interpreter.InterpretationResult[], currentState : WorldState) : PlannerResult[] {
+    export function plan(interpretations : Interpreter.CommandInterpretationResult[], currentState : WorldState) : PlannerResult[] {
         var errors : Error[] = [];
         var plans : PlannerResult[] = [];
         interpretations.forEach((interpretation) => {
@@ -46,7 +46,7 @@ module Planner {
         }
     }
 
-    export interface PlannerResult extends Interpreter.InterpretationResult {
+    export interface PlannerResult extends Interpreter.CommandInterpretationResult {
         plan : string[];
     }
 
@@ -168,7 +168,7 @@ module Planner {
           relationHolds = Interpreter.rightOf(state, literal.args[0], literal.args[1]);
           break;
         case "holding":
-          relationHolds = state.holding === literal.args[0]; 
+          relationHolds = state.holding === literal.args[0];
           break;
         default:
           throw new Error("Unknown relation: " + literal.relation);

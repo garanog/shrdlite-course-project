@@ -38,28 +38,60 @@ module Interpreter {
     * @returns Augments ParseResult with a list of interpretations. Each
     * interpretation is represented by a list of Literals.
     */
-    export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
+    export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult {
         var errors : Error[] = [];
-        var interpretations : InterpretationResult[] = [];
+        var commandInterpretations : CommandInterpretationResult[] = [];
+        var questionInterpretations : QuestionInterpretationResult[] = [];
+        var interpretationType : string;
+
         parses.forEach((parseresult) => {
             try {
-                let result: InterpretationResult = <InterpretationResult>parseresult;
-                result.interpretation = interpretCommand(result.parse, currentState);
-                interpretations.push(result);
+                interpretationType = parseresult.parse.type;
+
+                console.log(parseresult)
+                if (parseresult.parse.type == "command") {
+                    let result: CommandInterpretationResult = <CommandInterpretationResult> parseresult;
+                    result.interpretation = interpretCommand(result.parse.command, currentState);
+                    commandInterpretations.push(result);
+                } else if (parseresult.parse.type == "question") {
+                    let result: QuestionInterpretationResult = <QuestionInterpretationResult> parseresult;
+                    var interpretationResult = interpretQuestion(result.parse.question, currentState);
+                    result.questionWord = interpretationResult.questionWord;
+                    result.object = interpretationResult.object;
+                    questionInterpretations.push(result);
+                } else {
+                  throw new Error("Unknown parseresult type. ");
+                }
             } catch (err) {
                 errors.push(err);
             }
         });
-        if (interpretations.length) {
-            return interpretations;
+
+        if (commandInterpretations.length) {
+            return ({type :"command",
+              commandInterpretations : commandInterpretations});
+        } else if (questionInterpretations.length) {
+            return ({type : "question",
+              questionInterpretations : questionInterpretations});
         } else {
             // only throw the first error found
             throw errors[0];
         }
     }
 
-    export interface InterpretationResult extends Parser.ParseResult {
+    export interface InterpretationResult {
+      type: string; //question or command?
+      commandInterpretations?: CommandInterpretationResult[];
+      questionInterpretations?: QuestionInterpretationResult[];
+    }
+
+    export interface CommandInterpretationResult extends Parser.ParseResult {
         interpretation: DNFFormula;
+    }
+
+    export interface QuestionInterpretationResult extends Parser.ParseResult {
+        questionWord: string;
+        object: string;
     }
 
     export type DNFFormula = Conjunction[];
@@ -84,7 +116,7 @@ module Interpreter {
         args : string[];
     }
 
-    export function stringify(result: InterpretationResult): string {
+    export function stringify(result: CommandInterpretationResult): string {
         return result.interpretation.map((literals) => {
             return literals.map((lit) => stringifyLiteral(lit)).join(" & ");
             // return literals.map(stringifyLiteral).join(" & ");
@@ -104,6 +136,11 @@ module Interpreter {
 
     //////////////////////////////////////////////////////////////////////
     // private functions
+
+    // function interpretUtterance(utr: Parser.Utterance, state: WorldState): void{
+    // }
+
+
     /**
      * The core interpretation function. Interprets a command, as it has been
      * parsed by the parser into a DNF formula representing the goal of the
@@ -116,14 +153,22 @@ module Interpreter {
      */
     function interpretCommand(cmd: Parser.Command, state: WorldState): DNFFormula {
         switch(cmd.command) {
-        case "move": // put, drop as well
-          return interpretMoveCommand(cmd, state);
-        case "take":
-          return interpretTakeCommand(cmd, state);
-        case "put":
-          return interpretPutCommand(cmd, state);
+          case "move": // put, drop as well
+            return interpretMoveCommand(cmd, state);
+          case "take":
+            return interpretTakeCommand(cmd, state);
+          case "put":
+            return interpretPutCommand(cmd, state);
         }
         return null;
+    }
+
+    /**
+      TODO
+    **/
+    function interpretQuestion(question: Parser.Question, state: WorldState): QuestionInterpretationResult {
+        return ({input: null, parse: null, questionWord: question.question, object: interpretEntity(question.entity, state).elementAtIndex(0)});
+        //TODO NOT TAKE ONLY THE FIRST ONE HERE and make it beautiful
     }
 
     function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
@@ -147,7 +192,8 @@ module Interpreter {
       return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
     }
 
-    function interpretEntity(entity: Parser.Entity, state : WorldState){
+    function interpretEntity(entity: Parser.Entity, state : WorldState)
+      : collections.LinkedList<string> {
       //TODO: interpret quantifier
       return interpretObject(entity.object, state);
     }
@@ -204,7 +250,7 @@ module Interpreter {
                   matchingSet.add(state.holding);
             }
         }
-              
+
       }
 
       return matchingSet;
@@ -406,8 +452,8 @@ module Interpreter {
 
       var aCol = getColumn(state, a);
       var bCol = getColumn(state, b);
-      
-        
+
+
       if (b == "floor")
         return true;//aPos != -1;
       else if (aCol != bCol)

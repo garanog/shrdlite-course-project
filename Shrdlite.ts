@@ -66,17 +66,22 @@ module Shrdlite {
 
         // Interpretation
         try {
-            var interpretations : Interpreter.InterpretationResult[] = Interpreter.interpret(parses, world.currentState);
-            world.printDebugInfo("Found " + interpretations.length + " interpretations");
-            interpretations.forEach((result, n) => {
-                world.printDebugInfo("  (" + n + ") " + Interpreter.stringify(result));
-            });
+            var interpretations : Interpreter.InterpretationResult = Interpreter.interpret(parses, world.currentState);
 
-            if (interpretations.length > 1) {
-                // several interpretations were found -- how should this be handled?
-                // should we throw an ambiguity error?
-                // ... throw new Error("Ambiguous utterance");
-                // or should we let the planner decide?
+            if (interpretations.type == "command") {
+              world.printDebugInfo("Found " + interpretations.commandInterpretations.length + " command interpretations");
+              interpretations.commandInterpretations.forEach((result, n) => {
+                  world.printDebugInfo("  (" + n + ") " + Interpreter.stringify(result));
+              });
+
+              if (interpretations.commandInterpretations.length > 1) {
+                  // several interpretations were found -- how should this be handled?
+                  // should we throw an ambiguity error?
+                  // ... throw new Error("Ambiguous utterance");
+                  // or should we let the planner decide?
+              }
+            } else if (interpretations.type == "question") {
+              world.printDebugInfo("Found " + interpretations.questionInterpretations.length + " question interpretations");
             }
         }
         catch(err) {
@@ -84,31 +89,36 @@ module Shrdlite {
             return;
         }
 
-        // Planning
-        try {
-            var plans : Planner.PlannerResult[] = Planner.plan(interpretations, world.currentState);
-            world.printDebugInfo("Found " + plans.length + " plans");
-            plans.forEach((result, n) => {
-                world.printDebugInfo("  (" + n + ") " + Planner.stringify(result));
-            });
+        if (interpretations.type == "command") {
+          // Planning
+          try {
+              var plans : Planner.PlannerResult[] = Planner.plan(interpretations.commandInterpretations, world.currentState);
+              world.printDebugInfo("Found " + plans.length + " plans");
+              plans.forEach((result, n) => {
+                  world.printDebugInfo("  (" + n + ") " + Planner.stringify(result));
+              });
 
-            if (plans.length > 1) {
-                // several plans were found -- how should this be handled?
-                // this means that we have several interpretations,
-                // should we throw an ambiguity error?
-                // ... throw new Error("Ambiguous utterance");
-                // or should we select the interpretation with the shortest plan?
-                // ... plans.sort((a, b) => {return a.length - b.length});
-            }
-        }
-        catch(err) {
-            world.printError("Planning error", err);
-            return;
-        }
+              if (plans.length > 1) {
+                  // several plans were found -- how should this be handled?
+                  // this means that we have several interpretations,
+                  // should we throw an ambiguity error?
+                  // ... throw new Error("Ambiguous utterance");
+                  // or should we select the interpretation with the shortest plan?
+                  // ... plans.sort((a, b) => {return a.length - b.length});
+              }
+          }
+          catch(err) {
+              world.printError("Planning error", err);
+              return;
+          }
 
-        var finalPlan : string[] = plans[0].plan;
-        world.printDebugInfo("Final plan: " + finalPlan.join(", "));
-        return finalPlan;
+          var finalPlan : string[] = plans[0].plan;
+          world.printDebugInfo("Final plan: " + finalPlan.join(", "));
+          return finalPlan;
+        } else {
+          //TODO: answer question somehow
+          return null;
+        }
     }
 
 

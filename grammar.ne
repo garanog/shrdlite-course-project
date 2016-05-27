@@ -35,11 +35,15 @@ function R(obj) {
 
 ## Grammar rules
 
-main --> will_you:? please:? command please:?  {% R(2) %}  
+main --> will_you:? please:? command please:?  {% R({type:"command", command:2}) %}
+main --> please:? question please:? {% R({type:"question", question:1}) %}
 
 command --> take entity           {% R({command:"take", entity:1}) %}
 command --> move  it    location  {% R({command:"put", location:2}) %}
 command --> move entity location  {% R({command:"move", entity:1, location:2}) %}
+
+question  --> questionWord is entity    {% R({question:"where is", entity:2}) %}
+
 
 location --> relation entity  {% R({relation:0, entity:1}) %}
 
@@ -54,11 +58,13 @@ objectPL --> size:? color:? formPL  {% R({size:0, color:1, form:2}) %}
 
 
 ## Lexical rules
+questionWord --> ("where")           {% R("where is") %}
 
 quantifierSG --> ("any" | "an" | "a")  {% R("any") %}
 quantifierSG --> ("the")               {% R("the") %}
 quantifierSG --> ("every")             {% R("all") %}
 quantifierPL --> ("all")               {% R("all") %}
+
 
 relation --> ("left"  "of" | "to" "the" "left"  "of")  {% R("leftof") %}
 relation --> ("right" "of" | "to" "the" "right" "of")  {% R("rightof") %}
@@ -105,3 +111,5 @@ that_are --> "that" "are"
 will_you --> ("will" | "can" | "could") "you"
 
 please --> "please"
+
+is --> "is"

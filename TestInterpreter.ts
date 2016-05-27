@@ -20,7 +20,7 @@ function testInterpreter(testcase : TestCase) : boolean {
 
     var correctints : string[] = testcase.interpretations.map((intp) => intp.sort().join(" | ")).sort();
     try {
-        var interpretations : string[] = Interpreter.interpret(parses, world.currentState).map((intp) => {
+        var interpretations : string[] = Interpreter.interpret(parses, world.currentState).commandInterpretations.map((intp) => {
             return intp.interpretation.map((literals) => literals.map(Interpreter.stringifyLiteral).sort().join(" & ")).sort().join(" | ");
         }).sort();
     }
@@ -100,4 +100,4 @@ try {
     console.log("Please give at least one argument:");
     console.log("- either a number (1.." + allTestCases.length + ") for each test you want to run,");
     console.log("- or 'all' for running all tests.");
-} 
+}
