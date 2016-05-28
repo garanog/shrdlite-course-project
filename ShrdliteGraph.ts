@@ -9,31 +9,30 @@ class StateNode {
     ) {}
 
 
-compareTo(other : StateNode) : number {
+    compareTo(other : StateNode) : number {
+      if(this.state.stacks.length != other.state.stacks.length ||
+          this.state.holding != other.state.holding ||
+          this.state.arm != other.state.arm) {
+          return 1;
+      }
 
-    if(this.state.stacks.length != other.state.stacks.length ||
-        this.state.holding != other.state.holding ||
-        this.state.arm != other.state.arm) {
-        return 1;
-    }
-
-    for(var i: number = 0; i < this.state.stacks.length; i++){
-        var otherStack: string[]  = other.state.stacks[i];
-        var thisStack: string[] = this.state.stacks[i];
-        if(otherStack.length != thisStack.length){
-            return 1;
-        }
-        for(var j: number = 0; j < thisStack.length; ++j){
-        var thisObject: ObjectDefinition = this.state.objects[thisStack[j]];
-        var otherObject: ObjectDefinition = other.state.objects[otherStack[j]];
-        if(!(thisObject.form === otherObject.form &&
-            thisObject.size === otherObject.size &&
-            thisObject.color === otherObject.color)) {
-                return 1;
-            }
-        }
-    }
-    return 0; //TODO implement. compare each object in the world, return 1 once difference is found
+      for(var i: number = 0; i < this.state.stacks.length; i++){
+          var otherStack: string[]  = other.state.stacks[i];
+          var thisStack: string[] = this.state.stacks[i];
+          if(otherStack.length != thisStack.length){
+              return 1;
+          }
+          for(var j: number = 0; j < thisStack.length; ++j){
+          var thisObject: ObjectDefinition = this.state.objects[thisStack[j]];
+          var otherObject: ObjectDefinition = other.state.objects[otherStack[j]];
+          if(!(thisObject.form === otherObject.form &&
+              thisObject.size === otherObject.size &&
+              thisObject.color === otherObject.color)) {
+                  return 1;
+              }
+          }
+      }
+      return 0;
     }
 
     toString() : string {
@@ -60,9 +59,6 @@ class ShrdliteGraph implements Graph<StateNode> {
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
         var outgoing : Edge<StateNode>[] = [];
-
-        // r l p d
-        //TODO: create the up to four nodes, check whether states are possible.
 
         // Case r
         if(node.state.arm < node.state.stacks.length - 1) {
@@ -105,7 +101,7 @@ class ShrdliteGraph implements Graph<StateNode> {
           var newNode : StateNode = new StateNode(newState, "d");
           outgoing.push({from: node, to: newNode, cost:1});
         }
-        
+
         return outgoing;
     }
 

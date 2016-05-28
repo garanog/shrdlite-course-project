@@ -421,8 +421,6 @@ module Interpreter {
 
     /**
     --------------------------------------------------------------------
-    TODO: in case these naiive implementations are not efficient enough,
-    reimplement them mabbe using maps.
     TODO: the following functions should likely be moved somewhere else.
     */
     export function onTopOf(state : WorldState, a : string, b : string) : boolean {
@@ -440,7 +438,6 @@ module Interpreter {
         return aPos != -1 && bPos != -1 && aPos == bPos + 1;
     }
 
-    //TODO recheck those functions: same stack?!
     export function inside(state : WorldState, a : string, b : string) : boolean {
       // TODO: do we need both onTopOf and inside?
       return onTopOf(state, a, b);
