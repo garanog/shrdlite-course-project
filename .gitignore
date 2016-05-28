@@ -1,4 +1,5 @@
 shrdlite-*.js
+<<<<<<< HEAD
 # Javascript
 *.js
 
@@ -310,3 +311,7 @@ TSWLatexianTemp*
 sftp-config.json
 
 
+=======
+TestAStar.js
+TestInterpreter.js
+>>>>>>> ba6d4ec54ab1d4020b77074aadc17a2263a856a2
