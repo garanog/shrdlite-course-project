@@ -233,30 +233,29 @@ module Interpreter {
       else {
         for (let stack of state.stacks) {
           for (let objectName of stack) {
-             let objectToCompare : ObjectDefinition = state.objects[objectName];
-
-            if ((desiredSize  == null || objectToCompare.size  == desiredSize) &&
-                (desiredColor == null || objectToCompare.color == desiredColor) &&
-                (desiredForm  == null || desiredForm == "anyform" || objectToCompare.form  == desiredForm)) {
-                  matchingSet.add(objectName);
-            }
+            let objectToCompare : ObjectDefinition = state.objects[objectName];
+            if (objectMatchesDescription(objectToCompare, desiredSize, desiredColor, desiredForm))
+              matchingSet.add(objectName);
           }
         }
+
         if (state.holding != null){
           let heldObject : ObjectDefinition = state.objects[state.holding];
-          if  ((desiredSize  == null || heldObject.size  == desiredSize) &&
-                (desiredColor == null || heldObject.color == desiredColor) &&
-                (desiredForm  == null || desiredForm == "anyform" || heldObject.form  == desiredForm)) {
-                  matchingSet.add(state.holding);
-            }
+          if (objectMatchesDescription(heldObject, desiredSize, desiredColor, desiredForm))
+            matchingSet.add(state.holding);
         }
-
       }
 
       if (matchingSet.size() == 0)
         throw new Error("Could not find the " + Parser.describeObject(entityObject) + ".");
 
       return matchingSet;
+    }
+
+    function objectMatchesDescription(obj : Parser.Object, desiredSize : string, desiredColor : string, desiredForm : string) : boolean {
+      return ((desiredSize  == null || obj.size  == desiredSize) &&
+          (desiredColor == null || obj.color == desiredColor) &&
+          (desiredForm  == null || desiredForm == "anyform" || obj.form  == desiredForm));
     }
 
     /*
