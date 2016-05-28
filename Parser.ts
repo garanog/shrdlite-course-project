@@ -113,6 +113,12 @@ module Parser {
     //////////////////////////////////////////////////////////////////////
     // Utilities
 
+    export function describeObject(obj: Object) : string {
+      return (obj.size != null ? (obj.size + " ") : "")
+        + (obj.color != null ? (obj.color + " ") : "")
+        + (obj.form != null ? (obj.form) : "object");
+    }
+
     function clone<T>(obj: T): T {
         return JSON.parse(JSON.stringify(obj));
     }

@@ -29,7 +29,7 @@ module Answerer {
       var obj : Parser.Object;
       for (obj = question.parse.question.entity.object; obj.object != null; obj = obj.object) {
       }
-      result += describeObject(obj);
+      result += Parser.describeObject(obj);
 
       //what's underneath?
       result += " is on top of the "
@@ -39,15 +39,9 @@ module Answerer {
       if (!yPos)
         result += "floor";
       else
-        result += describeObject(state.stacks[column][yPos - 1]);
+        result += Parser.describeObject(state.stacks[column][yPos - 1]);
 
       return result;
-    }
-
-    export function describeObject(obj: Parser.Object) : string {
-      return (obj.size != null ? (obj.size + " ") : "")
-        + (obj.color != null ? (obj.color + " ") : "")
-        + (obj.form != null ? (obj.form) : "object");
     }
 
     export interface AnswererResult extends Interpreter.QuestionInterpretationResult {

@@ -253,6 +253,9 @@ module Interpreter {
 
       }
 
+      if (matchingSet.size() == 0)
+        throw new Error("Could not find the " + Parser.describeObject(entityObject) + ".");
+
       return matchingSet;
     }
 
