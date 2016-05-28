@@ -304,12 +304,19 @@ module Interpreter {
             correctlyPlaced = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
             break;
           default:
-            break;
+            throw new Error("The relation " + relation + " is unknown.");
         }
 
         if (correctlyPlaced)
           matchingSet.add(originalObject);
       }
+
+      if (matchingSet.size() == 0)
+        throw new Error("Could not find a "
+          + Parser.describeObject(Parser.getInnermostObject(entityObject))
+          + " that is " + relation + " "
+          + Parser.describeObject(Parser.getInnermostObject(entityObject.location.entity)) + ".");
+
       return matchingSet;
     }
 
