@@ -113,10 +113,28 @@ module Parser {
     //////////////////////////////////////////////////////////////////////
     // Utilities
 
+    /**
+    * Describe the given object, assuming that it is a simple object
+    */
     export function describeObject(obj: Object) : string {
       return (obj.size != null ? (obj.size + " ") : "")
         + (obj.color != null ? (obj.color + " ") : "")
         + (obj.form != null ? (obj.form) : "object");
+    }
+
+    /**
+    * Describe the given object. This method will unfold composed
+    * objects until simple objects are reached and return an
+    * appropriate description for the whole object.
+    */
+    export function describeComplexObject(obj: Object) : string {
+      if (obj.location == null) {
+        return describeObject(obj);
+      } else {
+        return "(" + describeComplexObject(obj.object)
+          + " that is " + obj.location.relation + " "
+          + describeComplexObject(obj.location.entity.object) + ")";
+      }
     }
 
     export function getInnermostObject(topLevelObj: Object) : Object {

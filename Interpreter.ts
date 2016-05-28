@@ -252,8 +252,9 @@ module Interpreter {
       return matchingSet;
     }
 
-    function objectMatchesDescription(obj : Parser.Object, desiredSize : string, desiredColor : string, desiredForm : string) : boolean {
-      return ((desiredSize  == null || obj.size  == desiredSize) &&
+    function objectMatchesDescription(obj : Parser.Object,
+      desiredSize : string, desiredColor : string, desiredForm : string) : boolean {
+        return ((desiredSize  == null || obj.size  == desiredSize) &&
           (desiredColor == null || obj.color == desiredColor) &&
           (desiredForm  == null || desiredForm == "anyform" || obj.form  == desiredForm));
     }
@@ -312,9 +313,9 @@ module Interpreter {
 
       if (matchingSet.size() == 0)
         throw new Error("Could not find a "
-          + Parser.describeObject(Parser.getInnermostObject(entityObject))
+          + Parser.describeComplexObject(entityObject.object)
           + " that is " + relation + " "
-          + Parser.describeObject(Parser.getInnermostObject(entityObject.location.entity)) + ".");
+          + Parser.describeComplexObject(entityObject.location.entity.object) + ".");
 
       return matchingSet;
     }
