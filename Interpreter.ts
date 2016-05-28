@@ -315,7 +315,7 @@ module Interpreter {
         throw new Error("Could not find a "
           + Parser.describeComplexObject(entityObject.object)
           + " that is " + relation + " "
-          + Parser.describeComplexObject(entityObject.location.entity.object) + ".");
+          + Parser.describeEntityDetailed(entityObject.location.entity) + ".");
 
       return matchingSet;
     }

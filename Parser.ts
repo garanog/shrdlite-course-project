@@ -127,7 +127,7 @@ module Parser {
     * objects until simple objects are reached and return an
     * appropriate description for the whole object.
     */
-    export function describeComplexObject(obj: Object) : string {
+    export function describeComplexObjectDetailed(obj: Object) : string {
       if (obj.location == null) {
         return describeObject(obj);
       } else {
@@ -135,6 +135,15 @@ module Parser {
           + " that is " + obj.location.relation + " "
           + describeComplexObject(obj.location.entity.object) + ")";
       }
+    }
+
+    export function describeComplexObject(obj: Object) : string {
+      // TODO: intelligent way of describing only what's necessary!
+      return describeComplexObjectDetailed(obj);
+    }
+
+    export function describeEntityDetailed(entity: Entity) : string {
+      return entity.quantifier + " " + describeComplexObjectDetailed(entity.object);
     }
 
     export function getInnermostObject(topLevelObj: Object) : Object {
