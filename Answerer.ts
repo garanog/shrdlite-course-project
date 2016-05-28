@@ -22,7 +22,7 @@ module Answerer {
       return null;
     }
 
-    export function answerQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
+    function answerQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
       var result : string = "The ";
 
       //describe object

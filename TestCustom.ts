@@ -90,19 +90,29 @@ function testPlanner() {
     return pass;
 }
 
+/**
+* This is a simple test case for the question answering pipeline, just
+* to ensure that the pipeline basically works.
+*/
 function testQuestion() : boolean {
   var pass : boolean = false;
   try {
     var testWorld : World = new TextWorld(ExampleWorlds["small"]);
 
-    var parses : Parser.ParseResult[] = Parser.parse("where is the white ball");
+    var parses : Parser.ParseResult[] = Parser.parse("where is the black ball?");
     console.log(parses);
 
     var interpretations : Interpreter.QuestionInterpretationResult[] = Interpreter.interpret(parses,
         testWorld.currentState).questionInterpretations;
     console.log(interpretations);
 
-    pass = false;
+    var answers : Answerer.AnswererResult[] = Answerer.answer(interpretations, testWorld.currentState);
+    if (answers.length != 1)
+      throw new Error("There should be only one answer to the question.");
+    else {
+      //TODO: change expected answer if necessary.
+      pass = answers[0].answer == "The black ball is on in the blue box.";
+    }
   } catch(err) {
       console.log("ERROR: Question error!", err);
       pass = false;
