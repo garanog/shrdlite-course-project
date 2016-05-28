@@ -26,9 +26,7 @@ module Answerer {
       var result : string = "The ";
 
       //describe object
-      var obj : Parser.Object;
-      for (obj = question.parse.question.entity.object; obj.object != null; obj = obj.object) {
-      }
+      var obj = Parser.getInnermostObject(question.parse.question.entity.object);
       result += Parser.describeObject(obj);
 
       //what's underneath?

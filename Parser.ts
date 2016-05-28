@@ -119,6 +119,13 @@ module Parser {
         + (obj.form != null ? (obj.form) : "object");
     }
 
+    export function getInnermostObject(topLevelObj: Object) : Object {
+      var obj : Parser.Object;
+      for (obj = topLevelObj; obj.object != null; obj = obj.object) {
+      }
+      return obj;
+    }
+
     function clone<T>(obj: T): T {
         return JSON.parse(JSON.stringify(obj));
     }
