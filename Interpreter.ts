@@ -248,8 +248,6 @@ module Interpreter {
         matchingSet.add("floor");
       else {
         var desiredForms : string[] = interpretDesiredForm(desiredForm, desiredSize, desiredColor, previouslySeenObjects, state);
-        console.log(desiredForms);
-        console.log(":-)");
 
         for (let stack of state.stacks) {
           for (let objectName of stack) {
@@ -281,7 +279,6 @@ module Interpreter {
 
       //Anaphoric references
       if (desiredForm == "one") {
-        console.log("/&666666666666666666666");
 
         if (previouslySeenObjects.size() == 0)
           throw "You didn't mention anything before, I don't understand which object you mean by that anaphoric reference."
@@ -299,23 +296,14 @@ module Interpreter {
 
     function objectMatchesDescription(obj : Parser.Object,
       desiredSize : string, desiredColor : string, desiredForms : string[]) : boolean {
-        if (desiredSize != null && obj.size != desiredSize) {
-          console.log("size does not match");
+        if (desiredSize != null && obj.size != desiredSize)
           return false;
-        }
 
-        if (desiredColor != null && obj.color != desiredColor) {
-          console.log("color does not match. should be " + desiredColor + " but is "+ obj.color);
+        if (desiredColor != null && obj.color != desiredColor)
           return false;
-        }
 
-        if (desiredForms.indexOf(obj.form) == -1 && desiredForms.indexOf("anyform") == -1) {
-          console.log("form does not match: is " + obj.form + " but should be one of " + desiredForms);
+        if (desiredForms.indexOf(obj.form) == -1 && desiredForms.indexOf("anyform") == -1)
           return false;
-        } else {
-          console.log(desiredForms.indexOf(obj.form));
-          console.log("form MATCH: is " + obj.form + ", should be one of " + desiredForms);
-        }
 
         return true;
     }
