@@ -180,13 +180,35 @@ module Interpreter {
       let locationObjectsInterpretationResult = interpretEntity(cmd.location.entity,
         previouslySeenObjects, state);
       let setOfLocationObjects = locationObjectsInterpretationResult.objectIds;
-      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
+
+      // Check for ambiguity depending on the specified quantifier
+      if(cmd.entity.quantifier == "the" && setOfObjects.size() > 1) {
+        throw "Ambiguous subject"
+        // TODO Ask clarification question
+      }
+
+      if(cmd.location.entity.quantifier == "the" && setOfLocationObjects.size() > 1) {
+        throw "Ambiguous location"
+        // TODO Ask clarification question
+      }
+
+      if(cmd.entity.quantifier == "all" && !setOfLocationObjects.contains("floor") && setOfLocationObjects.size() < setOfObjects.size()) {
+        throw "More objects than locations"
+      }
+
+      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, cmd.entity.quantifier);
     }
 
     function interpretTakeCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
       let setOfObjects = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state).objectIds;
       let relation = "holding";
-      return combineSetToDNF(setOfObjects, relation);
+
+      if(cmd.entity.quantifier == "the" && setOfObjects.size() > 1) {
+        throw "Ambiguous subject"
+        // TODO Ask clarification question
+      }
+
+      return combineSetToDNF(setOfObjects, relation, cmd.entity.quantifier);
     }
 
     function interpretPutCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
@@ -194,7 +216,13 @@ module Interpreter {
       setOfObjects.add(state.holding) ; //set containing only this
       let relation = cmd.location.relation;
       let setOfLocationObjects = interpretEntity(cmd.location.entity, new collections.LinkedList<string>(), state).objectIds;
-      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
+
+      if(cmd.location.entity.quantifier == "the" && setOfLocationObjects.size() > 1) {
+        throw "Ambiguous location"
+        // TODO Ask clarification question
+      }
+
+      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, cmd.entity.quantifier);
     }
 
     function interpretEntity( entity: Parser.Entity,
@@ -404,23 +432,44 @@ module Interpreter {
     function combineSetsToDNF(state:WorldState,
                               setOfObjects: collections.LinkedList<string>,
                               theRelation: string,
-                              setOfLocationObjects: collections.LinkedList<string>) : DNFFormula  {
+                              setOfLocationObjects: collections.LinkedList<string>,
+                              quantifier: string) : DNFFormula  {
       let result : DNFFormula = [];
+      let allresult : Conjunction = [];
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
       let errorExplanations : string[] = [];
-      for (let object of objectSet) {
-        for (let location of locationSet) {
-          var physicalCorrectness = checkPhysicalCorrectness(state, object, location, theRelation);
-          if(physicalCorrectness.valid)
-            result.push([{polarity:true, relation:theRelation, args:[object.toString(),location.toString()]}]);
-          else
-            errorExplanations.push(physicalCorrectness.explanation);
+
+      if(quantifier != "all") {
+        for (let object of objectSet) {
+          for (let location of locationSet) {
+            var physicalCorrectness = checkPhysicalCorrectness(state, object, location, theRelation);
+            if(physicalCorrectness.valid)
+              result.push([{polarity:true, relation:theRelation, args:[object.toString(),location.toString()]}]);
+            else
+              errorExplanations.push(physicalCorrectness.explanation);
+          }
         }
+      } else {
+        for (let object of objectSet) {
+          //allresult = [];
+          for (let location of locationSet) {
+            var physicalCorrectness = checkPhysicalCorrectness(state, object, location, theRelation);
+            if(physicalCorrectness.valid)
+              allresult.push({polarity:true, relation:theRelation, args:[object.toString(),location.toString()]});
+            else
+              errorExplanations.push(physicalCorrectness.explanation);
+          }
+        }
+        result.push(allresult);
       }
+
       if (result.length == 0) {
         result.push([{polarity:null, relation:null, args:null}]);
         throw getPhysicalLawsErrorExplanation(errorExplanations);
+      } else if (result.length > 1 && quantifier == "the") {
+        result = [];
+        throw "ambiguous command"
       } else console.log("DNFFormula " + stringifyDNF(result));
 
       return result;
@@ -440,17 +489,30 @@ module Interpreter {
      * that obey the physical laws.
      */
     function combineSetToDNF(setOfObjects: collections.LinkedList<string>,
-                              theRelation: string) : DNFFormula {
+                              theRelation: string,
+                              quantifier: string) : DNFFormula {
       let result : DNFFormula = [];
+      let allresult : Conjunction = [];
       let objectSet = setOfObjects.toArray();
-      for (let object of objectSet) {
-        result.push([{polarity:true, relation:theRelation, args:[object.toString()]}]);
+
+      if(quantifier != "all") {
+        for (let object of objectSet) {
+          result.push([{polarity:true, relation:theRelation, args:[object.toString()]}]);
+        }
+      } else {
+        for (let object of objectSet) {
+          allresult.push({polarity:true, relation:theRelation, args:[object.toString()]});
+        }
+        result.push(allresult);
       }
+
       if (result.length == 0) {
         result.push([{polarity:null, relation:null, args:[]}]);
         throw "no results found"
-      }
-      else console.log("DNFFormula ", stringifyDNF(result));
+      } else if (result.length > 1 && quantifier == "the") {
+        result = [];
+        throw "ambiguous command"
+      } else console.log("DNFFormula ", stringifyDNF(result));
       return result;
     }
 
