@@ -174,10 +174,12 @@ module Interpreter {
     function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
       let entityInterpretationResult = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state);
       let setOfObjects = entityInterpretationResult.objectIds;
+      let previouslySeenObjects = entityInterpretationResult.nestedObjectsIds;
 
       let relation = cmd.location.relation;
 
-      let locationObjectsInterpretationResult = interpretEntity(cmd.location.entity, new collections.LinkedList<string>(), state);
+      let locationObjectsInterpretationResult = interpretEntity(cmd.location.entity,
+        previouslySeenObjects, state);
       let setOfLocationObjects = locationObjectsInterpretationResult.objectIds;
       return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
     }
@@ -286,6 +288,9 @@ module Interpreter {
               desiredForms.push(previouslySeenObjForm);
           }
         }
+
+        if (desiredForms.length == 0)
+          throw "You didn't mention anything before, I don't understand which object you mean by that anaphoric reference."
       }
 
       return desiredForms;
