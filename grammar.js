@@ -174,6 +174,8 @@ var grammar = {
     {"name": "form", "symbols": ["form$string$5"], "postprocess": R("table")},
     {"name": "form$string$6", "symbols": [{"literal":"f"}, {"literal":"l"}, {"literal":"o"}, {"literal":"o"}, {"literal":"r"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "form", "symbols": ["form$string$6"], "postprocess": R("floor")},
+    {"name": "form$string$7", "symbols": [{"literal":"o"}, {"literal":"n"}, {"literal":"e"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "form", "symbols": ["form$string$7"], "postprocess": R("one")},
     {"name": "take$string$1", "symbols": [{"literal":"t"}, {"literal":"a"}, {"literal":"k"}, {"literal":"e"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "take", "symbols": ["take$string$1"]},
     {"name": "take$string$2", "symbols": [{"literal":"g"}, {"literal":"r"}, {"literal":"a"}, {"literal":"s"}, {"literal":"p"}], "postprocess": function joiner(d) {return d.join('');}},

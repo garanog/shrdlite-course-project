@@ -175,6 +175,7 @@ module Interpreter {
       let entityInterpretationResult = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state);
       let setOfObjects = entityInterpretationResult.objectIds;
       let previouslySeenObjects = entityInterpretationResult.nestedObjectsIds;
+      console.log(previouslySeenObjects);
 
       let relation = cmd.location.relation;
 
@@ -268,7 +269,7 @@ module Interpreter {
       if (matchingSet.size() == 0)
         throw new Error("Could not find the " + Parser.describeObject(entityObject) + ".");
 
-      return {objectIds: matchingSet, nestedObjectsIds: null};
+      return {objectIds: matchingSet, nestedObjectsIds: matchingSet};
     }
 
     function interpretDesiredForm(desiredForm : string,
@@ -281,6 +282,9 @@ module Interpreter {
       //Anaphoric references
       if (desiredForm == "one") {
         desiredForms = [];
+        console.log("_______________");
+        console.log(previouslySeenObjects);
+        console.log("_______________");
         for (let previouslySeenObj in previouslySeenObjects) {
           if (objectMatchesDescription(previouslySeenObj, desiredSize, desiredColor, null)) {
             var previouslySeenObjForm = state.objects[previouslySeenObj].form
@@ -325,7 +329,7 @@ module Interpreter {
         = originalObjectsInterpretationResult.objectIds;
 
       let relatedSet : collections.LinkedList<string> =
-        interpretEntity(entityObject.location.entity, new collections.LinkedList<string>(), state).objectIds;
+        interpretEntity(entityObject.location.entity, previouslySeenObjects, state).objectIds;
 
       let relation : string = entityObject.location.relation;
 
@@ -368,7 +372,17 @@ module Interpreter {
           + " that is " + relation + " "
           + Parser.describeEntityDetailed(entityObject.location.entity) + ".");
 
-      return {objectIds: matchingSet, nestedObjectsIds: null};
+      return {objectIds: matchingSet,
+        nestedObjectsIds: flattenLists([matchingSet, originalObjectsInterpretationResult.nestedObjectsIds])};
+    }
+
+    function flattenLists(lists : [collections.LinkedList<string>]) : collections.LinkedList<string> {
+      var flattened = new collections.LinkedList<string>();
+      for (var list of lists) {
+        for (var element in list)
+          flattened.add(element);
+      }
+      return flattened;
     }
 
     /*

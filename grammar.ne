@@ -97,6 +97,7 @@ form --> "ball"     {% R("ball") %}
 form --> "pyramid"  {% R("pyramid") %}
 form --> "table"    {% R("table") %}
 form --> "floor"    {% R("floor") %}
+form --> "one"      {% R("one") %}
 
 
 ## Lexicon (without semantic content)
