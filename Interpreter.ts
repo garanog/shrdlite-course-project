@@ -167,23 +167,23 @@ module Interpreter {
       TODO
     **/
     function interpretQuestion(question: Parser.Question, state: WorldState): QuestionInterpretationResult {
-        return ({input: null, parse: null, questionWord: question.question, object: interpretEntity(question.entity, state).objectIds.elementAtIndex(0)});
+        return ({input: null, parse: null, questionWord: question.question, object: interpretEntity(question.entity, new collections.LinkedList<string>(), state).objectIds.elementAtIndex(0)});
         //TODO NOT TAKE ONLY THE FIRST ONE HERE and make it beautiful
     }
 
     function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
-      let entityInterpretationResult = interpretEntity(cmd.entity, state);
+      let entityInterpretationResult = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state);
       let setOfObjects = entityInterpretationResult.objectIds;
 
       let relation = cmd.location.relation;
 
-      let locationObjectsInterpretationResult = interpretEntity(cmd.location.entity, state);
+      let locationObjectsInterpretationResult = interpretEntity(cmd.location.entity, new collections.LinkedList<string>(), state);
       let setOfLocationObjects = locationObjectsInterpretationResult.objectIds;
       return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
     }
 
     function interpretTakeCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
-      let setOfObjects = interpretEntity(cmd.entity, state).objectIds;
+      let setOfObjects = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state).objectIds;
       let relation = "holding";
       return combineSetToDNF(setOfObjects, relation);
     }
@@ -192,14 +192,16 @@ module Interpreter {
       let setOfObjects: collections.LinkedList<string> = new collections.LinkedList<string>();
       setOfObjects.add(state.holding) ; //set containing only this
       let relation = cmd.location.relation;
-      let setOfLocationObjects = interpretEntity(cmd.location.entity, state).objectIds;
+      let setOfLocationObjects = interpretEntity(cmd.location.entity, new collections.LinkedList<string>(), state).objectIds;
       return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects);
     }
 
-    function interpretEntity(entity: Parser.Entity, state : WorldState)
+    function interpretEntity( entity: Parser.Entity,
+                              previouslySeenObjects : collections.LinkedList<string>,
+                              state : WorldState)
       : ObjectInterpretationResult {
       //TODO: interpret quantifier
-      return interpretObject(entity.object, state);
+      return interpretObject(entity.object, previouslySeenObjects, state);
     }
 
     class ObjectInterpretationResult {
@@ -211,15 +213,17 @@ module Interpreter {
     * Interprets the information given from the entityObject, and returns a list
     * of the keys to all objects from the world that matches that information.
     */
-    function interpretObject(entityObject: Parser.Object, state: WorldState)
+    function interpretObject( entityObject: Parser.Object,
+                              previouslySeenObjects : collections.LinkedList<string>,
+                              state: WorldState)
         : ObjectInterpretationResult {
       let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
       let stacks : Stack[]= state.stacks;
 
       if (entityObject.location == null) {
-        return interpretSimpleObject(entityObject, state);
+        return interpretSimpleObject(entityObject, previouslySeenObjects, state);
       } else {
-        return interpretComplexObject(entityObject, state);
+        return interpretComplexObject(entityObject, previouslySeenObjects, state);
       }
     }
 
@@ -229,28 +233,32 @@ module Interpreter {
     * objects searched for. All objects that match the description will be found
     * by searching through all obects in the given worldstate and compared.
     */
-    function interpretSimpleObject(entityObject : Parser.Object,
-                                    state : WorldState) : ObjectInterpretationResult {
+    function interpretSimpleObject( entityObject : Parser.Object,
+                                    previouslySeenObjects : collections.LinkedList<string>,
+                                    state : WorldState)
+                                  : ObjectInterpretationResult {
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
       let desiredSize  : string = entityObject.size;
       let desiredColor : string = entityObject.color;
-      let desiredForm  : string = entityObject.form;
+      let desiredForm : string = entityObject.form;
 
-      if (desiredForm == "floor")
+      if (entityObject.form == "floor")
         matchingSet.add("floor");
       else {
+        var desiredForms : string[] = interpretDesiredForm(desiredForm, desiredSize, desiredColor, previouslySeenObjects, state);
+
         for (let stack of state.stacks) {
           for (let objectName of stack) {
             let objectToCompare : ObjectDefinition = state.objects[objectName];
-            if (objectMatchesDescription(objectToCompare, desiredSize, desiredColor, desiredForm))
+            if (objectMatchesDescription(objectToCompare, desiredSize, desiredColor, desiredForms))
               matchingSet.add(objectName);
           }
         }
 
         if (state.holding != null){
           let heldObject : ObjectDefinition = state.objects[state.holding];
-          if (objectMatchesDescription(heldObject, desiredSize, desiredColor, desiredForm))
+          if (objectMatchesDescription(heldObject, desiredSize, desiredColor, desiredForms))
             matchingSet.add(state.holding);
         }
       }
@@ -261,11 +269,35 @@ module Interpreter {
       return {objectIds: matchingSet, nestedObjectsIds: null};
     }
 
+    function interpretDesiredForm(desiredForm : string,
+                                  desiredSize : string,
+                                  desiredColor : string,
+                                  previouslySeenObjects : collections.LinkedList<string>,
+                                  state: WorldState) : string[] {
+      var desiredForms : string[] = [desiredForm];
+
+      //Anaphoric references
+      if (desiredForm == "one") {
+        desiredForms = [];
+        for (let previouslySeenObj in previouslySeenObjects) {
+          if (objectMatchesDescription(previouslySeenObj, desiredSize, desiredColor, null)) {
+            var previouslySeenObjForm = state.objects[previouslySeenObj].form
+            if (desiredForms.indexOf(previouslySeenObjForm) == -1)
+              desiredForms.push(previouslySeenObjForm);
+          }
+        }
+      }
+
+      return desiredForms;
+    }
+
     function objectMatchesDescription(obj : Parser.Object,
-      desiredSize : string, desiredColor : string, desiredForm : string) : boolean {
+      desiredSize : string, desiredColor : string, desiredForms : string[]) : boolean {
         return ((desiredSize  == null || obj.size  == desiredSize) &&
           (desiredColor == null || obj.color == desiredColor) &&
-          (desiredForm  == null || desiredForm == "anyform" || obj.form  == desiredForm));
+          (desiredForms.length == 0
+            || (desiredForms.length == 1 && desiredForms.indexOf ("anyform") != -1)
+            || (desiredForms.indexOf(obj.form) != -1)));
     }
 
     /*
@@ -277,17 +309,18 @@ module Interpreter {
     * which ones fulfills the relation.
     */
     function interpretComplexObject(entityObject : Parser.Object,
+                                    previouslySeenObjects : collections.LinkedList<string>,
                                     state : WorldState) : ObjectInterpretationResult {
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
 
       let originalObjectsInterpretationResult : ObjectInterpretationResult
-        = interpretObject(entityObject.object, state);
+        = interpretObject(entityObject.object, previouslySeenObjects, state);
       let originalObjects : collections.LinkedList<string>
         = originalObjectsInterpretationResult.objectIds;
 
       let relatedSet : collections.LinkedList<string> =
-        interpretEntity(entityObject.location.entity, state).objectIds;
+        interpretEntity(entityObject.location.entity, new collections.LinkedList<string>(), state).objectIds;
 
       let relation : string = entityObject.location.relation;
 
