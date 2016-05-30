@@ -344,18 +344,31 @@ module Interpreter {
       let result : DNFFormula = [];
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
+      let errorExplanations : string[] = [];
       for (let object of objectSet) {
         for (let location of locationSet) {
-          if(checkPhysicalCorrectness(state, object, location, theRelation))
+          var physicalCorrectness = checkPhysicalCorrectness(state, object, location, theRelation);
+          if(physicalCorrectness.valid)
             result.push([{polarity:true, relation:theRelation, args:[object.toString(),location.toString()]}]);
+          else
+            errorExplanations.push(physicalCorrectness.explanation);
         }
       }
       if (result.length == 0) {
         result.push([{polarity:null, relation:null, args:null}]);
-        throw "No results found";
-      }
-      else console.log("DNFFormula " + stringifyDNF(result));
+        throw getPhysicalLawsErrorExplanation(errorExplanations);
+      } else console.log("DNFFormula " + stringifyDNF(result));
+
       return result;
+    }
+
+    function getPhysicalLawsErrorExplanation(errorExplanations : string[]) : string {
+      var errorExplanation = "This command would break the physical laws. ";
+      for (var i = 0; i < errorExplanations.length; i++)
+        errorExplanation += errorExplanations[i];
+        if (i != errorExplanations.length - 1)
+          errorExplanation += ". ";
+      return errorExplanation;
     }
 
     /**
@@ -377,38 +390,63 @@ module Interpreter {
       return result;
     }
 
+    class PhysicalCorrectnessResult {
+      valid : boolean;
+      explanation : string; //some kind of an explanation, in case that valid is false
+    }
+
     /**
      * @returns Whether the given relation obeys the physical laws, i.e. whether
      * object a can be in relation to object b in the given world.
      */
-    function checkPhysicalCorrectness(state : WorldState, a : string, b : string, relation : string) : boolean {
+    function checkPhysicalCorrectness(state : WorldState, a : string, b : string, relation : string) : PhysicalCorrectnessResult {
+      var result : PhysicalCorrectnessResult = {valid: false, explanation: ""};
       let objectA = state.objects[a];
 
       //TODO: is the floor really large?
       let objectB = b == "floor" ? {color:null, size:"large", form:"floor"} : state.objects[b];
 
-      if (a == b) return false;                                                  // Objects cannot be related to themselves
+      // Objects cannot be related to themselves
+      if (a == b) return {valid: false, explanation: "An object cannot be " + relation + " itself."};
 
       switch (relation) {
         case "ontop":
-          if (objectA.form == "ball")                                           // Balls must be in boxes or on the floor, otherwise they roll away.
-            if (objectB.form != "box" && objectB.form != "floor")
-              return false;
+          // Balls must be in boxes or on the floor, otherwise they roll away.
+          if (objectA.form == "ball" && (objectB.form != "box" && objectB.form != "floor"))
+            return {valid: false, explanation: "A ball cannot be placed on top of a " + objectB.form + ", it would roll away."};
 
-          if (objectA.size == "large" && objectB.size == "small") return false; // Small objects cannot support large objects.
-          if (objectB.form == "ball") return false;                             // Balls cannot support anything.
-          if (objectB.form == "box") return false;                              // Objects are “inside” boxes, but “ontop” of other objects.
+          // Small objects cannot support large objects.
+          if (objectA.size == "large" && objectB.size == "small")
+            return {valid: false, explanation: "A small object cannot support a large one."};
+
+          // Balls cannot support anything.
+          if (objectB.form == "ball")
+            return {valid: false, explanation: "It's not possible to put something on top of a ball."};
+
+          // Objects are “inside” boxes, but “ontop” of other objects.
+          if (objectB.form == "box")
+            return {valid: false, explanation: "Objects can be placed inside boxes, but not on top of them."};
 
         break;
 
         case "inside":
-          if (objectA.size == "large" && objectB.size == "small") return false; // Small objects cannot support large objects.
-          if (objectB.form != "box") return false;                              // Objects are “inside” boxes, but “ontop” of other objects.
+          // Small objects cannot support large objects.
+          if (objectA.size == "large" && objectB.size == "small")
+            return {valid: false, explanation: "Small objects cannot support large objects."};
+
+          // Objects are “inside” boxes, but “ontop” of other objects.
+          if (objectB.form != "box")
+            return {valid: false, explanation: "Boxes are the only objects you can put things 'inside'."};
         break;
 
         case "under":
-          if (objectA.size == "small" && objectB.size == "large") return false; // Small objects cannot support large objects.
-          if (objectA.form == "ball") return false;                             // Balls cannot support anything.
+          // Small objects cannot support large objects.
+          if (objectA.size == "small" && objectB.size == "large")
+            return {valid: false, explanation: "Small objects cannot support large objects."};
+
+          // Balls cannot support anything.
+          if (objectA.form == "ball")
+            return {valid: false, explanation: "It's not possible to put something on top of a ball."};
         break;
 
         case "beside":
@@ -416,7 +454,9 @@ module Interpreter {
 
         case "above":
           // This one is not direct, but it is impossible anyway.
-          if (objectA.size == "large" && objectB.size == "small") return false; // Small objects cannot support large objects.
+          // Small objects cannot support large objects.
+          if (objectA.size == "large" && objectB.size == "small")
+            return {valid: false, explanation: "Small objects cannot support large objects."};
         break;
 
         case "rightof":
@@ -426,7 +466,7 @@ module Interpreter {
         break;
       }
 
-      return true;
+      return {valid: true, explanation: ""};
     }
 
     /**
