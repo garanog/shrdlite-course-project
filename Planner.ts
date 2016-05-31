@@ -207,54 +207,78 @@ module Planner {
     function calculateDistanceOntop(objA : string, objB : string, state : WorldState) : number{
       if (Interpreter.onTopOf(state, objA, objB)) return 0;
 
+      let drop = state.holding == null ? 0 : 1;
+
+      /*
+      * If we want to put an object on the floor:
+      * If we hold the object, best case (bc) is that we only have to put it down
+      * Otherwise:
+      * empty arm (0 or 1)
+      * get to stack where object is (1 move per distance)
+      * remove all items above what we're looking for (bc: pick up, move, drop move back, total 4 per item)
+      * bc: pick up item, move and drop (3)
+      */
       if (objB === "floor"){ // possible that distance to "closest empty" stack should be calculated
         if (state.holding === objA){
           return 1;
         }
         let col : number = Interpreter.getColumn(state, objA);
-        let yPos : number = Interpreter.getYPosition(state, objA) + 1;
+        let yPos : number = Interpreter.getYPosition(state, objA);
 
         let distanceToStack : number = Math.abs(state.arm - col);
-        let emptyStack : number = (state.stacks[col].length - yPos ) * 4;
+        let emptyStack : number = (state.stacks[col].length - yPos - 2) * 4;
 
-        let drop = state.holding == null ? 0 : 1;
         return distanceToStack + emptyStack + drop + 3;
       }
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
         let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
-        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objB : objA)) + 1;
+        let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objB : objA));
         
         let distanceToStack : number = Math.abs(state.arm - notHeldCol);
         if (notHeldYPos == state.stacks[notHeldCol].length){
           return distanceToStack + 1;
         }
 
-        let emptyStack : number = (state.stacks[notHeldCol].length - notHeldYPos) * 4;
+        let emptyStack : number = (state.stacks[notHeldCol].length - notHeldYPos - 2) * 4;
         return distanceToStack + emptyStack + 2;
 
       }
 
+      /*
+      * Both in the same stack
+      * Empty arm (0-1)
+      * Move arm to stack (1 per move)
+      * Move all items above the lower of them (4 per item)
+      * Move A onto B (2 moves, pick up, drop up, 4 total)
+      */
+
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
-      var yPosB : number = Interpreter.getYPosition(state, objB) + 1;
-
-      let drop = state.holding == null ? 0 : 1;
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
 
       if (colA == colB){
         let initialArmMovements : number = Math.abs(state.arm - colA);
-        let emptyStack : number = (state.stacks[colA].length - Math.min(yPosA, yPosB)) * 4 - 1;
-        return initialArmMovements + emptyStack + drop ;
+        let emptyStack : number = (state.stacks[colA].length - Math.min(yPosA, yPosB) - 2) * 4;
+        return initialArmMovements + emptyStack + drop + 4;
       }
+
+      /*
+      * Empty arm (0-1)
+      * Move arm to closet stack (1 per move)
+      * Empty all items above in that stack (4 per item)
+      * Pick it up, move it next to stack of other obejct, drop and go to stack (1 per distance + 2)
+      * Empty other stack (4 per item)
+      */
       
       let moveArmToStackA : number = Math.abs(state.arm - colA);
       let moveArmToStackB : number = Math.abs(state.arm - colB);
       let moveArmToClosestStack : number = Math.min(moveArmToStackA, moveArmToStackB);
-      let emptyStacks : number = (state.stacks[colA].length - yPosA + 
-          state.stacks[colB].length - yPosB) * 4;
+      let emptyStacks : number = (state.stacks[colA].length - yPosA - 2 + 
+          state.stacks[colB].length - yPosB - 2) * 4;
       let moveObjectBetweenStacks  : number = Math.abs(colB - colA) + 2;
       return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks + drop;
     }
