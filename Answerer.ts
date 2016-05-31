@@ -27,12 +27,17 @@ module Answerer {
 
       //describe object
       var obj = Parser.getInnermostObject(question.parse.question.entity.object);
-      result += Parser.describeObject(obj);
+      result += Parser.describeObject(obj) + " is";
 
-      //what's underneath?
-      result += " is on top of the "
+      if (state.holding === question.object) return result + " held by the arm";
+
       var column : number = Interpreter.getColumn(state, question.object);
       var yPos : number = Interpreter.getYPosition(state, question.object);
+      if (column == 0) result += " furthest to the left";
+      else if (column == state.stacks.length) result += " furthest to the right";
+
+      //what's underneath?
+      result += " on top of the "
 
       if (!yPos)
         result += "floor";
