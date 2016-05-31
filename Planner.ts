@@ -226,7 +226,7 @@ module Planner {
         let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
         let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objB : objA)) + 1;
         
-        let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
+        let distanceToStack : number = Math.abs(state.arm - notHeldCol);
         if (notHeldYPos == state.stacks[notHeldCol].length){
           return distanceToStack + 1;
         }
@@ -315,7 +315,7 @@ module Planner {
       var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
       var moveAToB : number = Math.abs(colA - colB) + 1;
 
-      var initialArmMovementsToB : number = Math.abs(state.arm - colB;
+      var initialArmMovementsToB : number = Math.abs(state.arm - colB);
       var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
 
       return Math.max(initialArmMovementsToA + emptyStackA, initialArmMovementsToB + emptyStackB) 
