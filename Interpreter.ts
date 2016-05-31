@@ -174,6 +174,7 @@ module Interpreter {
       let entityInterpretationResult = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state);
       let setOfObjects = entityInterpretationResult.objectIds;
       let previouslySeenObjects = entityInterpretationResult.nestedObjectsIds;
+      console.log(previouslySeenObjects);
 
       let relation = cmd.location.relation;
 
@@ -322,6 +323,9 @@ module Interpreter {
       let matchingSet : collections.LinkedList<string> =
           new collections.LinkedList<string>();
 
+      let relatedMatchingSet : collections.LinkedList<string> =
+          new collections.LinkedList<string>();
+
       let originalObjectsInterpretationResult : ObjectInterpretationResult
         = interpretObject(entityObject.object, previouslySeenObjects, state);
       let originalObjects : collections.LinkedList<string>
@@ -333,36 +337,38 @@ module Interpreter {
       let relation : string = entityObject.location.relation;
 
       for (let originalObject of originalObjects.toArray()) {
-        let correctlyPlaced : boolean = true;
+        let correctlyPlacedOn : string = null;
 
         switch (relation) {
           case "ontop":
-            correctlyPlaced = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(onTopOf,state,originalObject,relatedSet);
             break;
           case "inside":
-            correctlyPlaced = checkForCorrectPlace(inside,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(inside,state,originalObject,relatedSet);
             break;
           case "above":
-            correctlyPlaced = checkForCorrectPlace(above,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(above,state,originalObject,relatedSet);
             break;
           case "under":
-            correctlyPlaced = checkForCorrectPlace(under,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(under,state,originalObject,relatedSet);
             break;
           case "beside":
-            correctlyPlaced = checkForCorrectPlace(beside,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(beside,state,originalObject,relatedSet);
             break;
           case "leftof":
-            correctlyPlaced = checkForCorrectPlace(leftOf,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(leftOf,state,originalObject,relatedSet);
             break;
           case "rightof":
-            correctlyPlaced = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
+            correctlyPlacedOn = checkForCorrectPlace(rightOf,state,originalObject,relatedSet);
             break;
           default:
             throw new Error("The relation " + relation + " is unknown.");
         }
 
-        if (correctlyPlaced)
+        if (correctlyPlacedOn != null) {
           matchingSet.add(originalObject);
+          relatedMatchingSet.add(correctlyPlacedOn)
+        }
       }
 
       if (matchingSet.size() == 0)
@@ -372,13 +378,14 @@ module Interpreter {
           + Parser.describeEntityDetailed(entityObject.location.entity) + ".");
 
       return {objectIds: matchingSet,
-        nestedObjectsIds: flattenLists([matchingSet, originalObjectsInterpretationResult.nestedObjectsIds])};
+        nestedObjectsIds: flattenLists([matchingSet, relatedMatchingSet])};
     }
 
     function flattenLists(lists : [collections.LinkedList<string>]) : collections.LinkedList<string> {
+      console.log(lists);
       var flattened = new collections.LinkedList<string>();
       for (var list of lists) {
-        for (var element in list)
+        for (var element of list.toArray())
           flattened.add(element);
       }
       return flattened;
@@ -387,14 +394,15 @@ module Interpreter {
     /*
     * Checks whether or not two objects fulfills a given relation is the given worldstate.
     * The relation will be defined by a given function.
+    * @returns the object from the relatedSet that matches, or null if none of them matches.
     */
     function checkForCorrectPlace(fun : (state : WorldState, a : string, b : string) => boolean,
-        state: WorldState, obectName : string, relatedSet : collections.LinkedList<string>) : boolean {
+        state: WorldState, obectName : string, relatedSet : collections.LinkedList<string>) : string {
       for (let comparingObject of relatedSet.toArray()) {
         if (fun(state,obectName,comparingObject))
-          return true;
+          return comparingObject;
       }
-      return false;
+      return null;
     }
 
     /**
