@@ -386,14 +386,19 @@ module Planner {
 
     function calculateDistanceLeftOf(objA : string, objB : string, state : WorldState) : number {
       if (Interpreter.leftOf(state, objA, objB)) return 0;
-
+      /*
+      * If either is held:
+      * If arm is on correct side, drop
+      * Otherwise, move to the other side of the stack and drop (distance + 1 + 1)
+      */
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
         let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
         
-        if (state.arm < notHeldCol) return 1;
+        if ((held === objA) && (state.arm < notHeldCol) ||
+            (held === objB) && (state.arm > notHeldCol)) return 1;
 
-        let distanceToStack : number = state.arm - notHeldCol;
+        let distanceToStack : number = Math.abs(state.arm - notHeldCol);
         return distanceToStack + 2;
 
       }
@@ -401,17 +406,27 @@ module Planner {
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
-      var yPosB : number = Interpreter.getYPosition(state, objB) + 1;
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+
+      if (colA < colB) return 0;
+
+      /*
+      * Empty arm
+      * Do whichever is cheaper (A or B):
+      * Move arm to item
+      * Move items above (4 per item)
+      * Pick up, move to other side of stack of other item, drop (1 + distance + 1 + 1)
+      */
 
       let drop = state.holding == null ? 0 : 1;
 
       var initialArmMovementsToA : number = Math.abs(state.arm - colA);
-      var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
+      var emptyStackA : number = (state.stacks[colA].length - yPosA - 1) * 4;
       var moveAToB : number = Math.abs(colA - colB) + 3;
 
       var initialArmMovementsToB : number = Math.abs(state.arm - colB);
-      var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
+      var emptyStackB : number = (state.stacks[colB].length - yPosB - 1) * 4;
 
       return Math.max(initialArmMovementsToA + emptyStackA, initialArmMovementsToB + emptyStackB) 
           + drop + moveAToB;
@@ -420,13 +435,20 @@ module Planner {
     function calculateDistanceHolding(obj : string, state : WorldState) : number {
       if (state.holding === obj ) return 0;
 
+      /*
+      * Emmpty arm
+      * Distance to stack (1 per distance)
+      * Empty items above (4 per item)
+      * Pick up (1)
+      */
+
       let col = Interpreter.getColumn(state, obj);
-      let yPos = Interpreter.getYPosition(state, obj) + 1;
+      let yPos = Interpreter.getYPosition(state, obj);
 
       let drop = state.holding == null ? 0 : 1;
 
       var initialArmMovements : number = Math.abs(state.arm - col);
-      var emptyStack : number = (state.stacks[col].length - yPos * 4);
+      var emptyStack : number = (state.stacks[col].length - yPos - 1) * 4;
 
       return initialArmMovements + emptyStack + drop + 1;
     }
