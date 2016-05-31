@@ -223,7 +223,7 @@ module Interpreter {
         // TODO Ask clarification question
       }
 
-      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, cmd.entity.quantifier);
+      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, "the");
     }
 
     function interpretEntity( entity: Parser.Entity,
