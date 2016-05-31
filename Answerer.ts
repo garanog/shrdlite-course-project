@@ -33,12 +33,20 @@ module Answerer {
 
       var column : number = Interpreter.getColumn(state, question.object);
       var yPos : number = Interpreter.getYPosition(state, question.object);
-      if (column == 0) result += " furthest to the left";
-      else if (column == state.stacks.length) result += " furthest to the right";
 
       //what's underneath?
-      result += " on top of the "
+      var onTopOf : string = !yPos ? " on top of the floor" :
+          ((state.objects[state.stacks[column][yPos - 1]].form.toLowerCase() === "box" ? 
+          " in the " : " on top of the ") +
+          Parser.describeObject(state.objects[state.stacks[column][yPos - 1]]));
 
+      if (column == 0) return result + " furthest to the left " +  onTopOf;
+      else if (column == state.stacks.length) return result + " furthest to the right" + onTopOf;
+
+      result += onTopOf;
+      //result += " on top of the "
+
+      /*
       if (!yPos)
         result += "floor";
       else
@@ -46,35 +54,44 @@ module Answerer {
 
       if (state.stacks[column].length != yPos + 1)
           result += " under the " + Parser.describeObject(state.objects[state.stacks[column][yPos + 1]]);
+        */
 
       var nextRightStackIndex : number = -1;
       var nextLeftStackIndex  : number = -1;
-      for (let i : number = 0; i > state.stacks.length, nextRightStackIndex == -1; i++){
+      for (let i : number = 0; i < state.stacks.length && nextRightStackIndex == -1; i++){
         if (state.stacks[i].length){
           if (i < column) nextLeftStackIndex = i;
           else if (i > column) nextRightStackIndex = i;
         }
       }
-
+      /*
       if (nextRightStackIndex != -1)
           result += " left of the " + Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
 
       if (nextLeftStackIndex != -1)
           result += " right of the " + Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
 
-      var onTopOf = !yPos ? "floor" :
-          Parser.describeObject(state.objects[state.stacks[column][yPos - 1]]);
-
       var under : string = state.stacks[column].length == yPos + 1 ? null : 
           Parser.describeObject(state.objects[state.stacks[column][yPos + 1]]);
+      */
 
+      if (nextRightStackIndex == -1 && nextLeftStackIndex == -1 ) return result;
+
+      if (column - nextRightStackIndex > nextLeftStackIndex - column && nextRightStackIndex != -1)
+        return result + " left of the "  + Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
+
+      return result + " right of the " + Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
+      /*
       var leftOf  : string = nextRightStackIndex == -1 ? null :
-          Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
+          " left of the "  + Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
 
       var rightOf : string = nextLeftStackIndex  == -1 ? null :
-          Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
+          " right of the " + Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
+
+
 
       return result;
+      */
     }
 
     export interface AnswererResult extends Interpreter.QuestionInterpretationResult {
