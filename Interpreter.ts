@@ -192,7 +192,7 @@ module Interpreter {
         // TODO Ask clarification question
       }
 
-      if(cmd.entity.quantifier == "all" && !setOfLocationObjects.contains("floor") && setOfLocationObjects.size() < setOfObjects.size()) {
+      if(cmd.entity.quantifier == "all" && !(setOfLocationObjects.contains("floor") && setOfLocationObjects.size() <= state.stacks.length) && setOfLocationObjects.size() < setOfObjects.size()) {
         throw "More objects than locations"
       }
 
@@ -451,17 +451,8 @@ module Interpreter {
           }
         }
       } else {
-        for (let object of objectSet) {
-          //allresult = [];
-          for (let location of locationSet) {
-            var physicalCorrectness = checkPhysicalCorrectness(state, object, location, theRelation);
-            if(physicalCorrectness.valid)
-              allresult.push({polarity:true, relation:theRelation, args:[object.toString(),location.toString()]});
-            else
-              errorExplanations.push(physicalCorrectness.explanation);
-          }
-        }
-        result.push(allresult);
+        result = allCombinations(objectSet, locationSet, theRelation, state);
+        console.log(stringifyDNF(result));
       }
 
       if (result.length == 0) {
@@ -474,6 +465,33 @@ module Interpreter {
 
       return result;
     }
+
+    function allCombinations(objectSet : string[], locationSet: string[], relation: string, state: WorldState) : DNFFormula{
+      let arrayA : string[] = objectSet.slice(0);
+      let elemA : string = arrayA.shift();
+      let result : DNFFormula=[];
+      console.log("LocationSet length: " + locationSet.length);
+      for(let location = 0; location < locationSet.length; location++) {
+        console.log("iteration " + location);
+        let newLocationSet = locationSet.slice(0);
+        let elemB : string = newLocationSet.splice(location, 1)[0];
+        console.log("Combination: " + elemA + " " + elemB);
+        if(checkPhysicalCorrectness(state, elemA, elemB, relation).valid){
+          if(arrayA.length > 0) {
+            allCombinations(arrayA, newLocationSet, relation, state).forEach(function(entry){
+              console.log("Recursive call to allCombinations");
+              if(entry.length>0) result.push([{polarity:true, relation:relation, args:[elemA,elemB]}].concat(entry));
+            });
+          } else {
+            result.push([{polarity:true, relation:relation, args:[elemA,elemB]}]);
+          }
+        }
+
+      }
+      //console.log(result);
+      return result;
+    }
+
 
     function getPhysicalLawsErrorExplanation(errorExplanations : string[]) : string {
       var errorExplanation = "This command would break the physical laws. ";
