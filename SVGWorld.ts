@@ -393,9 +393,10 @@ class SVGWorld implements World {
 
     }
 
-    public printAnswer(answers : Answerer.AnswererResult[]) {
-      for (var answer of answers)
-        this.printSystemOutput(answer.answer);
+    public printAnswers(answers : string[]) : void{
+      for (var answer of answers){
+        this.printSystemOutput(answer);
+      }
     }
 
     //////////////////////////////////////////////////////////////////////
