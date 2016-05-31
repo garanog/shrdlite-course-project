@@ -292,7 +292,6 @@ module Planner {
     }
 
     function calculateDistanceAbove(objA : string, objB : string, state : WorldState) : number {
-      if (Interpreter.above(state, objA, objB)) return 0;
       let drop = state.holding == null ? 0 : 1;
 
       if (objB === "floor") return drop;
@@ -328,8 +327,10 @@ module Planner {
       */
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
-
       var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+      if (colA == colB && yPosA > yPosB) return 0;
+
       let initialArmMovement : number = Math.abs(state.arm - colA);
       let emptyStack : number = (state.stacks[colA].length - yPosA -1) * 4;
       let moveAtoB : number = Math.abs(colA - colB) + 2;
@@ -338,6 +339,12 @@ module Planner {
 
     function calculateDistanceBeside(objA : string, objB : string, state : WorldState) : number {
       if (Interpreter.beside(state, objA, objB)) return 0;
+
+      /*
+      * If we hold either:
+      * Distance to the one step beside stack of other item, drop (distance - 1 + 1)
+      * If distance is zero, move one and drop (2)
+      */
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
@@ -348,20 +355,30 @@ module Planner {
 
       }
 
+      /*
+      * Empty the arm
+      * For whichever is cheaper (A or B):
+      * Move arm to the items stack (1 per distnce)
+      * Move items above (4 per item)
+      * Pick it up, move it to one step next to stack of other item and drop (1 + distance - 1 + 1)
+      */
+
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
-      var yPosB : number = Interpreter.getYPosition(state, objB) + 1;
+      var yPosA : number = Interpreter.getYPosition(state, objA);
+      var yPosB : number = Interpreter.getYPosition(state, objB);
+
+      if (Math.abs(colA - colB) == 1 ) return 0;
 
       let drop = state.holding == null ? 0 : 1;
 
       var initialArmMovementsToA : number = Math.abs(state.arm - colA);
-      var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
+      var emptyStackA : number = (state.stacks[colA].length - yPosA -1) * 4;
       var moveAToB : number = Math.abs(colA - colB) + 1;
 
       var initialArmMovementsToB : number = Math.abs(state.arm - colB);
-      var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
+      var emptyStackB : number = (state.stacks[colB].length - yPosB - 1) * 4;
 
       return Math.max(initialArmMovementsToA + emptyStackA, initialArmMovementsToB + emptyStackB) 
           + moveAToB + drop;
