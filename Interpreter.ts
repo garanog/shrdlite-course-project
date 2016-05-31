@@ -451,7 +451,15 @@ module Interpreter {
           }
         }
       } else {
-        result = allCombinations(objectSet, locationSet, theRelation, state);
+        if (locationSet.indexOf("floor") >= 0) {
+          for (let object of objectSet) {
+            allresult.push({polarity:true, relation:theRelation, args:[object.toString(),"floor"]});
+          }
+          result.push(allresult);
+        } else {
+          result = allCombinations(objectSet, locationSet, theRelation, state);
+        }
+
         console.log(stringifyDNF(result));
       }
 
