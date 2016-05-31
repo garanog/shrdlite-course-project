@@ -44,17 +44,6 @@ module Answerer {
       else if (column == state.stacks.length) return result + " furthest to the right" + onTopOf;
 
       result += onTopOf;
-      //result += " on top of the "
-
-      /*
-      if (!yPos)
-        result += "floor";
-      else
-        result += Parser.describeObject(state.objects[state.stacks[column][yPos - 1]]);
-
-      if (state.stacks[column].length != yPos + 1)
-          result += " under the " + Parser.describeObject(state.objects[state.stacks[column][yPos + 1]]);
-        */
 
       var nextRightStackIndex : number = -1;
       var nextLeftStackIndex  : number = -1;
@@ -64,16 +53,6 @@ module Answerer {
           else if (i > column) nextRightStackIndex = i;
         }
       }
-      /*
-      if (nextRightStackIndex != -1)
-          result += " left of the " + Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
-
-      if (nextLeftStackIndex != -1)
-          result += " right of the " + Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
-
-      var under : string = state.stacks[column].length == yPos + 1 ? null : 
-          Parser.describeObject(state.objects[state.stacks[column][yPos + 1]]);
-      */
 
       if (nextRightStackIndex == -1 && nextLeftStackIndex == -1 ) return result;
 
@@ -81,17 +60,7 @@ module Answerer {
         return result + " left of the "  + Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
 
       return result + " right of the " + Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
-      /*
-      var leftOf  : string = nextRightStackIndex == -1 ? null :
-          " left of the "  + Parser.describeObject(state.objects[state.stacks[nextRightStackIndex][0]]);
 
-      var rightOf : string = nextLeftStackIndex  == -1 ? null :
-          " right of the " + Parser.describeObject(state.objects[state.stacks[nextLeftStackIndex][0]]);
-
-
-
-      return result;
-      */
     }
 
     export interface AnswererResult extends Interpreter.QuestionInterpretationResult {
