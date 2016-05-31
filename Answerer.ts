@@ -23,16 +23,31 @@ module Answerer {
     }
 
     function answerQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
+      switch (question.questionWord) {
+        case "where is":
+          return answerWhereIsQuestion(question, state);
+        case "how many":
+          return answerHowManyQuestion(question, state);
+      }
+      return "";
+    }
+
+    function answerHowManyQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
+      return "There is " + question.interpretation + " " + Parser.describeObject(question.parse.question.object)
+          + (question.interpretation == "1" ? "" : "(es)");
+    }
+
+    function answerWhereIsQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
       var result : string = "The ";
 
       //describe object
       var obj = Parser.getInnermostObject(question.parse.question.entity.object);
       result += Parser.describeObject(obj) + " is";
 
-      if (state.holding === question.object) return result + " held by the arm";
+      if (state.holding === question.interpretation) return result + " held by the arm";
 
-      var column : number = Interpreter.getColumn(state, question.object);
-      var yPos : number = Interpreter.getYPosition(state, question.object);
+      var column : number = Interpreter.getColumn(state, question.interpretation);
+      var yPos : number = Interpreter.getYPosition(state, question.interpretation);
 
       //what's underneath?
       var onTopOf : string = !yPos ? " on top of the floor" :

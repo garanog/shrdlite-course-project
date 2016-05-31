@@ -43,7 +43,7 @@ command --> move  it    location  {% R({command:"put", location:2}) %}
 command --> move entity location  {% R({command:"move", entity:1, location:2}) %}
 
 question --> questionWord entity            {% R({question:0, entity:1}) %}
-question --> how_many object is_there:?     {% R({question:"how many", object:1}) %}
+question --> how_many objectPL are_there:?     {% R({question:"how many", object:1}) %}
 
 location --> relation entity  {% R({relation:0, entity:1}) %}
 
@@ -111,6 +111,7 @@ that_is  --> "that" "is"
 that_are --> "that" "are"
 
 how_many --> "how" "many"
+are_there --> "are" "there"
 
 will_you --> ("will" | "can" | "could") "you"
 

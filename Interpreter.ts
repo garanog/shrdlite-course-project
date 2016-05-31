@@ -56,7 +56,7 @@ module Interpreter {
                     let result: QuestionInterpretationResult = <QuestionInterpretationResult> parseresult;
                     var interpretationResult = interpretQuestion(result.parse.question, currentState);
                     result.questionWord = interpretationResult[0];
-                    result.object = interpretationResult[1];
+                    result.interpretation = interpretationResult[1];
                     questionInterpretations.push(result);
                 } else {
                   throw new Error("Unknown parseresult type. ");
@@ -90,7 +90,7 @@ module Interpreter {
 
     export interface QuestionInterpretationResult extends Parser.ParseResult {
         questionWord: string;
-        object?: string;
+        interpretation: string;
     }
 
     export type DNFFormula = Conjunction[];
@@ -181,7 +181,7 @@ module Interpreter {
     }
 
     function interpretHowManyQuestion(question: Parser.Question, state: WorldState): [string, string] {
-      return ["",""];
+      return [question.question, interpretObject(question.object, new collections.LinkedList<string>(), state).objectIds.size().toString()];
     }
 
     function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
