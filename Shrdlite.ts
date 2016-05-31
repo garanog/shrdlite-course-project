@@ -76,10 +76,7 @@ module Shrdlite {
               });
 
               if (interpretations.commandInterpretations.length > 1) {
-                  // several interpretations were found -- how should this be handled?
-                  // should we throw an ambiguity error?
-                  // ... throw new Error("Ambiguous utterance");
-                  // or should we let the planner decide?
+                throw new Error("Ambiguous utterance");
               }
             } else if (interpretations.type == "question") {
               world.printDebugInfo("Found " + interpretations.questionInterpretations.length + " question interpretations");
@@ -100,6 +97,7 @@ module Shrdlite {
               });
 
               if (plans.length > 1) {
+                throw new Error("Ambiguous utterance (several plans were found).")
                   // several plans were found -- how should this be handled?
                   // this means that we have several interpretations,
                   // should we throw an ambiguity error?
