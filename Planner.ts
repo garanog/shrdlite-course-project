@@ -205,8 +205,6 @@ module Planner {
     }
 
     function calculateDistanceOntop(objA : string, objB : string, state : WorldState) : number{
-      if (Interpreter.onTopOf(state, objA, objB)) return 0;
-
       let drop = state.holding == null ? 0 : 1;
 
       /*
@@ -225,11 +223,21 @@ module Planner {
         let col : number = Interpreter.getColumn(state, objA);
         let yPos : number = Interpreter.getYPosition(state, objA);
 
+        if (!yPos) return 0;
+
         let distanceToStack : number = Math.abs(state.arm - col);
-        let emptyStack : number = (state.stacks[col].length - yPos - 2) * 4;
+        let emptyStack : number = (state.stacks[col].length - yPos - 1) * 4;
 
         return distanceToStack + emptyStack + drop + 3;
       }
+
+      /*
+      * If we're holding one of the objects:
+      * If the object we want to put it on it on top, distance to stack + drop.
+      * Else, put the held item next to stack (1 per move + 1 drop)
+      * Empty the stack (4 per item)
+      * Pick up. move and drop (3)
+      */
 
       if (state.holding === objA || state.holding === objB){
         let held : string = state.holding;
@@ -237,13 +245,12 @@ module Planner {
         let notHeldYPos : number = Interpreter.getYPosition(state, (held === objA ? objB : objA));
         
         let distanceToStack : number = Math.abs(state.arm - notHeldCol);
-        if (notHeldYPos == state.stacks[notHeldCol].length){
+        if (held === objA && notHeldYPos == state.stacks[notHeldCol].length){
           return distanceToStack + 1;
         }
 
-        let emptyStack : number = (state.stacks[notHeldCol].length - notHeldYPos - 2) * 4;
-        return distanceToStack + emptyStack + 2;
-
+        let emptyStack : number = (state.stacks[notHeldCol].length - notHeldYPos - 1) * 4;
+        return distanceToStack + emptyStack + 4;
       }
 
       /*
@@ -261,8 +268,9 @@ module Planner {
       var yPosB : number = Interpreter.getYPosition(state, objB);
 
       if (colA == colB){
+        if (yPosA - yPosB == 1) return 0;
         let initialArmMovements : number = Math.abs(state.arm - colA);
-        let emptyStack : number = (state.stacks[colA].length - Math.min(yPosA, yPosB) - 2) * 4;
+        let emptyStack : number = (state.stacks[colA].length - Math.min(yPosA, yPosB) - 1) * 4;
         return initialArmMovements + emptyStack + drop + 4;
       }
 
@@ -277,19 +285,26 @@ module Planner {
       let moveArmToStackA : number = Math.abs(state.arm - colA);
       let moveArmToStackB : number = Math.abs(state.arm - colB);
       let moveArmToClosestStack : number = Math.min(moveArmToStackA, moveArmToStackB);
-      let emptyStacks : number = (state.stacks[colA].length - yPosA - 2 + 
-          state.stacks[colB].length - yPosB - 2) * 4;
+      let emptyStacks : number = (state.stacks[colA].length - yPosA - 1 + 
+          state.stacks[colB].length - yPosB - 1) * 4;
       let moveObjectBetweenStacks  : number = Math.abs(colB - colA) + 2;
       return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks + drop;
     }
 
     function calculateDistanceAbove(objA : string, objB : string, state : WorldState) : number {
       if (Interpreter.above(state, objA, objB)) return 0;
+      let drop = state.holding == null ? 0 : 1;
 
-      if (objB === "floor"){
-          return state.holding === objA ? 1 : 0;
-      }
+      if (objB === "floor") return drop;
 
+      /*
+      * If we're holding A
+      * distance to stack with B, and put it ontop
+      * If we're holding B
+      * Place next to A (distance to stack + 1)
+      * Empty items ontop of B (4 per item)
+      * Move to A, pick up, move back, and drop (4)
+      */
       if (state.holding === objA){
         let col = Interpreter.getColumn(state, objB);
         let distanceToStack : number = Math.abs(state.arm - col);
@@ -297,22 +312,28 @@ module Planner {
 
       } else if (state.holding === objB){
         let col = Interpreter.getColumn(state, objA);
-        let yPos = Interpreter.getYPosition(state, objA) + 1;
+        let yPos = Interpreter.getYPosition(state, objA);
         
         let distanceToStack : number = Math.abs(state.arm - col);
-        let emptyStack : number = (state.stacks[col].length - yPos) * 4;
-        return distanceToStack + emptyStack + 2;
+        let emptyStack : number = (state.stacks[col].length - yPos - 1) * 4;
+        return distanceToStack + emptyStack + 5;
 
       }
+
+      /*
+      * Empty arm
+      * Move arm to A's stack
+      * Empty all items above A
+      * Move A to B's stack (pick up, 1 per distance, drop)
+      */
       var colA : number = Interpreter.getColumn(state, objA);
       var colB : number = Interpreter.getColumn(state, objB);
 
-      let drop = state.holding == null ? 0 : 1;
-
-      var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
+      var yPosA : number = Interpreter.getYPosition(state, objA);
       let initialArmMovement : number = Math.abs(state.arm - colA);
-      let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
-      return initialArmMovement + emptyStack + drop + 3;
+      let emptyStack : number = (state.stacks[colA].length - yPosA -1) * 4;
+      let moveAtoB : number = Math.abs(colA - colB) + 2;
+      return initialArmMovement + emptyStack + drop + moveAtoB;
     }
 
     function calculateDistanceBeside(objA : string, objB : string, state : WorldState) : number {
