@@ -63,6 +63,7 @@ module Parser {
     export interface Question {
         question: string;
         entity?: Entity;
+        objecy?: Object;
     }
 
     /** A quantified reference (as yet uninterpreted) to an object in the world. */
