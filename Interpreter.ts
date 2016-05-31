@@ -174,7 +174,6 @@ module Interpreter {
       let entityInterpretationResult = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state);
       let setOfObjects = entityInterpretationResult.objectIds;
       let previouslySeenObjects = entityInterpretationResult.nestedObjectsIds;
-      console.log(previouslySeenObjects);
 
       let relation = cmd.location.relation;
 
@@ -410,7 +409,6 @@ module Interpreter {
     }
 
     function flattenLists(lists : [collections.LinkedList<string>]) : collections.LinkedList<string> {
-      console.log(lists);
       var flattened = new collections.LinkedList<string>();
       for (var list of lists) {
         for (var element of list.toArray())
