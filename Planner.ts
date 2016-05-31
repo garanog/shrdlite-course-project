@@ -214,7 +214,7 @@ module Planner {
         let col : number = Interpreter.getColumn(state, objA);
         let yPos : number = Interpreter.getYPosition(state, objA) + 1;
 
-        let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
+        let distanceToStack : number = Math.abs(state.arm - col);
         let emptyStack : number = (state.stacks[col].length - yPos ) * 4;
 
         let drop = state.holding == null ? 0 : 1;
@@ -245,18 +245,17 @@ module Planner {
       let drop = state.holding == null ? 0 : 1;
 
       if (colA == colB){
-        let initialArmMovements : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
-        let emptyStack : number = (state.stacks[colA].length - (yPosA < yPosB ? yPosA : yPosB)) * 4 - 1; // +1 depending on index of highest in stack?
+        let initialArmMovements : number = Math.abs(state.arm - colA);
+        let emptyStack : number = (state.stacks[colA].length - Math.min(yPosA, yPosB)) * 4 - 1;
         return initialArmMovements + emptyStack + drop ;
-
       }
       
-      let moveArmToStackA : number = (colA < state.arm ? state.arm - colA : colA - state.arm);
-      let moveArmToStackB : number = (colB < state.arm ? state.arm - colB : colB - state.arm);
-      let moveArmToClosestStack : number = (moveArmToStackA < moveArmToStackB ? moveArmToStackA : moveArmToStackB);
-      let emptyStacks : number = (state.stacks[colA].length + state.stacks[colB].length
-              - yPosA - yPosB) * 4; // -2?
-      let moveObjectBetweenStacks  : number = (colA < colB ? colB - colA : colA - colB) + 2;
+      let moveArmToStackA : number = Math.abs(state.arm - colA);
+      let moveArmToStackB : number = Math.abs(state.arm - colB);
+      let moveArmToClosestStack : number = Math.min(moveArmToStackA, moveArmToStackB);
+      let emptyStacks : number = (state.stacks[colA].length - yPosA + 
+          state.stacks[colB].length - yPosB) * 4;
+      let moveObjectBetweenStacks  : number = Math.abs(colB - colA) + 2;
       return moveArmToClosestStack + emptyStacks + moveObjectBetweenStacks + drop;
     }
 
@@ -269,14 +268,14 @@ module Planner {
 
       if (state.holding === objA){
         let col = Interpreter.getColumn(state, objB);
-        let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
+        let distanceToStack : number = Math.abs(state.arm - col);
         return distanceToStack + 1;
 
       } else if (state.holding === objB){
         let col = Interpreter.getColumn(state, objA);
         let yPos = Interpreter.getYPosition(state, objA) + 1;
         
-        let distanceToStack : number = state.arm >= col ? state.arm - col : col - state.arm;
+        let distanceToStack : number = Math.abs(state.arm - col);
         let emptyStack : number = (state.stacks[col].length - yPos) * 4;
         return distanceToStack + emptyStack + 2;
 
@@ -287,7 +286,7 @@ module Planner {
       let drop = state.holding == null ? 0 : 1;
 
       var yPosA : number = Interpreter.getYPosition(state, objA) + 1;
-      let initialArmMovement : number = state.arm > colA ? state.arm - colA : colA - state.arm;
+      let initialArmMovement : number = Math.abs(state.arm - colA);
       let emptyStack : number = (state.stacks[colA].length - yPosA * 4);
       return initialArmMovement + emptyStack + drop + 3;
     }
@@ -299,7 +298,7 @@ module Planner {
         let held : string = state.holding;
         let notHeldCol : number = Interpreter.getColumn(state, (held === objA ? objB : objA));
         
-        let distanceToStack : number = state.arm >= notHeldCol ? state.arm - notHeldCol : notHeldCol - state.arm;
+        let distanceToStack : number = Math.abs(state.arm - notHeldCol);
         return distanceToStack == 0 ? 2 : distanceToStack;
 
       }
@@ -312,15 +311,15 @@ module Planner {
 
       let drop = state.holding == null ? 0 : 1;
 
-      var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
+      var initialArmMovementsToA : number = Math.abs(state.arm - colA);
       var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
-      var moveAToB : number = (colA > colB ? colA - colB : colB - colA) + 1;
+      var moveAToB : number = Math.abs(colA - colB) + 1;
 
-      var initialArmMovementsToB : number = state.arm >= colB ? state.arm - colB : colB - state.arm;
+      var initialArmMovementsToB : number = Math.abs(state.arm - colB;
       var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
 
-      return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
-          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + moveAToB + drop;
+      return Math.max(initialArmMovementsToA + emptyStackA, initialArmMovementsToB + emptyStackB) 
+          + moveAToB + drop;
     }
 
     function calculateDistanceLeftOf(objA : string, objB : string, state : WorldState) : number {
@@ -345,15 +344,15 @@ module Planner {
 
       let drop = state.holding == null ? 0 : 1;
 
-      var initialArmMovementsToA : number = state.arm >= colA ? state.arm - colA : colA - state.arm;
+      var initialArmMovementsToA : number = Math.abs(state.arm - colA);
       var emptyStackA : number = (state.stacks[colA].length - yPosA * 4);
-      var moveAToB : number = (colA > colB ? colA - colB : colB - colA) + 3;
+      var moveAToB : number = Math.abs(colA - colB) + 3;
 
-      var initialArmMovementsToB : number = state.arm >= colB ? state.arm - colB : colB - state.arm;
+      var initialArmMovementsToB : number = Math.abs(state.arm - colB);
       var emptyStackB : number = (state.stacks[colB].length - yPosB * 4);
 
-      return (initialArmMovementsToA + emptyStackA > initialArmMovementsToB + emptyStackB ? 
-          initialArmMovementsToA + emptyStackA : initialArmMovementsToB + emptyStackB) + drop + moveAToB;
+      return Math.max(initialArmMovementsToA + emptyStackA, initialArmMovementsToB + emptyStackB) 
+          + drop + moveAToB;
     }
 
     function calculateDistanceHolding(obj : string, state : WorldState) : number {
@@ -364,7 +363,7 @@ module Planner {
 
       let drop = state.holding == null ? 0 : 1;
 
-      var initialArmMovements : number = state.arm >= col ? state.arm - col : col - state.arm;
+      var initialArmMovements : number = Math.abs(state.arm - col);
       var emptyStack : number = (state.stacks[col].length - yPos * 4);
 
       return initialArmMovements + emptyStack + drop + 1;
