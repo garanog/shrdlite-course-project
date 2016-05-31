@@ -19,7 +19,7 @@ module Answerer {
         answererResults.push(answererResult);
       }
 
-      return null;
+      return answererResults;
     }
 
     function answerQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
