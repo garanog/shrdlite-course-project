@@ -5,7 +5,6 @@
 ///<reference path="Answerer.ts"/>
 
 module Shrdlite {
-
     export function interactive(world : World) : void {
         function endlessLoop(utterance : string = "") : void {
             var inputPrompt = "What can I do for you today? ";
@@ -25,7 +24,6 @@ module Shrdlite {
         }
         world.printWorld(endlessLoop);
     }
-
 
     /**
      * Generic function that takes an utterance and returns a plan. It works according to the following pipeline:
@@ -80,8 +78,14 @@ module Shrdlite {
                   // should we throw an ambiguity error?
                   // ... throw new Error("Ambiguous utterance");
                   // or should we let the planner decide?
-              }
-            } else if (interpretations.type == "question") {
+                  var str: string = "I am confused. Which thing did you mean";
+                  for(let obj of interpretations.commandInterpretations){
+                       str += Interpreter.stringify(obj);
+                    }
+                }
+                world.printSystemOutput(str);      
+            }
+            if (interpretations.type == "question") {
               world.printDebugInfo("Found " + interpretations.questionInterpretations.length + " question interpretations");
             }
         }

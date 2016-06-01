@@ -1,7 +1,7 @@
 ///<reference path="World.ts"/>
 ///<reference path="Parser.ts"/>
 ///<reference path="lib/collections.ts"/>
-
+///<reference path="SVGWorld.ts" />
 /**
 * Interpreter module
 *
@@ -61,7 +61,8 @@ module Interpreter {
                 } else {
                   throw new Error("Unknown parseresult type. ");
                 }
-            } catch (err) {
+            } 
+            catch (err) {
                 errors.push(err);
             }
         });
@@ -198,12 +199,13 @@ module Interpreter {
 
       // Check for ambiguity depending on the specified quantifier
       if(cmd.entity.quantifier == "the" && setOfObjects.size() > 1) {
-        throw "Ambiguous subject"
+        clarificationSubject(setOfObjects, state, cmd);
+        // throw "Ambiguous subject"
         // TODO Ask clarification question
       }
 
       if(cmd.location.entity.quantifier == "the" && setOfLocationObjects.size() > 1) {
-        throw "Ambiguous location"
+      // throw "Ambiguous location"
         // TODO Ask clarification question
       }
 
@@ -219,12 +221,43 @@ module Interpreter {
       let relation = "holding";
 
       if(cmd.entity.quantifier == "the" && setOfObjects.size() > 1) {
-        throw "Ambiguous subject"
+        setOfObjects = clarificationSubject(setOfObjects, state, cmd);
         // TODO Ask clarification question
       }
 
       return combineSetToDNF(setOfObjects, relation, cmd.entity.quantifier);
     }
+
+    function clarificationSubject(setOfObjects: collections.LinkedList<string>, state: WorldState, cmd: Parser.Command): collections.LinkedList<string> {
+        var world: SVGWorld = new SVGWorld(state);
+        var str : string = "I need to clarify the subject, which of these " + setOfObjects.size() + " did you mean?";
+        for( let i: number = 0; i < setOfObjects.size(); i++) {
+            if(i != 0){
+                str += " or ";
+            }
+            let obj: string = setOfObjects.elementAtIndex(i);
+            str +=  " the " + state.objects[obj].size + " " +  state.objects[obj].color +  " " + state.objects[obj].form + "\n";
+        }
+      world.printSystemOutput(str);
+      /*        var clarifyInput = (inputString: string = "") : void => {
+            var nextInput = () => world.readUserInput("What object did you mean?", clarifyInput);
+            nextInput = () => world.readUserInput("What object did you mean?", clarifyInput);
+            if(inputString.trim()){
+                world.printSystemOutput("something happened");
+            }
+            nextInput();
+        }
+        world.readUserInput(clarifyInput);
+
+        let newSetOfObjects = interpretEntity(cmd.entity, new collections.LinkedList<string>(), state).objectIds;
+          if(newSetOfObjects.size() > 1){
+          }
+        */
+        throw "Ambiguous subject, specify which object you would like below";
+    }
+
+
+    
 
     function interpretPutCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
       let setOfObjects: collections.LinkedList<string> = new collections.LinkedList<string>();
@@ -233,7 +266,7 @@ module Interpreter {
       let setOfLocationObjects = interpretEntity(cmd.location.entity, new collections.LinkedList<string>(), state).objectIds;
 
       if(cmd.location.entity.quantifier == "the" && setOfLocationObjects.size() > 1) {
-        throw "Ambiguous location"
+      // throw "Ambiguous location"
         // TODO Ask clarification question
       }
 
@@ -490,7 +523,7 @@ module Interpreter {
         throw getPhysicalLawsErrorExplanation(errorExplanations);
       } else if (result.length > 1 && quantifier == "the") {
         result = [];
-        throw "ambiguous command"
+        //        throw "ambiguous command"
       } else console.log("DNFFormula " + stringifyDNF(result));
 
       return result;
@@ -559,7 +592,7 @@ module Interpreter {
         throw "no results found"
       } else if (result.length > 1 && quantifier == "the") {
         result = [];
-        throw "ambiguous command"
+        //         throw "ambiguous command"
       } else console.log("DNFFormula ", stringifyDNF(result));
       return result;
     }

@@ -41,7 +41,6 @@ main --> please:? question please:? {% R({type:"question", question:1}) %}
 command --> take entity           {% R({command:"take", entity:1}) %}
 command --> move  it    location  {% R({command:"put", location:2}) %}
 command --> move entity location  {% R({command:"move", entity:1, location:2}) %}
-
 question --> questionWord entity            {% R({question:0, entity:1}) %}
 question --> how_many objectPL are_there:?     {% R({question:"how many", object:1}) %}
 
@@ -65,6 +64,7 @@ quantifierSG --> ("any" | "an" | "a")  {% R("any") %}
 quantifierSG --> ("the")               {% R("the") %}
 quantifierSG --> ("every")             {% R("all") %}
 quantifierPL --> ("all")               {% R("all") %}
+
 
 
 relation --> ("left"  "of" | "to" "the" "left"  "of")  {% R("leftof") %}

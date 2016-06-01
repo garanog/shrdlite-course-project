@@ -57,7 +57,6 @@ interface World {
 
     printWorld(callback? : () => void) : void;
     performPlan(plan: string[], callback? : () => void) : void;
-
     readUserInput(prompt : string, callback : (input:string) => void) : void;
     printSystemOutput(output : string, participant? : string) : void;
     printDebugInfo(info : string) : void;

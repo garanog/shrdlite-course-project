@@ -67,7 +67,7 @@ class SVGWorld implements World {
         this.enableInput();
         this.inputCallback = callback;
     }
-
+    
     public printSystemOutput(output : string, participant="system", utterance? : string) {
         if (utterance == undefined) {
             utterance = output;
@@ -106,7 +106,7 @@ class SVGWorld implements World {
         }
         this.printSystemOutput(error, "error");
     }
-
+    
     public printWorld(callback? : () => void) : void {
         this.containers.world.empty();
         this.printSystemOutput("Please wait while I populate the world.")
@@ -151,7 +151,7 @@ class SVGWorld implements World {
             setTimeout(callback, (timeout + this.promptPause) * 1000);
         }
     }
-
+        
     public performPlan(plan : string[], callback? : () => void) : void {
         if (this.isSpeaking()) {
             setTimeout(() => this.performPlan(plan, callback), this.animationPause * 1000);
