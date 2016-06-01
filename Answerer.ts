@@ -33,8 +33,8 @@ module Answerer {
     }
 
     function answerHowManyQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
-      return "There is " + question.interpretation + " " + Parser.describeObject(question.parse.question.object)
-          + (question.interpretation == "1" ? "" : "(es)");
+      return "There " + (question.interpretation == "is " ? "" : "are ")  + question.interpretation + " " + Parser.describeObject(question.parse.question.object)
+          + (question.interpretation == "1" ? "" : "(s)");
     }
 
     function answerWhereIsQuestion(question : Interpreter.QuestionInterpretationResult, state: WorldState) : string {
