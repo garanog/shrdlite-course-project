@@ -42,8 +42,8 @@ command --> take entity           {% R({command:"take", entity:1}) %}
 command --> move  it    location  {% R({command:"put", location:2}) %}
 command --> move entity location  {% R({command:"move", entity:1, location:2}) %}
 
-question  --> questionWord is entity    {% R({question:"where is", entity:2}) %}
-
+question --> questionWord entity            {% R({question:0, entity:1}) %}
+question --> how_many objectPL are_there:?     {% R({question:"how many", object:1}) %}
 
 location --> relation entity  {% R({relation:0, entity:1}) %}
 
@@ -58,7 +58,8 @@ objectPL --> size:? color:? formPL  {% R({size:0, color:1, form:2}) %}
 
 
 ## Lexical rules
-questionWord --> ("where")           {% R("where is") %}
+questionWord --> ("where" "is")         {% R("where is") %}
+questionWord --> ("how" " many")        {% R("how many") %}
 
 quantifierSG --> ("any" | "an" | "a")  {% R("any") %}
 quantifierSG --> ("the")               {% R("the") %}
@@ -108,6 +109,9 @@ it --> "it"
 
 that_is  --> "that" "is"
 that_are --> "that" "are"
+
+how_many --> "how" "many"
+are_there --> "are" "there"
 
 will_you --> ("will" | "can" | "could") "you"
 

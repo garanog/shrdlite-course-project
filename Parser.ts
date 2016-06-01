@@ -63,6 +63,7 @@ module Parser {
     export interface Question {
         question: string;
         entity?: Entity;
+        object?: Object;
     }
 
     /** A quantified reference (as yet uninterpreted) to an object in the world. */
@@ -119,7 +120,7 @@ module Parser {
     export function describeObject(obj: Object) : string {
       return (obj.size != null ? (obj.size + " ") : "")
         + (obj.color != null ? (obj.color + " ") : "")
-        + (obj.form != null ? (obj.form) : "object");
+        + (obj.form != "anyform" ? (obj.form) : "object");
     }
 
     /**

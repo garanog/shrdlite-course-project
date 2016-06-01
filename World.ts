@@ -62,4 +62,5 @@ interface World {
     printSystemOutput(output : string, participant? : string) : void;
     printDebugInfo(info : string) : void;
     printError(error : string, message? : string) : void;
+    printAnswers(answers : string[]) : void;
 }

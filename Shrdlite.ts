@@ -116,7 +116,13 @@ module Shrdlite {
           return finalPlan;
         } else {
           var answers : Answerer.AnswererResult[] = Answerer.answer(interpretations.questionInterpretations, world.currentState);
-          return null;
+          console.log("answers in shrdlite " + answers.length);
+          var answersAsString : string[] = [];
+          for (var answer of answers){
+              answersAsString.push(answer.answer);
+          }
+          world.printAnswers(answersAsString);
+          return [];
         }
     }
 

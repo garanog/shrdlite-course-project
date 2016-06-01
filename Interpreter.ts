@@ -55,8 +55,8 @@ module Interpreter {
                 } else if (parseresult.parse.type == "question") {
                     let result: QuestionInterpretationResult = <QuestionInterpretationResult> parseresult;
                     var interpretationResult = interpretQuestion(result.parse.question, currentState);
-                    result.questionWord = interpretationResult.questionWord;
-                    result.object = interpretationResult.object;
+                    result.questionWord = interpretationResult[0];
+                    result.interpretation = interpretationResult[1];
                     questionInterpretations.push(result);
                 } else {
                   throw new Error("Unknown parseresult type. ");
@@ -90,7 +90,7 @@ module Interpreter {
 
     export interface QuestionInterpretationResult extends Parser.ParseResult {
         questionWord: string;
-        object: string;
+        interpretation: string;
     }
 
     export type DNFFormula = Conjunction[];
@@ -165,9 +165,23 @@ module Interpreter {
     /**
       TODO
     **/
-    function interpretQuestion(question: Parser.Question, state: WorldState): QuestionInterpretationResult {
-        return ({input: null, parse: null, questionWord: question.question, object: interpretEntity(question.entity, new collections.LinkedList<string>(), state).objectIds.elementAtIndex(0)});
+    function interpretQuestion(question: Parser.Question, state: WorldState): [string, string] {
+      switch (question.question) {
+        case "where is":
+          return interpretWhereIsQuestion(question, state);
+        case "how many":
+          return interpretHowManyQuestion(question, state);
+      }
+      return [null, null];
+    }
+
+    function interpretWhereIsQuestion(question: Parser.Question, state: WorldState): [string, string] {
+      return [question.question, interpretEntity(question.entity, new collections.LinkedList<string>(), state).objectIds.elementAtIndex(0)];
         //TODO NOT TAKE ONLY THE FIRST ONE HERE and make it beautiful
+    }
+
+    function interpretHowManyQuestion(question: Parser.Question, state: WorldState): [string, string] {
+      return [question.question, interpretObject(question.object, new collections.LinkedList<string>(), state).objectIds.size().toString()];
     }
 
     function interpretMoveCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
@@ -222,7 +236,7 @@ module Interpreter {
         // TODO Ask clarification question
       }
 
-      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, cmd.entity.quantifier);
+      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, "the");
     }
 
     function interpretEntity( entity: Parser.Entity,

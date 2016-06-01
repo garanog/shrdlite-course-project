@@ -155,4 +155,8 @@ class TextWorld implements World {
         return str;
     }
 
+    public printAnswers(answers : String[]) : void{
+
+    }
+
 }
