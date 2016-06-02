@@ -45,3 +45,18 @@ Test cases
 	* planner: a smoke test for the planner, which parses, interprets and plans a
 	 	command in the small world, and compares the resulting list
 		of actions to the expected list of actions.
+
+Error Handling
+ 	Error messages are implemented using exceptions, which are thrown including
+	an appropriate error message. Among others, we distinguish the following cases
+	in the interpreter:
+
+	* No simple object with the desired color, form and size exists (“Could not find the...”)
+
+	* Anaphoric reference without previously mentioned object (“You didn't mention
+		anything before, I don't understand which object you mean by that anaphoric reference.”)
+
+	* Complex object cannot be found (“Could not find a ... that is ...”)
+
+	* Physical laws (with detailed message describing which law would be broken,
+		e.g. “a ball cannot be placed on top of a ball”)
