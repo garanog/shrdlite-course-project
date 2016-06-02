@@ -111,7 +111,7 @@ function testQuestion() : boolean {
       throw new Error("There should be only one answer to the question.");
     else {
       //TODO: change expected answer if necessary.
-      pass = answers[0].answer == "The black ball is on in the blue box.";
+      pass = answers[0].answer == "The black ball is in the small blue box right of the large blue table";
     }
   } catch(err) {
       console.log("ERROR: Question error!", err);
