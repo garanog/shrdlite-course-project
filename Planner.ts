@@ -98,18 +98,18 @@ module Planner {
       });
 
       var heuristics = ((node : StateNode) => {
-        var minDistance = 0;
+        var minDistance = -1;
         for (var conjunction of interpretation) { // conjunctions connected by ORs
 
           var distance : number = 0;
           for (var literal of conjunction) { // literals connected by ANDs
-            distance = distance +
-                (literalHolds(literal, node.state) ? 0 : calculateDistance(literal, state));
+            distance = Math.max(distance,
+                (literalHolds(literal, node.state) ? 0 : calculateDistance(literal, state)));
           }
 
-          minDistance = distance < minDistance ? distance : minDistance;
+          minDistance = minDistance != -1? Math.min(distance, minDistance) : distance;
         }
-        return minDistance;
+        return minDistance == -1 ? 0 : minDistance;
       });
 
       console.log("------------------")
