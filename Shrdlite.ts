@@ -75,8 +75,8 @@ module Shrdlite {
                   world.printDebugInfo("  (" + n + ") " + Interpreter.stringify(result));
               });
 
-              if (interpretations.commandInterpretations.length > 1) {
-                throw new Error("Ambiguous utterance");
+              if (interpretations.commandInterpretations.length > 1){
+               throw new Error("Ambiguous utterance");
               }
             } else if (interpretations.type == "question") {
               world.printDebugInfo("Found " + interpretations.questionInterpretations.length + " question interpretations");

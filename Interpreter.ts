@@ -205,12 +205,23 @@ module Interpreter {
         throw "Ambiguous location"
         // TODO Ask clarification question
       }
-
+        
+      if(cmd.entity.quantifier == "one" && setOfObjects.size() < 1){
+        throw "There are no objects like that but you wanted to move one";
+      }
+      
+      if(cmd.entity.quantifier == "two" && setOfObjects.size() < 2){
+        throw "There are less than two objects that fit that discription";
+        }  
+    
       if(cmd.entity.quantifier == "all" && !(setOfLocationObjects.contains("floor") && setOfLocationObjects.size() <= state.stacks.length) && setOfLocationObjects.size() < setOfObjects.size()) {
         throw "More objects than locations"
       }
-
-      return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, cmd.entity.quantifier);
+        
+   
+        
+        return combineSetsToDNF(state, setOfObjects, relation, setOfLocationObjects, cmd.entity.quantifier);
+      
     }
 
     function interpretTakeCommand(cmd: Parser.Command, state: WorldState) : DNFFormula {
@@ -244,19 +255,57 @@ module Interpreter {
                               state : WorldState)
       : ObjectInterpretationResult {
       //TODO: interpret quantifier
+        if(entity.quantifier == "two"){
+            interpretManyObject(entity.object, previouslySeenObjects, state, 2);
+        }
+        else if(entity.quantifier == "three"){
+        interpretManyObject(entity.object, previouslySeenObjects, state, 3);
+            
+        }
       return interpretObject(entity.object, previouslySeenObjects, state);
     }
 
     class ObjectInterpretationResult {
       objectIds : collections.LinkedList<string>;
       nestedObjectsIds : collections.LinkedList<string>;
+        moves: number = 1;      
     }
-
+    
+    
+    function interpretManyObject( entityObject: Parser.Object,
+                              previouslySeenObjects : collections.LinkedList<string>,
+                                  state: WorldState,
+                                    moves: number
+                                  )
+                                  : ObjectInterpretationResult {
+                let obj: ObjectInterpretationResult = interpretObject(entityObject, previouslySeenObjects, state);
+                obj.moves = moves;
+                return obj;
+    }
+    
     /*
     * Interprets the information given from the entityObject, and returns a list
     * of the keys to all objects from the world that matches that information.
     */
     function interpretObject( entityObject: Parser.Object,
+                              previouslySeenObjects : collections.LinkedList<string>,
+                                  state: WorldState
+                                  )
+        : ObjectInterpretationResult {
+      let objectMap  : { [s:string]: ObjectDefinition; } = state.objects;
+      let stacks : Stack[]= state.stacks;
+
+      if (entityObject.location == null) {
+        return interpretSimpleObject(entityObject, previouslySeenObjects, state);
+      } else {
+        return interpretComplexObject(entityObject, previouslySeenObjects, state);
+      }
+    }
+    /*
+    * Interprets the information given from the entityObject, and returns a list
+    * of the keys to all objects from the world that matches that information.
+    */
+    function interpretTwoObjects( entityObject: Parser.Object,
                               previouslySeenObjects : collections.LinkedList<string>,
                               state: WorldState)
         : ObjectInterpretationResult {
@@ -269,6 +318,7 @@ module Interpreter {
         return interpretComplexObject(entityObject, previouslySeenObjects, state);
       }
     }
+
 
     /*
     * Interprets information about a "simple" parser-obejct.
@@ -309,7 +359,7 @@ module Interpreter {
       if (matchingSet.size() == 0)
         throw new Error("Could not find the " + Parser.describeObject(entityObject) + ".");
 
-      return {objectIds: matchingSet, nestedObjectsIds: matchingSet};
+      return {objectIds: matchingSet, nestedObjectsIds: matchingSet, moves: 1};
     }
 
     function interpretDesiredForm(desiredForm : string,
@@ -419,7 +469,7 @@ module Interpreter {
           + Parser.describeEntityDetailed(entityObject.location.entity) + ".");
 
       return {objectIds: matchingSet,
-        nestedObjectsIds: flattenLists([matchingSet, relatedMatchingSet])};
+        nestedObjectsIds: flattenLists([matchingSet, relatedMatchingSet]), moves: 1};
     }
 
     function flattenLists(lists : [collections.LinkedList<string>]) : collections.LinkedList<string> {
@@ -459,8 +509,36 @@ module Interpreter {
       let objectSet = setOfObjects.toArray();
       let locationSet = setOfLocationObjects.toArray();
       let errorExplanations : string[] = [];
+        
+      var numbersFromString: { [quantifier: string] : number } = {};
+        numbersFromString["two"] = 2;
+        numbersFromString["three"] = 3;
 
-      if(quantifier != "all") {
+
+      if(quantifier == "all") {
+        if (locationSet.indexOf("floor") >= 0) {
+          for (let object of objectSet) {
+            allresult.push({polarity:true, relation:theRelation, args:[object.toString(),"floor"]});
+          }
+          result.push(allresult);
+        } else {
+          result = allCombinations(objectSet, locationSet, theRelation, state);
+          }
+        }
+      else if(quantifier == "two" || quantifier == "three") {
+        if (locationSet.indexOf("floor") >= 0) {
+        for (let i:number = 0; i < numbersFromString[quantifier]; i++) {
+            let object: string = objectSet[i];
+            allresult.push({polarity:true, relation:theRelation, args:[object.toString(),"floor"]});
+          }
+          result.push(allresult);
+        } else {
+          result = allCombinations(objectSet, locationSet, theRelation, state);
+          }
+        }
+
+        else{  
+        console.log(stringifyDNF(result));
         for (let object of objectSet) {
           for (let location of locationSet) {
             var physicalCorrectness = checkPhysicalCorrectness(state, object, location, theRelation);
@@ -470,18 +548,7 @@ module Interpreter {
               errorExplanations.push(physicalCorrectness.explanation);
           }
         }
-      } else {
-        if (locationSet.indexOf("floor") >= 0) {
-          for (let object of objectSet) {
-            allresult.push({polarity:true, relation:theRelation, args:[object.toString(),"floor"]});
-          }
-          result.push(allresult);
-        } else {
-          result = allCombinations(objectSet, locationSet, theRelation, state);
-        }
-
-        console.log(stringifyDNF(result));
-      }
+      } 
 
       if (result.length == 0) {
         result.push([{polarity:null, relation:null, args:null}]);

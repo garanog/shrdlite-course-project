@@ -65,6 +65,12 @@ quantifierSG --> ("any" | "an" | "a")  {% R("any") %}
 quantifierSG --> ("the")               {% R("the") %}
 quantifierSG --> ("every")             {% R("all") %}
 quantifierPL --> ("all")               {% R("all") %}
+quantifierOne --> ("one")               {% R("one") %}
+quantifierTwo --> ("two")               {% R("two") %}
+quantifierThree --> ("three")               {% R("three") %}
+
+
+
 
 
 relation --> ("left"  "of" | "to" "the" "left"  "of")  {% R("leftof") %}
